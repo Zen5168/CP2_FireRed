@@ -1,5 +1,5 @@
 package com.game.main;
-
+import com.game.logic.*;
 import com.game.entities.*;
 import java.util.*;
 
@@ -31,8 +31,8 @@ public class FireRed {
         //=========================
         // STARTER POKEMONS
         //=========================
-        Pokemon Bulbasaur = new Pokemon("Bulbasaur", "Grass", 5, 45, 49, 65, 49, 65, 45);
-        Pokemon Charmander = new Pokemon("Charmander", "Fire", 5, 39, 52, 60, 43, 50, 65);
-        Pokemon Squirtle = new Pokemon("Squirtle", "Water", 5, 44, 48, 50, 65, 64, 43);
+        Pokemon Bulbasaur = new Charmander(5);
+        Pokemon Charmander = new Bulbasaur(5);
+        Pokemon Squirtle = new Squirtle(5);
     }
 }

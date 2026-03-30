@@ -1,16 +1,10 @@
 package com.game.entities;
+import com.game.logic.*;
 
 public class Charmander extends Pokemon {
 
-    public Charmander(String name, String type, int level, int hp, int atk, int spAtk, int def, int spDef, int speed) {
-        super(name, type, level, hp, atk, spAtk, def, spDef, speed);
+    public Charmander(int level) {
+        super("Charmander", Type.FIRE, level, 39, 52, 60, 43, 50, 65);
 
-    }
-
-    @Override
-    public String toString() {
-        return this.pokeName + " " + this.type + " Lvl:" + this.level
-                + " HP:" + this.hp + " Atk:" + this.atk + " SpAtk:" + this.spAtk
-                + " Def:" + this.def + " SpDef:" + this.spDef + " Spd:" + this.speed;
     }
 }

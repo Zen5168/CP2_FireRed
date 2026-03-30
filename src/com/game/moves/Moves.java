@@ -1,17 +1,19 @@
 package com.game.moves;
+
+import com.game.logic.*;
 import java.util.*;
 
 public class Moves {
 
     private static final Random rand = new Random();
     public String moveName;
+    public Type moveType;
     String moveCategory;
-    String moveType;
     public int power;
     int accuracy;
     public int pp;
 
-    public Moves(String moveName, String moveCategory, String moveType, int power, int accuracy, int pp) {
+    public Moves(String moveName, String moveCategory, Type moveType, int power, int accuracy, int pp) {
         this.moveName = moveName;
         this.moveCategory = moveCategory;
         this.moveType = moveType;
@@ -35,5 +37,12 @@ public class Moves {
 
     private boolean willHit() {
         return rand.nextInt(100) + 1 <= this.accuracy;
+    }
+
+    //=====================================
+    // GETTERS
+    //=====================================
+    public Type getTypeEnum() {
+        return this.moveType;
     }
 }

@@ -1,8 +1,9 @@
 package com.game.entities;
+import com.game.logic.*;
 
 public class Bulbasaur extends Pokemon {
         
-        public Bulbasaur (String name, String type, int level, int hp, int atk, int spAtk, int def, int spDef, int speed) {
-            super(name, type, level, hp, atk, spAtk, def, spDef, speed);
+        public Bulbasaur (int level) {
+            super("Bulbasaur", Type.GRASS, level, 45, 49, 65, 49, 65, 45);
         }
 }

@@ -1,8 +1,9 @@
 package com.game.entities;
+import com.game.logic.*;
 
 public class Squirtle extends Pokemon {
         
-       public Squirtle (String name, String type, int level, int hp, int atk, int spAtk, int def, int spDef, int speed) {
-            super(name, type, level, hp, atk, spAtk, def, spDef, speed);
+       public Squirtle (int level) {
+            super("Squirtle", Type.WATER, level, 44, 48, 50, 65, 64, 43);
         }
 }
