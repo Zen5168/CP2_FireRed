@@ -1,4 +1,4 @@
-package com.game.npc;
+package com.game.trainers;
 import java.util.*;
 
 class Trainer {

@@ -1,6 +1,9 @@
 package com.game.main;
+import com.game.pokemons.Bulbasaur;
+import com.game.pokemons.Pokemon;
+import com.game.pokemons.Charmander;
+import com.game.pokemons.Squirtle;
 import com.game.logic.*;
-import com.game.entities.*;
 import java.util.*;
 
 public class FireRed {

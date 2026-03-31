@@ -1,5 +1,5 @@
 package com.game.logic;
-import com.game.entities.Pokemon;
+import com.game.pokemons.Pokemon;
 import com.game.moves.Moves;
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package com.game.entities;
+package com.game.pokemons;
 import com.game.logic.*;
 
 public class Bulbasaur extends Pokemon {
