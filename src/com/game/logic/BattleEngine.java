@@ -14,33 +14,42 @@ public class BattleEngine {
             return;
         }
 
-        // 1. Critical Hit Logic
+        // ======================================
+        // CRITICAL HIT LOGIC
+        // ======================================
         double critMult = (rand.nextInt(16) == 0) ? 2.0 : 1.0;
         if (critMult > 1.0) System.out.println("A critical hit!");
 
-        // STAB (Same Type Attack Bonus)
+        // ======================================
+        // STAB (SAME TYPE ATTACK BONUS)
+        // ======================================
         double stab = (attacker.getTypeEnum() == move.getTypeEnum()) ? 1.5 : 1.0;
 
-        // Type Effectiveness
+        // ======================================
+        // TYPE EFFECTIVENESS
+        // ======================================
         double typeEff = Type.getEffectiveness(move.getTypeEnum(), defender.getTypeEnum());
         if (typeEff > 1.0) System.out.println("It's super effective!");
         if (typeEff < 1.0 && typeEff > 0) System.out.println("It's not very effective...");
         if (typeEff == 0) System.out.println("It had no effect...");
 
-        //  Random Variance
+        // ======================================
+        //  RANDOM VARIANCE
+        // ======================================
         double random = 0.85 + (1.0 - 0.85) * rand.nextDouble();
 
-        // Final Damage Calculation 
+        // ======================================
+        // FINAL DAMAGE CALCULATION 
+        // ======================================
         int damage = calculateDamage(attacker, defender, move, critMult, stab, typeEff, random);
         
         defender.takeDamage(damage);
     }
 
     private int calculateDamage(Pokemon atk, Pokemon def, Moves move, double crit, double stab, double type, double randVar) {
-        // Base Damage = (((2 * Level / 5) + 2) * Power * (Atk/Def) / 50) + 2
+        // BASE DAMAGE = (((2 * LEVEL / 5) + 2) * POWER * (ATK/DEF) / 50) + 2
         double base = (((2.0 * atk.getLevel() / 5.0) + 2.0) * move.power * ((double)atk.getAtk() / def.getDef()) / 50.0) + 2.0;
-        
-        // Apply Modifiers
+
         return (int) (base * crit * stab * type * randVar);
     }
 }
