@@ -8,11 +8,15 @@ public class Moves {
     private static final Random rand = new Random();
     public String moveName;
     public Type moveType;
-    String moveCategory;
+    public String moveCategory; // PHYSICAL OR SPECIAL
     public int power;
-    int accuracy;
+    public int accuracy;
     public int pp;
+    public int maxPp;
 
+    //====================================
+    // CONSTRUCTOR
+    //====================================
     public Moves(String moveName, String moveCategory, Type moveType, int power, int accuracy, int pp) {
         this.moveName = moveName;
         this.moveCategory = moveCategory;
@@ -20,13 +24,26 @@ public class Moves {
         this.power = power;
         this.accuracy = accuracy;
         this.pp = pp;
+        this.maxPp = pp;
+    }
+
+    //====================================
+    // PP TRACKING CONSTRUCTOR
+    //====================================
+    public Moves(Moves other) {
+        this.moveName = other.moveName;
+        this.moveCategory = other.moveCategory;
+        this.moveType = other.moveType;
+        this.power = other.power;
+        this.accuracy = other.accuracy;
+        this.pp = other.pp;
+        this.maxPp = other.maxPp;
     }
 
     public boolean useMove() {
         if (this.pp <= 0) {
             return false;
         }
-
         reducePP();
         return willHit();
     }
@@ -39,9 +56,19 @@ public class Moves {
         return rand.nextInt(100) + 1 <= this.accuracy;
     }
 
-    //=====================================
-    // GETTERS
-    //=====================================
+    //====================================
+    // SPECIAL OR PHYSICAL CHECKER
+    //====================================
+    public boolean isSpecial() {
+        switch (this.moveType) {
+            case FIRE: case WATER: case GRASS: case ELECTRIC: 
+            case ICE: case PSYCHIC: case DRAGON:
+                return true;
+            default:
+                return false; // NORMAL, FIGHTING, FLYING, POISON, GROUND, ROCK, BUG, GHOST
+        }
+    }
+
     public Type getTypeEnum() {
         return this.moveType;
     }

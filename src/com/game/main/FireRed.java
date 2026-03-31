@@ -1,8 +1,5 @@
 package com.game.main;
-import com.game.pokemons.Bulbasaur;
-import com.game.pokemons.Pokemon;
-import com.game.pokemons.Charmander;
-import com.game.pokemons.Squirtle;
+import com.game.pokemons.*;
 import com.game.logic.*;
 import java.util.*;
 
@@ -34,8 +31,5 @@ public class FireRed {
         //=========================
         // STARTER POKEMONS
         //=========================
-        Pokemon Bulbasaur = new Charmander(5);
-        Pokemon Charmander = new Bulbasaur(5);
-        Pokemon Squirtle = new Squirtle(5);
     }
 }
