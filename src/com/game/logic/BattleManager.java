@@ -24,6 +24,7 @@ public class BattleManager {
 
             switch (choice) {
                 case "1":
+                    // FIGHT
                     Moves playerMove = selectMove(playerMon);
                     Moves enemyMove = getBestMove(enemyMon, playerMon);
 
@@ -104,7 +105,7 @@ public class BattleManager {
         }
 
         System.out.println("Invalid choice! Struggling...");
-        return availableMoves[0]; // Default to first move
+        return availableMoves[0]; // DEFAULT TO FIRST MOVE
     }
 
     // ======================================
