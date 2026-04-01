@@ -8,6 +8,9 @@ public class BattleEngine {
 
     private static final Random rand = new Random();
 
+    // ======================================
+    // EXECUTE TURN
+    // ======================================
     public void executeTurn(Pokemon attacker, Pokemon defender, Moves move) {
         System.out.println(attacker.getName() + " used " + move.moveName + "!");
 
@@ -39,16 +42,14 @@ public class BattleEngine {
 
         if (typeEff > 1.0) {
             System.out.println("It's super effective!");
-        }
-        if (typeEff < 1.0 && typeEff > 0) {
+        } else if (typeEff < 1.0 && typeEff > 0) {
             System.out.println("It's not very effective...");
-        }
-        if (typeEff == 0) {
+        } else if (typeEff == 0) {
             System.out.println("It had no effect...");
         }
 
         // ======================================
-        //  RANDOM VARIANCE
+        // RANDOM VARIANCE
         // ======================================
         double random = 0.85 + (1.0 - 0.85) * rand.nextDouble();
 
@@ -61,8 +62,16 @@ public class BattleEngine {
     }
 
     private int calculateDamage(Pokemon atk, Pokemon def, Moves move, double crit, double stab, double type, double randVar) {
-        // BASE DAMAGE = (((2 * LEVEL / 5) + 2) * POWER * (ATK/DEF) / 50) + 2
-        double base = (((2.0 * atk.getLevel() / 5.0) + 2.0) * move.power * ((double) atk.getAtk() / def.getDef()) / 50.0) + 2.0;
+        // ======================================
+        // PHYSICAL OR SPECIAL?
+        // ======================================
+        int effectiveAtk = move.isSpecial() ? atk.getSpAtk() : atk.getAtk();
+        int effectiveDef = move.isSpecial() ? def.getSpDef() : def.getDef();
+
+        // ======================================
+        // BASE DAMAGE FORMULA
+        // ======================================
+        double base = (((2.0 * atk.getLevel() / 5.0) + 2.0) * move.power * ((double) effectiveAtk / effectiveDef) / 50.0) + 2.0;
 
         return (int) (base * crit * stab * type * randVar);
     }
