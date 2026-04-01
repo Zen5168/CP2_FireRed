@@ -60,15 +60,12 @@ public class Moves {
     // SPECIAL OR PHYSICAL CHECKER
     //====================================
     public boolean isSpecial() {
-        switch (this.moveType) {
-            case FIRE: case WATER: case GRASS: case ELECTRIC: 
-            case ICE: case PSYCHIC: case DRAGON:
-                return true;
-            default:
-                return false; // NORMAL, FIGHTING, FLYING, POISON, GROUND, ROCK, BUG, GHOST
-        }
+        return "Special".equalsIgnoreCase(this.moveCategory);
     }
 
+    //====================================
+    // GETTERS
+    //====================================
     public Type getTypeEnum() {
         return this.moveType;
     }

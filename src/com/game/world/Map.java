@@ -1,7 +1,58 @@
 package com.game.world;
 
-
+import com.game.trainers.Trainer;
 
 public class Map {
 
+    private Tile[][] grid;
+    private int width, height;
+
+    public Map(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.grid = new Tile[height][width];
+        generateBasicMap();
+    }
+
+    // BASIC MAP
+    private void generateBasicMap() {
+        // SYMBOL, WALKABLE, HASENCOUNTER, NAME
+        Tile grass = new Tile("#", true, true, "Tall Grass");
+        Tile path = new Tile(".", true, false, "Path");
+        Tile wall = new Tile("T", false, false, "Tree");
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // CREATE A BORDER OF TREES
+                if (y == 0 || y == height - 1 || x == 0 || x == width - 1) {
+                    grid[y][x] = wall;
+                } else if (x > 4 && y > 2 && y < 6) {
+                    grid[y][x] = grass; // A PATCH OF GRASS
+                } else {
+                    grid[y][x] = path;
+                }
+            }
+        }
+    }
+
+    public void render(Trainer player) {
+        System.out.println("\n--- Region Map ---");
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (x == player.getX() && y == player.getY()) {
+                    System.out.print("P "); // REPRESENT PLAYER
+                } else {
+                    System.out.print(grid[y][x].getSymbol() + " ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    //================================
+    // GETTERS
+    //================================
+    public Tile getTile(int x, int y) {
+        return grid[y][x];
+    }
 }
