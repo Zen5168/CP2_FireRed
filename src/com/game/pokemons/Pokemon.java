@@ -1,4 +1,5 @@
 package com.game.pokemons;
+
 import com.game.logic.Type;
 import com.game.moves.Moves;
 import java.util.Arrays;
@@ -11,6 +12,8 @@ public abstract class Pokemon {
     protected String pokeName;
     protected Type type1, type2;
     protected int level;
+    protected int exp = 0;
+    protected int nextLevelExp = 100;
 
     //================================
     // CALCULATED STATS
@@ -41,6 +44,7 @@ public abstract class Pokemon {
 
         calculateStats();
     }
+
     public void calculateStats() {
         // HP Formula
         this.maxHp = ((2 * baseHp) * level / 100) + level + 10;
@@ -52,6 +56,32 @@ public abstract class Pokemon {
         this.spAtk = ((2 * baseSpAtk) * level / 100) + 5;
         this.spDef = ((2 * baseSpDef) * level / 100) + 5;
         this.speed = ((2 * baseSpeed) * level / 100) + 5;
+    }
+
+    //=====================================
+    // EXP LOGIC
+    //=====================================
+    public void gainExp(int amount) {
+        this.exp += amount;
+        System.out.println(this.pokeName + " gained " + amount + " EXP!");
+
+        while (this.exp >= this.nextLevelExp) {
+            levelUp();
+        }
+    }
+
+    //=====================================
+    // LEVEL UP LOGIC
+    //=====================================
+    private void levelUp() {
+        this.level++;
+        this.exp -= this.nextLevelExp;
+        this.nextLevelExp = (int) (this.nextLevelExp * 1.2); // INCREMENTING EXP REQUIREMENTS
+
+        // RECALCULATE STATS BASED ON NEW LEVEL
+        calculateStats();
+        this.hp = this.maxHp; 
+        System.out.println("Congratulations! " + pokeName + " grew to Level " + level + "!");
     }
 
     //=====================================
@@ -85,6 +115,7 @@ public abstract class Pokemon {
     public Type getType1() {
         return this.type1;
     }
+
     public Type getType2() {
         return this.type2;
     }
