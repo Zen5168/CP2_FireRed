@@ -14,6 +14,8 @@ public abstract class Pokemon {
     protected int level;
     protected int exp = 0;
     protected int nextLevelExp = 100;
+    protected int evolutionLevel = -1;
+    protected String evolutionName;
     protected Map<Integer, String> moveLevelUpTable = new HashMap<>();
 
     //================================
@@ -24,7 +26,7 @@ public abstract class Pokemon {
     //================================
     // BASE STATS
     //================================
-    protected final int baseHp, baseAtk, baseDef, baseSpAtk, baseSpDef, baseSpeed;
+    protected int baseHp, baseAtk, baseDef, baseSpAtk, baseSpDef, baseSpeed;
 
     //================================
     // MOVE MANAGEMENT (4-SLOT LIMIT)
@@ -138,6 +140,37 @@ public abstract class Pokemon {
             }
         } else {
             System.out.println(pokeName + " did not learn " + newMove.getName() + ".");
+        }
+    }
+
+    //=====================================
+    // EVOLUTION
+    //=====================================
+    private void evolve() {
+        System.out.println("What? " + this.pokeName + " is evolving!");
+
+        try {
+            Class<?> evoClass = Class.forName(evolutionName);
+            Pokemon evolvedForm = (Pokemon) evoClass.getConstructor(int.class).newInstance(this.level);
+
+            System.out.println(this.pokeName + " evolved into " + evolvedForm.getName() + "!");
+
+            // TRANSFER STATS WHEN EVOLVING
+            this.pokeName = evolvedForm.getName();
+            this.baseHp = evolvedForm.baseHp;
+            this.baseAtk = evolvedForm.baseAtk;
+            this.baseDef = evolvedForm.baseDef;
+            this.baseSpAtk = evolvedForm.baseSpAtk;
+            this.baseSpDef = evolvedForm.baseSpDef;
+            this.baseSpeed = evolvedForm.baseSpeed;
+            this.type1 = evolvedForm.type1;
+            this.type2 = evolvedForm.type2;
+
+            calculateStats(); 
+            this.hp = this.maxHp;
+
+        } catch (Exception e) {
+            System.out.println("Error during evolution: " + e.getMessage());
         }
     }
 

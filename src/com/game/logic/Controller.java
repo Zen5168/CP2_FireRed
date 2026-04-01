@@ -54,6 +54,8 @@ public class Controller {
         }
     }
 
+    // MOVEMENT
+    //
     private void processMovement(String input) {
         int nextX = player.getX();
         int nextY = player.getY();
@@ -77,6 +79,14 @@ public class Controller {
 
         Tile nextTile = gameMap.getTile(nextX, nextY);
 
+        if (nextTile.getName().equals("Trainer")) {
+            NPC rival = new NPC("Gary", "Smell ya later!");
+            rival.addPokemon(new com.game.pokemons.Bulbasaur(7));
+
+            System.out.println(rival.getName() + ": " + rival.getMessage());
+            battleManager.startBattle(player.getParty().get(0), rival.getFirstPokemon());
+        }
+
         if (nextTile != null && nextTile.isWalkable()) {
             // UPDATE PLAYER POSITION
             player.setX(nextX);
@@ -92,12 +102,15 @@ public class Controller {
             System.out.println("You bumped into something!");
         }
 
+        //================================
+        // POKEMON CENTER
+        //================================
         if (nextTile.getName().equals("Pokemon Center")) {
             System.out.println("Welcome to the Pokemon Center! Healing your party...");
             for (Pokemon p : player.getParty()) {
                 p.setHp(p.getMaxHp());
             }
-            System.out.println("Your Pokemon are fighting fit!");
+            System.out.println("Your Pokemon are now healthy!!");
         }
     }
 
@@ -105,10 +118,13 @@ public class Controller {
     // ENCOUNTER MECHANIC
     //================================
     private void checkForEncounter() {
+
         if (Math.random() < 0.20) {
             System.out.println("\n!!! A wild Pokemon jumped out of the grass !!!");
 
-            battleManager.startBattle(player.getParty().get(0), new Squirtle(5)); // NEW BULBASAUR IS A PLACE HOLDER
+            Pokemon wildPoke = gameMap.getRandomWildPokemon();
+
+            battleManager.startBattle(player.getParty().get(0), wildPoke);
         }
     }
 }
