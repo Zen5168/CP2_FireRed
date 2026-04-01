@@ -4,17 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Type {
-    NORMAL, FIRE, WATER, GRASS, ELECTRIC, ICE, FIGHTING, POISON, GROUND, FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON;
+    NORMAL, FIRE, WATER, GRASS, ELECTRIC, ICE, FIGHTING, POISON, GROUND, FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON, NONE;
 
     private static final Map<Type, Map<Type, Double>> chart = new HashMap<>();
 
     static {
         for (Type t1 : Type.values()) {
             chart.put(t1, new HashMap<>());
-            for (Type t2 : Type.values()) chart.get(t1).put(t2, 1.0);
+            for (Type t2 : Type.values()) {
+                chart.get(t1).put(t2, 1.0);
+            }
         }
 
-       // NORMAL
+        // NORMAL
         setEff(NORMAL, ROCK, 0.5);
         setEff(NORMAL, GHOST, 0.0);
 
@@ -127,11 +129,24 @@ public enum Type {
         setEff(DRAGON, DRAGON, 2.0);
     }
 
+    //=====================================
+    // EFFECTIVENESS SETTER
+    //=====================================
     private static void setEff(Type attacker, Type defender, double mult) {
         chart.get(attacker).put(defender, mult);
     }
 
-    public static double getEffectiveness(Type atkType, Type defType) {
-        return chart.get(atkType).get(defType);
+    //=====================================
+    // TYPE EFFECTIVENESS GETTER
+    //=====================================
+    public static double getEffectiveness(Type atkType, Type defType1, Type defType2) {
+        double eff1 = chart.get(atkType).get(defType1);
+        double eff2 = 1.0;
+
+        if (defType2 != null && defType2 != Type.NONE) {
+            eff2 = chart.get(atkType).get(defType2);
+        }
+
+        return eff1 * eff2;
     }
 }

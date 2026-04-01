@@ -9,7 +9,7 @@ public abstract class Pokemon {
     // POKEMON IDENTITY
     //================================
     protected String pokeName;
-    protected Type type;
+    protected Type type1, type2;
     protected int level;
 
     //================================
@@ -27,9 +27,10 @@ public abstract class Pokemon {
     //================================
     protected Moves[] moves = new Moves[4];
 
-    public Pokemon(String name, Type type, int level, int bHp, int bAtk, int bDef, int bSpAtk, int bSpDef, int bSpeed) {
+    public Pokemon(String name, Type type1, Type type2, int level, int bHp, int bAtk, int bDef, int bSpAtk, int bSpDef, int bSpeed) {
         this.pokeName = name;
-        this.type = type;
+        this.type1 = type1;
+        this.type2 = type2;
         this.level = level;
         this.baseHp = bHp;
         this.baseAtk = bAtk;
@@ -81,8 +82,11 @@ public abstract class Pokemon {
         return this.pokeName;
     }
 
-    public Type getTypeEnum() {
-        return this.type;
+    public Type getType1() {
+        return this.type1;
+    }
+    public Type getType2() {
+        return this.type2;
     }
 
     public int getLevel() {
