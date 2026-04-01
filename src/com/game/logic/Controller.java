@@ -79,14 +79,6 @@ public class Controller {
 
         Tile nextTile = gameMap.getTile(nextX, nextY);
 
-        if (nextTile.getName().equals("Trainer")) {
-            NPC rival = new NPC("Gary", "Smell ya later!");
-            rival.addPokemon(new com.game.pokemons.Bulbasaur(7));
-
-            System.out.println(rival.getName() + ": " + rival.getMessage());
-            battleManager.startBattle(player.getParty().get(0), rival.getFirstPokemon());
-        }
-
         if (nextTile != null && nextTile.isWalkable()) {
             // UPDATE PLAYER POSITION
             player.setX(nextX);
@@ -124,7 +116,7 @@ public class Controller {
 
             Pokemon wildPoke = gameMap.getRandomWildPokemon();
 
-            battleManager.startBattle(player.getParty().get(0), wildPoke);
+            battleManager.startBattle(player.getParty().get(0), wildPoke, false);
         }
     }
 }

@@ -9,39 +9,134 @@ public class BattleManager {
     private Scanner scanner = new Scanner(System.in);
     private BattleEngine engine = new BattleEngine();
 
-    public void startBattle(Pokemon player, Pokemon wild) {
-        System.out.println("A wild " + wild.getName() + " appeared!");
+    // ======================================
+    // BATTLE INTERFACE
+    // ======================================
+    public void startBattle(Pokemon playerMon, Pokemon enemyMon, boolean isTrainerBattle) {
+        boolean battleActive = true;
 
-        while (!player.isFainted() && !wild.isFainted()) {
-            printBattleStatus(player, wild);
+        while (battleActive) {
+            printBattleStatus(playerMon, enemyMon);
+            System.out.println("What will " + playerMon.getName() + " do?");
+            System.out.print("\n1. Fight  \n2. Bag  \n3. Pokemon  \n4. Run \n> ");
 
-            Moves playerMove = selectMove(player);
+            String choice = scanner.nextLine();
 
-            Moves wildMove = getBestMove(wild, player);
+            switch (choice) {
+                case "1":
+                    Moves playerMove = selectMove(playerMon);
+                    Moves enemyMove = getBestMove(enemyMon, playerMon);
 
-            //=====================================
-            // SPEED CHECKER
-            //=====================================
-            if (player.getSpeed() >= wild.getSpeed()) {
-                executeFullTurn(player, wild, playerMove, wildMove);
-            } else {
-                executeFullTurn(wild, player, wildMove, playerMove);
+                    if (playerMon.getSpeed() >= enemyMon.getSpeed()) {
+                        executeFullTurn(playerMon, enemyMon, playerMove, enemyMove);
+                    } else {
+                        executeFullTurn(enemyMon, playerMon, enemyMove, playerMove);
+                    }
+                    break;
+
+                case "2":
+                    // BAG: Placeholder
+                    System.out.println("This function is currently not available in this version");
+                    break;
+
+                case "3":
+                    // POKEMON: Placeholder
+                    System.out.println("This function is currently not available in this version");
+                    break;
+
+                case "4":
+                    // RUN
+                    if (isTrainerBattle) {
+                        System.out.println("No! There's no running from a Trainer battle!");
+                    } else {
+                        System.out.println("Got away safely!");
+                        battleActive = false;
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid choice!");
+                    break;
             }
-        }
 
-        //=====================================
-        // POKEMON STATUS
-        //=====================================
-        if (player.isFainted()) {
-            System.out.println("Your Pokemon fainted!");
-        } else {
-            System.out.println("The wild " + wild.getName() + " fainted!");
+            // CHECK IF ANYONE FAINTED AFTER THE TURN
+            if (playerMon.isFainted()) {
+                System.out.println(playerMon.getName() + " fainted! You lost the battle...");
+                battleActive = false;
+            } else if (enemyMon.isFainted()) {
+                System.out.println("The wild " + enemyMon.getName() + " fainted!");
+                battleActive = false;
+            }
         }
     }
 
-    //=====================================
-    // HARDER OPPONENT
-    //=====================================
+    // ======================================
+    // EXECUTE FULL TURN
+    // ======================================
+    private void executeFullTurn(Pokemon first, Pokemon second, Moves firstMove, Moves secondMove) {
+        // FIRST POKEMON ATTACKS
+        engine.executeTurn(first, second, firstMove);
+
+        // SECOND POKEMON ATTACKS ONLY IF IT SURVIVED
+        if (!second.isFainted()) {
+            engine.executeTurn(second, first, secondMove);
+        }
+    }
+
+    // ======================================
+    // MOVE SELECTOR
+    // ======================================
+    private Moves selectMove(Pokemon p) {
+        Moves[] availableMoves = p.getMoves();
+        for (int i = 0; i < availableMoves.length; i++) {
+            if (availableMoves[i] != null) {
+                System.out.println((i + 1) + ". " + availableMoves[i].moveName + " (PP: " + availableMoves[i].pp + ")");
+            }
+        }
+
+        System.out.print("\nSelect a move: ");
+        try {
+            int choice = Integer.parseInt(scanner.nextLine()) - 1;
+            if (choice >= 0 && choice < 4 && availableMoves[choice] != null) {
+                return availableMoves[choice];
+            }
+        } catch (Exception e) {
+        }
+
+        System.out.println("Invalid choice! Struggling...");
+        return availableMoves[0]; // Default to first move
+    }
+
+    // ======================================
+    // BATTLE STATUS
+    // ======================================
+    private void printBattleStatus(Pokemon p, Pokemon w) {
+        System.out.println("\n==================================================");
+
+        // ENEMY STATUS
+        String wTypeDisplay = w.getType1().toString();
+        if (w.getType2() != null && w.getType2() != Type.NONE) {
+            wTypeDisplay += "/" + w.getType2();
+        }
+
+        System.out.println("ENEMY: " + w.getName() + " [" + wTypeDisplay + "] LVL:" + w.getLevel());
+        System.out.println("HP:    " + w.getHp() + "/" + w.getMaxHp());
+        System.out.println("--------------------------------------------------");
+
+        // PLAYER STATUS
+        String pTypeDisplay = p.getType1().toString();
+        if (p.getType2() != null && p.getType2() != Type.NONE) {
+            pTypeDisplay += "/" + p.getType2();
+        }
+
+        System.out.println("YOU:   " + p.getName() + " [" + pTypeDisplay + "] LVL:" + p.getLevel());
+        System.out.println("HP:    " + p.getHp() + "/" + p.getMaxHp());
+        System.out.println("==================================================");
+    }
+
+    // ======================================
+    // ENEMY AI
+    // ======================================
     private Moves getBestMove(Pokemon attacker, Pokemon defender) {
         Moves bestMove = null;
         double maxDamage = -1;
@@ -61,62 +156,4 @@ public class BattleManager {
         }
         return (bestMove != null) ? bestMove : attacker.getMoves()[0];
     }
-
-    //=====================================
-    // EXECUTE A TURN
-    //=====================================
-    private void executeFullTurn(Pokemon first, Pokemon second, Moves firstMove, Moves secondMove) {
-        engine.executeTurn(first, second, firstMove);
-
-        if (!second.isFainted()) {
-            engine.executeTurn(second, first, secondMove);
-        }
-    }
-
-    //=====================================
-    // MOVE SELECTOR
-    //=====================================
-    private Moves selectMove(Pokemon p) {
-        System.out.println("What will " + p.getName() + " do?");
-        Moves[] availableMoves = p.getMoves();
-
-        for (int i = 0; i < availableMoves.length; i++) {
-            if (availableMoves[i] != null) {
-                System.out.println((i + 1) + ". " + availableMoves[i].moveName + " (PP: " + availableMoves[i].pp + ")");
-            }
-        }
-
-        System.out.print("\n> ");
-        int choice = scanner.nextInt() - 1;
-        if (choice < 0 || choice >= 4 || availableMoves[choice] == null) {
-            System.out.println("Invalid choice! Using first move instead.");
-            return availableMoves[0];
-        }
-        return availableMoves[choice];
-    }
-
-    //=====================================
-    // BATTLE INFO
-    //=====================================
-    private void printBattleStatus(Pokemon p, Pokemon w) {
-    System.out.println("\n==================================================");
-    
-    //=====================================
-    // OPPONENT STATUS
-    //=====================================
-    String wTypes = w.getType1() + "/" + w.getType2();
-    System.out.println(w.getName() + " [" + wTypes + "] LVL:" + w.getLevel());
-    System.out.println("HP: " + w.getHp() + "/" + w.getHp()); 
-    
-    System.out.println("--------------------------------------------------");
-    
-    //=====================================
-    // PLAYER STATUS
-    //=====================================
-    String pTypes = p.getType1() + "/" + p.getType2();
-    System.out.println(p.getName() + " [" + pTypes + "] LVL:" + p.getLevel());
-    System.out.println("HP: " + p.getHp() + "/" + p.getHp());
-    
-    System.out.println("==================================================");
-}
 }
