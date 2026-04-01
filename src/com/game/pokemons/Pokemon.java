@@ -2,7 +2,7 @@ package com.game.pokemons;
 
 import com.game.logic.Type;
 import com.game.moves.Moves;
-import java.util.Arrays;
+import java.util.*;
 
 public abstract class Pokemon {
 
@@ -14,6 +14,7 @@ public abstract class Pokemon {
     protected int level;
     protected int exp = 0;
     protected int nextLevelExp = 100;
+    protected Map<Integer, String> moveLevelUpTable = new HashMap<>();
 
     //================================
     // CALCULATED STATS
@@ -76,12 +77,68 @@ public abstract class Pokemon {
     private void levelUp() {
         this.level++;
         this.exp -= this.nextLevelExp;
-        this.nextLevelExp = (int) (this.nextLevelExp * 1.2); // INCREMENTING EXP REQUIREMENTS
+        this.nextLevelExp = (int) (this.nextLevelExp * 1.2);
 
-        // RECALCULATE STATS BASED ON NEW LEVEL
         calculateStats();
         this.hp = this.maxHp;
+        System.out.println("\n========================================");
         System.out.println("Congratulations! " + pokeName + " grew to Level " + level + "!");
+        System.out.println("========================================\n");
+
+        if (moveLevelUpTable.containsKey(this.level)) {
+            String newMoveName = moveLevelUpTable.get(this.level);
+            Moves newMove = com.game.moves.MoveDatabase.get(newMoveName);
+
+            System.out.println(pokeName + " wants to learn " + newMoveName + "!");
+
+            boolean learned = false;
+            for (int i = 0; i < 4; i++) {
+                if (moves[i] == null) {
+                    learnMove(newMove, i);
+                    System.out.println(pokeName + " learned " + newMoveName + "!");
+                    learned = true;
+                    break;
+                }
+            }
+
+            if (!learned) {
+                handleMoveForget(newMove);
+            }
+        }
+    }
+
+    //=====================================
+    // FORGET MOVE / REPLACE MOVE
+    //=====================================
+    private void handleMoveForget(Moves newMove) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println(pokeName + " already knows four moves, but wants to learn " + newMove.getName() + ".");
+        System.out.println("Should a move be forgotten and replaced with " + newMove.getName() + "? (y/n)");
+
+        String choice = scanner.nextLine().toLowerCase();
+
+        if (choice.equals("y")) {
+            System.out.println("\nWhich move should be forgotten?");
+            for (int i = 0; i < 4; i++) {
+                System.out.println((i + 1) + ": " + moves[i].getName());
+            }
+            System.out.println("5: Abandon " + newMove.getName());
+
+            System.out.print("Selection (1-5): ");
+            int indexChoice = scanner.nextInt();
+
+            if (indexChoice >= 1 && indexChoice <= 4) {
+                String oldMoveName = moves[indexChoice - 1].getName();
+                learnMove(newMove, indexChoice - 1); // Overwrites chosen slot
+                System.out.println("1, 2, and... Poof! " + pokeName + " forgot " + oldMoveName + " and...");
+                System.out.println(pokeName + " learned " + newMove.getName() + "!");
+            } else {
+                System.out.println(pokeName + " did not learn " + newMove.getName() + ".");
+            }
+        } else {
+            System.out.println(pokeName + " did not learn " + newMove.getName() + ".");
+        }
     }
 
     //=====================================

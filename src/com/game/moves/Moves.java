@@ -69,4 +69,7 @@ public class Moves {
     public Type getTypeEnum() {
         return this.moveType;
     }
+     public String getName() {
+         return this.moveName;
+     }
 }
