@@ -20,6 +20,10 @@ public class Tile {
     //================================
     // GETTERS
     //================================
+    public String getName() {
+        return name;
+    }
+
     public String getSymbol() {
         return symbol;
     }

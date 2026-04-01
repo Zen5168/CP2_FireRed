@@ -24,6 +24,10 @@ public class Trainer {
     //================================
     // GETTERS AND SETTERS
     //================================
+    public String getName() {
+        return this.name;
+    }
+    
     public int getX() {
         return x;
     }

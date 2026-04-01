@@ -91,6 +91,14 @@ public class Controller {
         } else {
             System.out.println("You bumped into something!");
         }
+
+        if (nextTile.getName().equals("Pokemon Center")) {
+            System.out.println("Welcome to the Pokemon Center! Healing your party...");
+            for (Pokemon p : player.getParty()) {
+                p.setHp(p.getMaxHp());
+            }
+            System.out.println("Your Pokemon are fighting fit!");
+        }
     }
 
     //================================
@@ -100,8 +108,7 @@ public class Controller {
         if (Math.random() < 0.20) {
             System.out.println("\n!!! A wild Pokemon jumped out of the grass !!!");
 
-            // Trigger the BattleManager with the player's first Pokemon
-            battleManager.startBattle(player.getParty().get(0), new Bulbasaur(5));
+            battleManager.startBattle(player.getParty().get(0), new Squirtle(5)); // NEW BULBASAUR IS A PLACE HOLDER
         }
     }
 }

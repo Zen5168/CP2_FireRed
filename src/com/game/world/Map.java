@@ -18,8 +18,10 @@ public class Map {
     // BASIC MAP
     //================================
     private void generateBasicMap() {
-        
-        // SYMBOL, WALKABLE, HASENCOUNTER, NAME
+
+        // SYMBOL, WALKABLE, HAS ENCOUNTER, NAME
+        Tile center = new Tile("H", true, false, "Pokemon Center");
+        grid[1][5] = center;
         Tile grass = new Tile("#", true, true, "Tall Grass");
         Tile path = new Tile(".", true, false, "Path");
         Tile wall = new Tile("T", false, false, "Tree");
@@ -40,7 +42,7 @@ public class Map {
 
     public void render(Trainer player) {
         System.out.println("\n==================== Region Map =======================");
-        System.out.println("( p = player), (. = path), (T = Tree), (# = Tall Grass)");
+        System.out.println("( p = player), (. = path), (T = Tree), (# = Tall Grass), (H = Poke Center)");
         System.out.println("=======================================================");
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {

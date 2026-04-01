@@ -80,7 +80,7 @@ public abstract class Pokemon {
 
         // RECALCULATE STATS BASED ON NEW LEVEL
         calculateStats();
-        this.hp = this.maxHp; 
+        this.hp = this.maxHp;
         System.out.println("Congratulations! " + pokeName + " grew to Level " + level + "!");
     }
 
@@ -106,7 +106,7 @@ public abstract class Pokemon {
     }
 
     //=====================================
-    // GETTERS
+    // GETTERS & SETTERS
     //=====================================
     public String getName() {
         return this.pokeName;
@@ -150,5 +150,19 @@ public abstract class Pokemon {
 
     public Moves[] getMoves() {
         return this.moves;
+    }
+
+    public int getMaxHp() {
+        return this.maxHp;
+    }
+
+    public void setHp(int newHp) {
+        if (newHp > this.maxHp) {
+            this.hp = this.maxHp;
+        } else if (newHp < 0) {
+            this.hp = 0;
+        } else {
+            this.hp = newHp;
+        }
     }
 }
