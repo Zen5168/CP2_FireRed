@@ -31,5 +31,8 @@ public class FireRed {
         //=========================
         // STARTER POKEMONS
         //=========================
+        
+        Controller game = new Controller();
+    game.start();
     }
 }

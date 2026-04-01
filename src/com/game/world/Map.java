@@ -14,8 +14,11 @@ public class Map {
         generateBasicMap();
     }
 
+    //================================
     // BASIC MAP
+    //================================
     private void generateBasicMap() {
+        
         // SYMBOL, WALKABLE, HASENCOUNTER, NAME
         Tile grass = new Tile("#", true, true, "Tall Grass");
         Tile path = new Tile(".", true, false, "Path");
@@ -36,7 +39,9 @@ public class Map {
     }
 
     public void render(Trainer player) {
-        System.out.println("\n--- Region Map ---");
+        System.out.println("\n==================== Region Map =======================");
+        System.out.println("( p = player), (. = path), (T = Tree), (# = Tall Grass)");
+        System.out.println("=======================================================");
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (x == player.getX() && y == player.getY()) {

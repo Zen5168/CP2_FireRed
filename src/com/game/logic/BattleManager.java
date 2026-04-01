@@ -86,6 +86,7 @@ public class BattleManager {
             }
         }
 
+        System.out.print("\n> ");
         int choice = scanner.nextInt() - 1;
         if (choice < 0 || choice >= 4 || availableMoves[choice] == null) {
             System.out.println("Invalid choice! Using first move instead.");

@@ -32,6 +32,14 @@ public class Trainer {
         return y;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     public void addPokemon(Pokemon p) {
         if (party.size() < 6) {
             party.add(p);
