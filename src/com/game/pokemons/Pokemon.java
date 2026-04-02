@@ -107,6 +107,11 @@ public abstract class Pokemon {
                 handleMoveForget(newMove);
             }
         }
+
+        // CHECK EVOLUTION
+        if (evolutionLevel != -1 && this.level >= evolutionLevel) {
+            evolve();
+        }
     }
 
     //=====================================
@@ -166,7 +171,7 @@ public abstract class Pokemon {
             this.type1 = evolvedForm.type1;
             this.type2 = evolvedForm.type2;
 
-            calculateStats(); 
+            calculateStats();
             this.hp = this.maxHp;
 
         } catch (Exception e) {
@@ -244,6 +249,14 @@ public abstract class Pokemon {
 
     public int getMaxHp() {
         return this.maxHp;
+    }
+
+    public int getExp() {
+        return this.exp;
+    }
+
+    public int getNextLevelExp() {
+        return this.nextLevelExp;
     }
 
     public void setHp(int newHp) {

@@ -67,6 +67,12 @@ public class BattleManager {
             } else if (enemyMon.isFainted()) {
                 System.out.println("The wild " + enemyMon.getName() + " fainted!");
                 battleActive = false;
+
+                // GAIN EXP
+                int expGained = calculateExpReward(enemyMon);
+                playerMon.gainExp(expGained);
+
+                battleActive = false;
             }
         }
     }
@@ -82,6 +88,14 @@ public class BattleManager {
         if (!second.isFainted()) {
             engine.executeTurn(second, first, secondMove);
         }
+    }
+
+    // ======================================
+    // EXP REWARD
+    // ======================================
+    private int calculateExpReward(Pokemon faintedMon) {
+        int baseYield = 50;
+        return (baseYield * faintedMon.getLevel()) / 7;
     }
 
     // ======================================
@@ -132,6 +146,7 @@ public class BattleManager {
 
         System.out.println("YOU:   " + p.getName() + " [" + pTypeDisplay + "] LVL:" + p.getLevel());
         System.out.println("HP:    " + p.getHp() + "/" + p.getMaxHp());
+        System.out.println("EXP:   " + p.getExp() + " / " + p.getNextLevelExp() + " (Next Level)");
         System.out.println("==================================================");
     }
 

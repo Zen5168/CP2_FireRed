@@ -1,8 +1,10 @@
 package com.game.moves;
+
 import com.game.logic.Type;
 import java.util.*;
 
 public class MoveDatabase {
+
     private static final Map<String, Moves> moves = new HashMap<>();
 
     static {
@@ -19,6 +21,12 @@ public class MoveDatabase {
     }
 
     public static Moves get(String moveName) {
-        return moves.get(moveName.toLowerCase());
+        Moves template = moves.get(moveName.toLowerCase());
+        if (template == null) {
+            System.out.println("Error: Move " + moveName + " not found!");
+            return null;
+        }
+        // INDIVIDUAL PP TRACKING
+        return new Moves(template);
     }
 }
