@@ -4,10 +4,12 @@ import com.game.world.Tile;
 import com.game.world.Map;
 import com.game.trainers.*;
 import com.game.pokemons.*;
+import com.game.audio.*;
 import java.util.*;
 
 public class Controller {
 
+    private AudioManager audio = new AudioManager();
     private Scanner scanner = new Scanner(System.in);
     private Map gameMap;
     private Trainer player;
@@ -20,6 +22,7 @@ public class Controller {
     }
 
     public void start() {
+        audio.playWithLoop("BGM.wav", 0);
         System.out.println("Welcome to the world of Pokemon!");
         System.out.print("First, tell me your name: ");
         String name = scanner.nextLine();
@@ -43,7 +46,7 @@ public class Controller {
                 }
             } else {
                 System.out.print("Invalid input. Enter a number (1-3): ");
-                scanner.next(); 
+                scanner.next();
             }
         }
         scanner.nextLine();
@@ -88,8 +91,9 @@ public class Controller {
         }
     }
 
+    //================================
     // MOVEMENT
-    //
+    //================================
     private void processMovement(String input) {
         int nextX = player.getX();
         int nextY = player.getY();
@@ -146,6 +150,7 @@ public class Controller {
     private void checkForEncounter() {
         if (Math.random() < 0.20) {
             System.out.println("\n!!! A wild Pokemon jumped out of the grass !!!");
+            audio.playForDuration("Battle.wav", 0, 3500);
             Pokemon wildPoke = gameMap.getRandomWildPokemon();
 
             boolean won = battleManager.startBattle(player.getParty().get(0), wildPoke, false);
@@ -153,6 +158,7 @@ public class Controller {
             if (!won) {
                 teleportToCenter();
             }
+            audio.playWithLoop("BGM.wav", 0);
         }
     }
 

@@ -2,12 +2,14 @@ package com.game.logic;
 
 import com.game.pokemons.Pokemon;
 import com.game.moves.Moves;
+import com.game.audio.*;
 import java.util.*;
 
 public class BattleManager {
 
     private Scanner scanner = new Scanner(System.in);
     private BattleEngine engine = new BattleEngine();
+    private AudioManager audio = new AudioManager();
 
     // ======================================
     // BATTLE INTERFACE
@@ -15,7 +17,10 @@ public class BattleManager {
     public boolean startBattle(Pokemon playerMon, Pokemon enemyMon, boolean isTrainerBattle) {
         boolean battleActive = true;
 
+        audio.playWithLoop("JJK.wav", 1500000L);
+
         while (battleActive) {
+
             printBattleStatus(playerMon, enemyMon);
             System.out.println("What will " + playerMon.getName() + " do?");
             System.out.print("\n1. Fight  \n2. Bag  \n3. Pokemon  \n4. Run \n> ");
@@ -51,6 +56,7 @@ public class BattleManager {
                         System.out.println("No! There's no running from a Trainer battle!");
                     } else {
                         System.out.println("Got away safely!");
+                        audio.stopCurrent();
                         battleActive = false;
                     }
                     break;
@@ -63,9 +69,11 @@ public class BattleManager {
             // CHECK IF ANYONE FAINTED AFTER THE TURN
             if (playerMon.isFainted()) {
                 System.out.println(playerMon.getName() + " fainted! You lost the battle...");
+                audio.stopCurrent();
                 return false;
             } else if (enemyMon.isFainted()) {
                 System.out.println("The wild " + enemyMon.getName() + " fainted!");
+                audio.stopCurrent();
 
                 // GAIN EXP
                 int expGained = calculateExpReward(enemyMon);
