@@ -8,20 +8,20 @@ public class FireRed {
     static Scanner sc = new Scanner(System.in);
     
     //=========================
-    // GBA STYE
+    // GBA STYE (SOON)
     //=========================
-    public static void gbaPrint(String text) {
-        for (int i = 0; i < text.length(); i++) {
-            System.out.print(text.charAt(i));
-            try {
-
-                Thread.sleep(0);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        sc.nextLine();
-    }
+//    public static void gbaPrint(String text) {
+//        for (int i = 0; i < text.length(); i++) {
+//            System.out.print(text.charAt(i));
+//            try {
+//
+//                Thread.sleep(0);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+//        }
+//        sc.nextLine();
+//    }
 
     public static void main(String[] args) {
 

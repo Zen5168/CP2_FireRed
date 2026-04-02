@@ -12,7 +12,7 @@ public class BattleManager {
     // ======================================
     // BATTLE INTERFACE
     // ======================================
-    public void startBattle(Pokemon playerMon, Pokemon enemyMon, boolean isTrainerBattle) {
+    public boolean startBattle(Pokemon playerMon, Pokemon enemyMon, boolean isTrainerBattle) {
         boolean battleActive = true;
 
         while (battleActive) {
@@ -63,18 +63,17 @@ public class BattleManager {
             // CHECK IF ANYONE FAINTED AFTER THE TURN
             if (playerMon.isFainted()) {
                 System.out.println(playerMon.getName() + " fainted! You lost the battle...");
-                battleActive = false;
+                return false;
             } else if (enemyMon.isFainted()) {
                 System.out.println("The wild " + enemyMon.getName() + " fainted!");
-                battleActive = false;
 
                 // GAIN EXP
                 int expGained = calculateExpReward(enemyMon);
                 playerMon.gainExp(expGained);
-
-                battleActive = false;
+                return true;
             }
         }
+        return true;
     }
 
     // ======================================

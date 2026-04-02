@@ -10,6 +10,7 @@ public class MoveDatabase {
     static {
         // Format: Name, Category, Type, Power, Accuracy, PP
         addMove(new Moves("Tackle", "Physical", Type.NORMAL, 40, 100, 35));
+        addMove(new Moves("Scratch", "Physical", Type.NORMAL, 40, 100, 25));
         addMove(new Moves("Ember", "Special", Type.FIRE, 40, 100, 25));
         addMove(new Moves("Bubble", "Special", Type.WATER, 40, 100, 30));
         addMove(new Moves("Vine Whip", "Physical", Type.GRASS, 45, 100, 25));
