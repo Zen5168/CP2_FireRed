@@ -101,7 +101,7 @@ public class BattleManager {
     // EXP REWARD
     // ======================================
     private int calculateExpReward(Pokemon faintedMon) {
-        int baseYield = 50;
+        int baseYield = 200;
         return (baseYield * faintedMon.getLevel()) / 7;
     }
 
@@ -110,9 +110,12 @@ public class BattleManager {
     // ======================================
     private Moves selectMove(Pokemon p) {
         Moves[] availableMoves = p.getMoves();
+
+        System.out.println("\nMoves: ");
+        
         for (int i = 0; i < availableMoves.length; i++) {
             if (availableMoves[i] != null) {
-                System.out.println((i + 1) + ". " + availableMoves[i].moveName + " (PP: " + availableMoves[i].pp + ")");
+                System.out.println((i + 1) + ". " + availableMoves[i].moveName + " [" + availableMoves[i].moveType + "] (PP: " + availableMoves[i].pp + ")");
             }
         }
 

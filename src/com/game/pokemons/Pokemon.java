@@ -121,7 +121,7 @@ public abstract class Pokemon {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println(pokeName + " already knows four moves, but wants to learn " + newMove.getName() + ".");
-        System.out.println("Should a move be forgotten and replaced with " + newMove.getName() + "? (y/n)");
+        System.out.print("\nShould a move be forgotten and replaced with " + newMove.getName() + "? (y/n): ");
 
         String choice = scanner.nextLine().toLowerCase();
 

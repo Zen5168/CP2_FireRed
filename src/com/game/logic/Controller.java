@@ -22,7 +22,6 @@ public class Controller {
     }
 
     public void start() {
-        audio.playWithLoop("BGM.wav", 0);
         System.out.println("Welcome to the world of Pokemon!");
         System.out.print("First, tell me your name: ");
         String name = scanner.nextLine();
@@ -68,6 +67,7 @@ public class Controller {
 
         System.out.println("\nHello " + name + "! Use W, A, S, D to move. Good luck!\n");
 
+        audio.playWithLoop("BGM.wav", 0);
         gameLoop();
     }
 
@@ -150,7 +150,7 @@ public class Controller {
     private void checkForEncounter() {
         if (Math.random() < 0.20) {
             System.out.println("\n!!! A wild Pokemon jumped out of the grass !!!");
-            audio.playForDuration("Battle.wav", 0, 3500);
+            audio.playForDuration("Battle.wav", 0, 3600);
             Pokemon wildPoke = gameMap.getRandomWildPokemon();
 
             boolean won = battleManager.startBattle(player.getParty().get(0), wildPoke, false);
