@@ -1,6 +1,6 @@
 package com.game.world;
 
-import com.game.trainers.Trainer;
+import com.game.trainers.Player;
 import com.game.pokemons.*;
 import java.util.*;
 
@@ -42,7 +42,7 @@ public class Map {
         grid[1][5] = center;
     }
 
-    public void render(Trainer player) {
+    public void render(Player player) {
         System.out.println("\n==================== Region Map =======================");
         System.out.println("( p = player), (. = path), (T = Tree), (# = Tall Grass), (H = Poke Center)");
         System.out.println("=======================================================");

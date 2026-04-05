@@ -2,6 +2,8 @@ package com.game.logic;
 
 import com.game.pokemons.Pokemon;
 import com.game.moves.Moves;
+import com.game.trainers.*;
+import com.game.items.*;
 import com.game.audio.*;
 import java.util.*;
 
@@ -14,7 +16,7 @@ public class BattleManager {
     // ======================================
     // BATTLE INTERFACE
     // ======================================
-    public boolean startBattle(Pokemon playerMon, Pokemon enemyMon, boolean isTrainerBattle) {
+    public boolean startBattle(Player player, Pokemon playerMon, Pokemon enemyMon, boolean isTrainerBattle) {
         boolean battleActive = true;
 
         audio.playWithLoop("JJK.wav", 1500000L);
@@ -41,13 +43,27 @@ public class BattleManager {
                     break;
 
                 case "2":
-                    // BAG: Placeholder
-                    System.out.println("This function is currently not available in this version");
+                    Item selectedItem = selectItem(player);
+                    if (selectedItem != null) {
+                        if (selectedItem instanceof Pokeball) {
+                            handleCatchAttempt(player, (Pokeball) selectedItem, enemyMon);
+                        } else {
+                            selectedItem.use(playerMon);
+                            player.getBag().removeItem(selectedItem.getName(), 1);
+                            engine.executeTurn(enemyMon, playerMon, getBestMove(enemyMon, playerMon));
+                        }
+                    }
                     break;
 
                 case "3":
-                    // POKEMON: Placeholder
-                    System.out.println("This function is currently not available in this version");
+                    Pokemon swappedMon = switchPokemon(player, playerMon);
+                    if (swappedMon != null && swappedMon != playerMon) {
+                        playerMon = swappedMon;
+                        System.out.println("Go! " + playerMon.getName() + "!");
+
+                        enemyMove = getBestMove(enemyMon, playerMon);
+                        engine.executeTurn(enemyMon, playerMon, enemyMove);
+                    }
                     break;
 
                 case "4":
@@ -85,6 +101,135 @@ public class BattleManager {
     }
 
     // ======================================
+    // ITEM SELECTOR
+    // ======================================
+    private Item selectItem(Player player) {
+        Bag bag = player.getBag();
+        var allCategories = bag.getCategories();
+
+        // SELECT CATEGORY
+        System.out.println("\n--- BAG CATEGORIES ---");
+        List<String> categoryNames = new ArrayList<>(allCategories.keySet());
+        for (int i = 0; i < categoryNames.size(); i++) {
+            System.out.println((i + 1) + ". " + categoryNames.get(i));
+        }
+        System.out.println("0. Back");
+        System.out.print("Choose Category: ");
+
+        try {
+            int catChoice = Integer.parseInt(scanner.nextLine());
+            if (catChoice == 0) {
+                return null;
+            }
+
+            String selectedCat = categoryNames.get(catChoice - 1);
+            Map<String, Integer> itemsInCat = allCategories.get(selectedCat);
+
+            if (itemsInCat.isEmpty()) {
+                System.out.println("This pocket is empty!");
+                return null;
+            }
+
+            // SELECT ITEM FROM CATEGORY
+            System.out.println("\n--- " + selectedCat.toUpperCase() + " ---");
+            List<String> itemNames = new ArrayList<>(itemsInCat.keySet());
+            for (int i = 0; i < itemNames.size(); i++) {
+                String name = itemNames.get(i);
+                System.out.println((i + 1) + ". " + name + " (x" + itemsInCat.get(name) + ")");
+            }
+            System.out.println("0. Back");
+            System.out.print("Select item: ");
+
+            int itemChoice = Integer.parseInt(scanner.nextLine());
+            if (itemChoice == 0) {
+                return null;
+            }
+
+            String finalItemName = itemNames.get(itemChoice - 1);
+            return bag.getItemObject(finalItemName);
+
+        } catch (Exception e) {
+            System.out.println("Invalid selection.");
+        }
+        return null;
+    }
+
+    // ======================================
+    // CATCHING MECHANIC
+    // ======================================
+    private void handleCatchAttempt(Player player, Pokeball ball, Pokemon target) {
+        System.out.println("\nYou threw a " + ball.getName() + "!");
+
+        player.getBag().removeItem(ball.getName(), 1);
+
+        try {
+            for (int i = 0; i < 3; i++) {
+                Thread.sleep(800);
+                System.out.print("*wobble* ");
+            }
+            Thread.sleep(1000);
+            System.out.println("\n");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        if (ball.tryCatch(target)) {
+            System.out.println("Gotcha! " + target.getName() + " was caught!");
+            player.addPokemon(target);
+
+            // END THE LOOP IN BATTLE
+            target.setHp(0);
+        } else {
+            System.out.println("Oh no! The Pokemon broke free!");
+
+            Pokemon activeMon = player.getParty().get(0);
+            Moves enemyMove = getBestMove(target, activeMon);
+
+            System.out.println("The wild " + target.getName() + " counters!");
+            engine.executeTurn(target, activeMon, enemyMove);
+        }
+    }
+
+    // ======================================
+    // SWITCH POKEMON
+    // ======================================
+    private Pokemon switchPokemon(Player player, Pokemon currentMon) {
+        ArrayList<Pokemon> party = player.getParty();
+        System.out.println("\n--- CHOOSE A POKEMON ---");
+
+        for (int i = 0; i < party.size(); i++) {
+            Pokemon p = party.get(i);
+            String status = p.isFainted() ? "(FAINTED)" : "HP: " + p.getHp() + "/" + p.getMaxHp();
+            System.out.println((i + 1) + ". " + p.getName() + " [" + status + "]");
+        }
+        System.out.println("0. Cancel");
+        System.out.print("Select: ");
+
+        try {
+            int choice = Integer.parseInt(scanner.nextLine()) - 1;
+            if (choice == -1) {
+                return null;
+            }
+            if (choice >= 0 && choice < party.size()) {
+                Pokemon selected = party.get(choice);
+
+                if (selected == currentMon) {
+                    System.out.println(selected.getName() + " is already in battle!");
+                    return null;
+                }
+                if (selected.isFainted()) {
+                    System.out.println(selected.getName() + " has no energy left to battle!");
+                    return null;
+                }
+                return selected;
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid selection.");
+        }
+        return null;
+    }
+
+    // ======================================
     // EXECUTE FULL TURN
     // ======================================
     private void executeFullTurn(Pokemon first, Pokemon second, Moves firstMove, Moves secondMove) {
@@ -112,7 +257,7 @@ public class BattleManager {
         Moves[] availableMoves = p.getMoves();
 
         System.out.println("\nMoves: ");
-        
+
         for (int i = 0; i < availableMoves.length; i++) {
             if (availableMoves[i] != null) {
                 System.out.println((i + 1) + ". " + availableMoves[i].moveName + " [" + availableMoves[i].moveType + "] (PP: " + availableMoves[i].pp + ")");

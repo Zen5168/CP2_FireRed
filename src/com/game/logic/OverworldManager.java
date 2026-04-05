@@ -3,6 +3,7 @@ package com.game.logic;
 import com.game.world.Tile;
 import com.game.world.Map;
 import com.game.trainers.*;
+import com.game.items.*;
 import com.game.pokemons.*;
 import com.game.audio.*;
 import java.util.*;
@@ -12,7 +13,7 @@ public class OverworldManager {
     private AudioManager audio = new AudioManager();
     private Scanner scanner = new Scanner(System.in);
     private Map gameMap;
-    private Trainer player;
+    private Player player;
     private BattleManager battleManager;
     private boolean isRunning = true;
 
@@ -26,7 +27,7 @@ public class OverworldManager {
         System.out.print("First, tell me your name: ");
         String name = scanner.nextLine();
 
-        this.player = new Trainer(name, 1, 1);
+        this.player = new Player(name, 1, 1);
 
         // STARTER POKEMON SELECTION
         System.out.println("\nProfessor Delamaine: 'It's time to choose your companion!'");
@@ -64,6 +65,9 @@ public class OverworldManager {
                 System.out.println("You chose Squirtle!");
                 break;
         }
+        
+        player.getBag().addItem(new Pokeball(), 5);
+        player.getBag().addItem(new Potion(), 5);
 
         System.out.println("\nHello " + name + "! Use W, A, S, D to move. Good luck!\n");
 
@@ -153,7 +157,7 @@ public class OverworldManager {
             audio.playForDuration("Battle.wav", 0, 3600);
             Pokemon wildPoke = gameMap.getRandomWildPokemon();
 
-            boolean won = battleManager.startBattle(player.getParty().get(0), wildPoke, false);
+            boolean won = battleManager.startBattle(player, player.getParty().get(0), wildPoke, false);
 
             if (!won) {
                 teleportToCenter();
