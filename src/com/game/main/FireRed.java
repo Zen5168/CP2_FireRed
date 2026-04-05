@@ -32,7 +32,7 @@ public class FireRed {
         // STARTER POKEMONS
         //=========================
         
-        Controller game = new Controller();
+        OverworldManager game = new OverworldManager();
     game.start();
     }
 }

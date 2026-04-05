@@ -7,7 +7,7 @@ import com.game.pokemons.*;
 import com.game.audio.*;
 import java.util.*;
 
-public class Controller {
+public class OverworldManager {
 
     private AudioManager audio = new AudioManager();
     private Scanner scanner = new Scanner(System.in);
@@ -16,7 +16,7 @@ public class Controller {
     private BattleManager battleManager;
     private boolean isRunning = true;
 
-    public Controller() {
+    public OverworldManager() {
         this.gameMap = new Map(10, 10);
         this.battleManager = new BattleManager();
     }
