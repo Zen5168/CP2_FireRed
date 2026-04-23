@@ -12,7 +12,7 @@ public class Bag {
         categories = new HashMap<>();
         itemPrototypes = new HashMap<>();
 
-        // Initialize basic categories
+        // INITIALIZE BASIC CATEGORIES
         categories.put("Potions", new HashMap<>());
         categories.put("Pokeballs", new HashMap<>());
     }

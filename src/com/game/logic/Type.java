@@ -1,7 +1,6 @@
 package com.game.logic;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public enum Type {
     NORMAL, FIRE, WATER, GRASS, ELECTRIC, ICE, FIGHTING, POISON, GROUND, FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON, NONE;

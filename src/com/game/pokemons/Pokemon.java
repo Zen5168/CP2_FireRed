@@ -49,11 +49,11 @@ public abstract class Pokemon {
     }
 
     public void calculateStats() {
-        // HP Formula
+        // HP FORMULA
         this.maxHp = ((2 * baseHp) * level / 100) + level + 10;
         this.hp = maxHp;
 
-        // Other Stats Formula
+        // OTHER STATS FORMULA
         this.atk = ((2 * baseAtk) * level / 100) + 5;
         this.def = ((2 * baseDef) * level / 100) + 5;
         this.spAtk = ((2 * baseSpAtk) * level / 100) + 5;
@@ -137,7 +137,7 @@ public abstract class Pokemon {
 
             if (indexChoice >= 1 && indexChoice <= 4) {
                 String oldMoveName = moves[indexChoice - 1].getName();
-                learnMove(newMove, indexChoice - 1); // Overwrites chosen slot
+                learnMove(newMove, indexChoice - 1); // OVERWRITES CHOSEN SLOT
                 System.out.println("1, 2, and... Poof! " + pokeName + " forgot " + oldMoveName + " and...");
                 System.out.println(pokeName + " learned " + newMove.getName() + "!");
             } else {

@@ -8,7 +8,7 @@ public class MoveDatabase {
     private static final Map<String, Moves> moves = new HashMap<>();
 
     static {
-        // Format: Name, Category, Type, Power, Accuracy, PP
+        // (NAME, CATEGORY, TYPE, POWER, ACCURACY, PP)
         addMove(new Moves("Tackle", "Physical", Type.NORMAL, 40, 100, 35));
         addMove(new Moves("Scratch", "Physical", Type.NORMAL, 40, 100, 25));
         addMove(new Moves("Ember", "Special", Type.FIRE, 40, 100, 25));

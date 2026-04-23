@@ -1,6 +1,7 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
+import com.game.moves.*;
 
 public class Squirtle extends Pokemon {
 
@@ -8,7 +9,7 @@ public class Squirtle extends Pokemon {
         super("Squirtle", Type.WATER, Type.NONE, level, 44, 48, 50, 65, 64, 43);
 
         // INITIALIZE MOVES
-        this.learnMove(com.game.moves.MoveDatabase.get("Tackle"), 0);
+        this.learnMove(MoveDatabase.get("Tackle"), 0);
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(7, "Bubble");
