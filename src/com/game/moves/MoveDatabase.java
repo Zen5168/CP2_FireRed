@@ -1,33 +1,49 @@
 package com.game.moves;
 
-import com.game.logic.Type;
-import java.util.*;
+import java.sql.*;
+import com.game.moves.*;
+import com.game.logic.*;
+
+import java.sql.*;
 
 public class MoveDatabase {
 
-    private static final Map<String, Moves> moves = new HashMap<>();
+    private static final String URL = "jdbc:mysql://localhost:3306/movedatabase?zeroDateTimeBehavior=CONVERT_TO_NULL";
+    private static final String USER = "root";
+    private static final String PASSWORD = "password";
 
-    static {
-        // (NAME, CATEGORY, TYPE, POWER, ACCURACY, PP)
-        addMove(new Moves("Tackle", "Physical", Type.NORMAL, 40, 100, 35));
-        addMove(new Moves("Scratch", "Physical", Type.NORMAL, 40, 100, 25));
-        addMove(new Moves("Ember", "Special", Type.FIRE, 40, 100, 25));
-        addMove(new Moves("Bubble", "Special", Type.WATER, 40, 100, 30));
-        addMove(new Moves("Vine Whip", "Physical", Type.GRASS, 45, 100, 25));
-        addMove(new Moves("Thunder Shock", "Special", Type.ELECTRIC, 40, 100, 30));
-    }
+    public static Moves getMoveFromDB(String moveName) {
+        
+        String query = "SELECT * FROM move_database WHERE move_name = ?";
 
-    private static void addMove(Moves move) {
-        moves.put(move.moveName.toLowerCase(), move);
-    }
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD); 
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-    public static Moves get(String moveName) {
-        Moves template = moves.get(moveName.toLowerCase());
-        if (template == null) {
-            System.out.println("Error: Move " + moveName + " not found!");
-            return null;
+            stmt.setString(1, moveName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                String typeString = rs.getString("move_type");
+                
+                Type moveTypeEnum = Type.valueOf(typeString.toUpperCase().trim());
+
+                return new Moves(
+                    rs.getString("move_name"),
+                    rs.getString("move_category"),
+                    moveTypeEnum,
+                    rs.getInt("move_power"),
+                    rs.getInt("move_accuracy"),
+                    rs.getInt("move_pp")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Database Error: " + e.getMessage());
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            System.err.println("Enum Error: The type in the DB does not match any Type Enum constants.");
         }
-        // INDIVIDUAL PP TRACKING
-        return new Moves(template);
+        
+        return null; 
     }
 }
