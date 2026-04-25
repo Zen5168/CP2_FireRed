@@ -256,25 +256,32 @@ public class BattleManager {
     private Moves selectMove(Pokemon p) {
         Moves[] availableMoves = p.getMoves();
 
-        System.out.println("\nMoves: ");
+        while (true) {
+            System.out.println("\nMoves: ");
 
-        for (int i = 0; i < availableMoves.length; i++) {
-            if (availableMoves[i] != null) {
-                System.out.println((i + 1) + ". " + availableMoves[i].moveName + " [" + availableMoves[i].moveType + "] (PP: " + availableMoves[i].pp + ")");
+            for (int i = 0; i < availableMoves.length; i++) {
+                if (availableMoves[i] != null) {
+                    System.out.println(i + ". " + availableMoves[i].moveName
+                            + " [" + availableMoves[i].moveType
+                            + "] (PP: " + availableMoves[i].pp + ")");
+                }
+            }
+
+            System.out.print("\nSelect a move: ");
+
+            try {
+                String input = scanner.nextLine();
+                int choice = Integer.parseInt(input);
+
+                if (choice >= 0 && choice < availableMoves.length && availableMoves[choice] != null) {
+                    return availableMoves[choice];
+                } else {
+                    System.out.println("Invalid choice! Please pick one of the moves listed above.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a number.");
             }
         }
-
-        System.out.print("\nSelect a move: ");
-        try {
-            int choice = Integer.parseInt(scanner.nextLine()) - 1;
-            if (choice >= 0 && choice < 4 && availableMoves[choice] != null) {
-                return availableMoves[choice];
-            }
-        } catch (Exception e) {
-        }
-
-        System.out.println("Invalid choice! Struggling...");
-        return availableMoves[0]; // DEFAULT TO FIRST MOVE
     }
 
     // ======================================
