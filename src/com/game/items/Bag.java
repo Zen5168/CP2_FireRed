@@ -42,6 +42,9 @@ public class Bag {
         }
     }
 
+    // ======================================
+    // GETTERS
+    // ======================================
     public Map<String, Map<String, Integer>> getCategories() {
         return categories;
     }
