@@ -1,7 +1,8 @@
 package com.game.pokemons;
 
 import com.game.logic.Type;
-import com.game.moves.Moves;
+import com.game.moves.*;
+
 import java.util.*;
 
 public abstract class Pokemon {
@@ -89,7 +90,7 @@ public abstract class Pokemon {
 
         if (moveLevelUpTable.containsKey(this.level)) {
             String newMoveName = moveLevelUpTable.get(this.level);
-            Moves newMove = com.game.moves.MoveDatabase.get(newMoveName);
+            Moves newMove = MoveDatabase.getMoveFromDB("move_name");
 
             System.out.println(pokeName + " wants to learn " + newMoveName + "!");
 
