@@ -10,7 +10,6 @@ public class Rattata extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
-        moveLevelUpTable.put(7, "Ember");
 
         // INITIALIZE MOVES
         for (int i = 1; i <= level; i++) {
@@ -19,7 +18,7 @@ public class Rattata extends Pokemon {
                 Moves newMove = MoveDatabase.getMoveFromDB(moveName);
 
                 if (newMove != null) {
-                    // LEARN THE MOVE OBJECT CREATED FROM THE DB ROW
+                    // LEARN THE MOVE CREATED FROM THE DATABASE ROW
                     this.learnMove(newMove, i);
                 }
             }
