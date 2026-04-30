@@ -10,7 +10,6 @@ public class Rattata extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
-        moveLevelUpTable.put(7, "Ember");
 
         // INITIALIZE MOVES
         for (int i = 1; i <= level; i++) {

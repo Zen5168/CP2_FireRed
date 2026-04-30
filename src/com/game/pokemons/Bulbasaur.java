@@ -11,7 +11,7 @@ public class Bulbasaur extends Pokemon {
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
         moveLevelUpTable.put(7, "Vine Whip");
-        
+
         // INITIALIZE MOVES
         for (int i = 1; i <= level; i++) {
             if (moveLevelUpTable.containsKey(i)) {
@@ -27,3 +27,4 @@ public class Bulbasaur extends Pokemon {
         }
     }
 }
+    
