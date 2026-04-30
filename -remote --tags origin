@@ -1,0 +1,182 @@
+[33mcommit 29e55f137c5c0ec45e52f7a56b408a98dd7266ca[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/bug-fixes[m[33m)[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Sat Apr 25 19:47:45 2026 +0800
+
+    Fix: correct move selection indexing and added input validation loop
+
+[33mcommit 490865f8c1f34ea0129cc9b28e06ec6cbd9e4b4f[m[33m ([m[1;31morigin/New-Features[m[33m)[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Sat Apr 25 19:02:11 2026 +0800
+
+    Implemented MySQL Database for better readability
+
+[33mcommit 846d401f8a0957ada4f93296feef70a2975b4617[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 23 15:59:52 2026 +0800
+
+    MINOR CHANGES:
+    - Added import packages for future use in the project.
+
+[33mcommit 95dd3b268c2cf979b60c8bbdf948170003acfb48[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Sun Apr 5 20:10:47 2026 +0800
+
+    MAJOR UPDATE:
+    - Added Pokemon catching mechanic.
+    - Added switch pokemon functionality in BattleManager.
+    - Added Bag class to manage player's items.
+    - Changed Trainer class to Player for better clarity and future expansion.
+
+[33mcommit c5557dc6fbc0e2515daa4d0e589e7057e598f77c[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Sun Apr 5 18:57:25 2026 +0800
+
+    MINOR CHANGES:
+    - Renamed Controller to OverworldManager to better reflect its purpose in managing the overworld logic of the game.
+
+[33mcommit 6a0537df2291d4a09e9e426ffcb31eac42514cae[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Sat Apr 4 13:28:17 2026 +0800
+
+    MINOR UPDATE:
+    - Adjusted the base exp yield from 50 to 200.
+    - Adjusted some print statements.
+    - Extended the encounter sfx to play a bit longer.
+
+[33mcommit d1eb189dfa466bf9cd5a0ebb567b0873c0fd72b3[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 2 20:13:02 2026 +0800
+
+    MAJOR UPDATE:
+    - Added BGM
+    - Added Audio when encountering a wild Pokemon
+    - Added Audio when battling
+
+[33mcommit c966b2b3cc1419278edb901e53a4073b3dee6ba8[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 2 18:56:05 2026 +0800
+
+    MAJOR UPDATE & BUG FIXES:
+    - Added new moves
+    - Initialized starter Pokemon moves
+    - Fixed a bug where you don't teleport back to the Pokemon Center after being defeated in a battle
+
+[33mcommit b99a5b4729505aa68637ade230b73eafa6048606[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 2 18:18:10 2026 +0800
+
+    MINOR UPDATE:
+    - Added leveling system for Pokemon, allowing them to gain experience and level up.
+
+[33mcommit 684a7f91bdaf88a8c43218ee1de4d8ec52e6b339[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 2 02:06:33 2026 +0800
+
+    MINOR CHANGES:
+    - Removed Bulbasaur's 2nd type (DRAGON) and replaced it with NONE.
+
+[33mcommit 5fcebbb4ddcb64f48032b7bdaeac2cd3d59c7478[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 2 02:02:04 2026 +0800
+
+    MINOR UPDATE:
+    - Updated BattleManager & Controller classes to enhance game logic and improve performance.
+    - Updated startBattle method in BattleManager to include new battle mechanics.
+
+[33mcommit d01f89a063f7789d7379d2658adb676b360f5bc7[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 2 01:20:38 2026 +0800
+
+    MAJOR UPDATE AND BUG FIXES:
+    - Fixed a bug where the Pokemon Center was not showing up on the map.
+    - Added new Pokemon: Pidgey and Rattata.
+    - Improved wild Pokemon encounter.
+
+[33mcommit cfad08fcd9d434247e9b5685e06d0df6c232d978[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Thu Apr 2 00:45:26 2026 +0800
+
+    MAJOR UPDATE:
+    - POKEMON CAN NOW LEARN AND FORGET MOVES THROUGH LEVELING UP
+
+[33mcommit 624d8f7a4861de9d10ed99dcfd7a6339fa33ca01[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Wed Apr 1 23:17:48 2026 +0800
+
+    MAJOR UPDATE:
+    - Added Item class and Potion class to represent items in the game.
+    - Added a Pokemon Health Center where players can heal their Pokemon.
+
+[33mcommit 8a1b7af950f6f4ad229cc10893bd0d3ec3f5f5e4[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Wed Apr 1 22:57:52 2026 +0800
+
+    MINOR UPDATE:
+    - Updated the "Pokemon.java" class to include leveling up functionality.
+
+[33mcommit f8c51f3f4e8517b3cd77fd7e165bbf2cad64532c[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Wed Apr 1 22:51:20 2026 +0800
+
+    MAJOR UPDATE:
+    - Added an interactable map
+    - Added a controller to handle user input and game logic
+
+[33mcommit 7681861201a47bbd01c435d577649656b5947e7f[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Wed Apr 1 22:20:52 2026 +0800
+
+    MAJOR UPDATE:
+    - Updated the World Mechanics
+
+[33mcommit ea1cba09fd312488c4d1f6fda0a24444cfb09165[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Wed Apr 1 22:09:45 2026 +0800
+
+    MAJOR UPDATE:
+    - Added a new clas called "BattleMnager" to manage battles in the game.
+    - Updated the "BattleEngine" class to integrate with the new "BattleManager" class.
+    - Tweaked the logic in "BattleEngine" to improve performance and add new features.
+
+[33mcommit 997ec0c71554e5cdfa269c69bade7e3ac5a71162[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Wed Apr 1 17:35:12 2026 +0800
+
+    MINOR UPDATE:
+    
+     - Pokemons may now have a secondary type.
+     - The battle engine has been updated to account for this change.
+
+[33mcommit d39f4052512ccca2a42bb4e27bed3e4fe1691815[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Tue Mar 31 22:35:13 2026 +0800
+
+     - FIXED AND REMOVED REDUNDANT COMMENTS
+
+[33mcommit 1343e179ea27bcde8427e45527610d7e543ee9b2[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Tue Mar 31 22:18:58 2026 +0800
+
+    - ADDED A NEW CLASS CALLED "MoveDatabase" FOR EASE (WILL ADD MORE MOVES TO IT LATER)
+    - ADDED A NEW CLASS CALLED "Items" FOR EASE
+    - UPDATED THE "Moves" CLASS TO USE THE "MoveDatabase" CLASS INSTEAD OF HAVING ALL THE MOVES IN THE "Moves" CLASS
+
+[33mcommit 418fda5907e705e9e93dfcccc97f8d7ffa38becb[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Tue Mar 31 18:31:14 2026 +0800
+
+    - Changed some package names for more clarity
+
+[33mcommit 673acaeb2e8cfe952b426c200b0abbb612da9e08[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Mon Mar 30 22:45:28 2026 +0800
+
+    - Implemented Abstraction
+    
+    - Implemented Polymorphism
+
+[33mcommit 2057735bd585fa9f5c3ca6980efce84fea1de11b[m
+Author: Zen5168 <jexkeanalfonso@gmail.com>
+Date:   Mon Mar 30 16:50:23 2026 +0800
+
+     - First Commit

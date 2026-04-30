@@ -19,7 +19,7 @@ public class Squirtle extends Pokemon {
                 Moves newMove = MoveDatabase.getMoveFromDB(moveName);
 
                 if (newMove != null) {
-                    // LEARN THE MOVE OBJECT CREATED FROM THE DB ROW
+                    // LEARN THE MOVE CREATED FROM THE DATABASE ROW
                     this.learnMove(newMove, i);
                 }
             }
