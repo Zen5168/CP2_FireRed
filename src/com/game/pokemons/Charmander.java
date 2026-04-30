@@ -13,14 +13,15 @@ public class Charmander extends Pokemon {
         moveLevelUpTable.put(7, "Ember");
 
         // INITIALIZE MOVES
+        int slot = 0;
         for (int i = 1; i <= level; i++) {
             if (moveLevelUpTable.containsKey(i)) {
                 String moveName = moveLevelUpTable.get(i);
                 Moves newMove = MoveDatabase.getMoveFromDB(moveName);
 
-                if (newMove != null) {
-                    // LEARN THE MOVE OBJECT CREATED FROM THE DB ROW
-                    this.learnMove(newMove, i);
+                if (newMove != null && slot < 4) {
+                    this.learnMove(newMove, slot);
+                    slot++;
                 }
             }
         }
