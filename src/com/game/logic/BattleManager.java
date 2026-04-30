@@ -261,7 +261,7 @@ public class BattleManager {
 
             for (int i = 0; i < availableMoves.length; i++) {
                 if (availableMoves[i] != null) {
-                    System.out.println(i + ". " + availableMoves[i].moveName
+                    System.out.println((i + 1) + ". " + availableMoves[i].moveName
                             + " [" + availableMoves[i].moveType
                             + "] (PP: " + availableMoves[i].pp + ")");
                 }
@@ -273,12 +273,12 @@ public class BattleManager {
                 String input = scanner.nextLine();
                 int choice = Integer.parseInt(input);
 
-                if (choice >= 0 && choice < availableMoves.length && availableMoves[choice] != null) {
-                    return availableMoves[choice];
+                if ((choice-1) >= 0 && (choice-1) < availableMoves.length && availableMoves[(choice-1)] != null) {
+                    return availableMoves[choice - 1];
                 } else {
                     System.out.println("Invalid choice! Please pick one of the moves listed above.");
                 }
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 System.out.println("Invalid input! Please enter a number.");
             }
         }

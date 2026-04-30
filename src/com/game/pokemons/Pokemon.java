@@ -90,7 +90,7 @@ public abstract class Pokemon {
 
         if (moveLevelUpTable.containsKey(this.level)) {
             String newMoveName = moveLevelUpTable.get(this.level);
-            Moves newMove = MoveDatabase.getMoveFromDB("move_name");
+            Moves newMove = MoveDatabase.getMoveFromDB(newMoveName);
 
             System.out.println(pokeName + " wants to learn " + newMoveName + "!");
 
