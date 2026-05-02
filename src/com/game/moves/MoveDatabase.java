@@ -1,31 +1,29 @@
 package com.game.moves;
 
 import java.sql.*;
-import com.game.moves.*;
 import com.game.logic.*;
-
-import java.sql.*;
 
 public class MoveDatabase {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/movedatabase?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    private static final String USER = "root";
-    private static final String PASSWORD = "password";
+    // SQLite uses a local file path. "jdbc:sqlite:filename.db"
+    // Since your file is 'movedatabase', we point directly to it.
+    private static final String URL = "jdbc:sqlite:movedatabase";
 
     public static Moves getMoveFromDB(String moveName) {
         
-        String query = "SELECT * FROM move_database WHERE move_name = ?";
+        String query = "SELECT * FROM movedatabase WHERE move_name = ?";
 
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD); 
+        // SQLite does not require USER or PASSWORD
+        try (Connection conn = DriverManager.getConnection(URL); 
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, moveName);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-
                 String typeString = rs.getString("move_type");
                 
+                // Ensure we handle potential nulls or casing from the DB
                 Type moveTypeEnum = Type.valueOf(typeString.toUpperCase().trim());
 
                 return new Moves(
@@ -38,7 +36,7 @@ public class MoveDatabase {
                 );
             }
         } catch (SQLException e) {
-            System.err.println("Database Error: " + e.getMessage());
+            System.err.println("SQLite Database Error: " + e.getMessage());
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
             System.err.println("Enum Error: The type in the DB does not match any Type Enum constants.");
