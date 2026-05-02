@@ -1,12 +1,13 @@
 package com.game.main;
+
 import com.game.pokemons.*;
 import com.game.logic.*;
 import java.util.*;
 
 public class FireRed {
-    
+
     static Scanner sc = new Scanner(System.in);
-    
+
     //=========================
     // GBA STYE (SOON)
     //=========================
@@ -22,7 +23,6 @@ public class FireRed {
 //        }
 //        sc.nextLine();
 //    }
-
     public static void main(String[] args) {
 
         Random rand = new Random();
@@ -31,8 +31,7 @@ public class FireRed {
         //=========================
         // STARTER POKEMONS
         //=========================
-        
         OverworldManager game = new OverworldManager();
-    game.start();
+        game.start();
     }
 }
