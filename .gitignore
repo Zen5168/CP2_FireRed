@@ -1,6 +1,7 @@
 # NetBeans specific
-/build/
-/nbproject/private/
+nbproject/private/
+build/
+dist/
 
 # Compiled Java files
 *.class
