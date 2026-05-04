@@ -6,7 +6,7 @@ import com.game.pokemons.*;
 import com.game.logic.*;
 import java.util.*;
 
-public class Main {
+public class Main { 
     public static void main (String [] args) {
         
         JFrame window = new JFrame ();
@@ -14,12 +14,14 @@ public class Main {
         window.setResizable(false);
         window.setTitle("Pokemon Fire Red Fan Made");
         
-        GamePanel gamepanel = new GamePanel();
-        window.add(gamepanel);
+        GamePanel gamePanel = new GamePanel();
+        window.add(gamePanel);
         
         window.pack(); // FIT THE PREFERRED SIZE 
         
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+        
+        gamePanel.startGameThread();
     }
 }
