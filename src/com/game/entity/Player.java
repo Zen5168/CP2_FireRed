@@ -24,7 +24,6 @@ public class Player extends Entity {
 
         x = 100;
         y = 100;
-        speed = 4;
         direction = "down";
     }
 
@@ -64,6 +63,13 @@ public class Player extends Entity {
     // WALKING ANIMATION
     //=====================================
     public void update() {
+        
+        if (keyH.ctrlPressed) {
+            speed = 4; // RUN SPEED
+        } else {
+            speed = 2; // WALK SPEED
+        }
+
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             if (keyH.upPressed) {
                 direction = "up";
