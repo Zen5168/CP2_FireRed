@@ -5,7 +5,7 @@ An authentic recreation of the Pokemon FireRed experience built using Java. This
 ## Features
 - **Offline Support**: Migrated from MySQL to SQLite for zero-configuration setup.
 - **Core Mechanics**: Includes movement, wild encounters, and database-driven move logic.
-- **Classic Feel**: Sprite-based rendering and audio integration.
+- **Classic Feel**: Sprite-based rendering and res.audio integration.
 
 ---
 

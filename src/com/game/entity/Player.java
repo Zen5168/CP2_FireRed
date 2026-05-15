@@ -4,7 +4,6 @@ import com.game.gui.*;
 import com.game.logic.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import javax.imageio.*;
 
 public class Player extends Entity {
