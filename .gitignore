@@ -3,6 +3,9 @@ nbproject/private/
 build/
 dist/
 
+# NetBeans Build
+build/
+
 # Compiled Java files
 *.class
 /dist/
@@ -10,3 +13,4 @@ dist/
 .idea/
 *.iml
 out/
+
