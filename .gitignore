@@ -6,3 +6,7 @@ dist/
 # Compiled Java files
 *.class
 /dist/
+
+.idea/
+*.iml
+out/
