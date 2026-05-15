@@ -91,7 +91,7 @@ public class Player extends Entity {
                 spriteCounter = 0;
             }
         } else {
-            spriteNum = 1; // STANDING OR NETURAL
+            spriteNum = 1; // STANDING OR NEUTRAL
         }
     }
 
