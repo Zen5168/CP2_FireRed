@@ -31,7 +31,7 @@ public class Player extends Entity {
     public void getPlayerImage() {
 
         try {
-            BufferedImage playerSheet = ImageIO.read(getClass().getResourceAsStream("/image/FMC_sprite_sheet.png"));
+            BufferedImage playerSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/FMC_sprite_sheet.png"));
             int bgRGB = playerSheet.getRGB(0, 0);
 
             walkingSprites = new BufferedImage[4][3];

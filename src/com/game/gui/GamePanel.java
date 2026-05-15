@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import com.game.logic.*;
 import com.game.entity.*;
-import tile.TileManager;
+import com.game.tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -15,10 +15,10 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3; // TILE SCALING 
 
     public final int tileSize = originalTileSize * scale; // MAKES THE TILE 48x48
-    final int maxScreenCol = 16; // 16 TILES HORIZONTALLY
-    final int maxScreenRow = 12; // 16 TILES VERTICALLY
-    final int screenWidth = tileSize * maxScreenCol; // 768 PIXELS
-    final int screenHeight = tileSize * maxScreenRow; // 576 PIXELS
+    public final int maxScreenCol = 16; // 16 TILES HORIZONTALLY
+    public final int maxScreenRow = 12; // 12 TILES VERTICALLY
+    public int screenWidth = tileSize * maxScreenCol; // 768 PIXELS
+    public int screenHeight = tileSize * maxScreenRow; // 576 PIXELS
 
     //========================================
     // FPS
