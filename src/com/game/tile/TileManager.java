@@ -24,7 +24,11 @@ public class TileManager {
         loadMap("/res/maps/map01.txt");
     }
 
+    //=====================================
+    // TILE SPRITE
+    //=====================================
     private void getTileImage() {
+
         try {
             BufferedImage tileSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/Tileset.png"));
 
@@ -45,10 +49,14 @@ public class TileManager {
             e.printStackTrace();
         }
     }
+
+    //=====================================
+    // MAP LOADER
+    //=====================================
     public void loadMap(String filePath) {
 
         try {
-            InputStream is = getClass().getResourceAsStream(filePath);
+            InputStream is = getClass().getResourceAsStream(filePath); // LOADS A MAP.TXT FILE
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             int col = 0;
