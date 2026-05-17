@@ -74,7 +74,7 @@ public class Player extends Entity {
     public void update() {
 
         if (keyH.ctrlPressed) {
-            speed = 3; // RUN SPEED
+            speed = 4; // RUN SPEED
         } else {
             speed = 2; // WALK SPEED
         }
