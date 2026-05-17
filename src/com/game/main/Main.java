@@ -1,6 +1,5 @@
 package com.game.main;
 
-import com.game.gui.*;
 import javax.swing.*;
 import com.game.pokemons.*;
 import com.game.logic.*;

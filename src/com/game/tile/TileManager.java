@@ -1,6 +1,6 @@
 package com.game.tile;
 
-import com.game.gui.GamePanel;
+import com.game.main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,8 +10,8 @@ import java.io.*;
 public class TileManager {
 
     GamePanel gp;
-    Tile[] tile;
-    int mapTileNum[][];
+    public Tile[] tile;
+    public int mapTileNum[][];
 
     public TileManager(GamePanel gp) {
 
@@ -21,7 +21,7 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/res/maps/worldMap.txt");
+        loadMap("/res/maps/testMap.txt");
     }
 
     //=====================================
@@ -30,46 +30,41 @@ public class TileManager {
     private void getTileImage() {
 
         try {
-            BufferedImage tileSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/Tileset.png"));
-            BufferedImage tileSheet2 = ImageIO.read(getClass().getResourceAsStream("/res/image/Tileset.png")); // (PLACEHOLDER)
+            BufferedImage tileSheet1 = ImageIO.read(getClass().getResourceAsStream("/res/image/Tileset.png"));
+            BufferedImage tileSheet2 = ImageIO.read(getClass().getResourceAsStream("/res/image/Tileset2.png")); // (PLACEHOLDER)
 
             // MAP EACH TILE INDEX TO ITS LOCATION ON THE SHEET: {X, Y, WIDTH, HEIGHT}
             Rectangle[] tileSet1 = {
+                
                 new Rectangle(1, 52, 16, 16), // Tile[0] - GRASS PATH LIGHT GREEN
                 new Rectangle(103, 1, 16, 16), // Tile[1] - GRASS PATH VIBRANT GREEN
                 new Rectangle(120, 1, 16, 16), // Tile[2] - TALL GRASS
-                new Rectangle(239, 290, 16, 16), // Tile[3] - TREE UPPER LEFT
-                new Rectangle(256, 290, 16, 16), // Tile[4] - TREE UPPER RIGHT
-                new Rectangle(239, 307, 16, 16), // Tile[5] - TREE MID LEFT
-                new Rectangle(256, 307, 16, 16), // Tile[6] - TREE MID RIGHT
-                new Rectangle(239, 324, 16, 16), // Tile[7] - TREE LOWER LEFT
-                new Rectangle(256, 324, 16, 16), // Tile[8] - TREE LOWER RIGHT
-                new Rectangle(273, 290, 16, 16), // Tile[9] - WALL OF TREE UPPER LEFT
-                new Rectangle(290, 290, 16, 16), // Tile[10] - WALL OF TREE UPPER RIGHT
-                new Rectangle(273, 307, 16, 16), // Tile[11] - WALL OF TREE MID LEFT
-                new Rectangle(290, 307, 16, 16), // Tile[12] - WALL OF TREE MID RIGHT
-                new Rectangle(273, 324, 16, 16), // Tile[13] - WALL OF TREE LOWER LEFT
-                new Rectangle(290, 324, 16, 16), // Tile[14] - WALL OF TREE LOWER RIGHT
-                new Rectangle(290, 1, 16, 16), // Tile[15] - BUSH
+                new Rectangle(290, 1, 16, 16), // Tile[3] - BUSH
             };
 
-//            Rectangle[] tileSet2 = {
-//                new Rectangle(1, 52, 16, 16), // Tile[16] - GRASS PATH LIGHT GREEN (PLACEHOLDER)
-//            };
+            Rectangle[] tileSet2 = {
+                
+                
+            };
+
             for (int i = 0; i < tileSet1.length; i++) {
                 tile[i] = new Tile();
                 Rectangle r = tileSet1[i];
-                tile[i].image = tileSheet.getSubimage(r.x, r.y, r.width, r.height);
+                tile[i].image = tileSheet1.getSubimage(r.x, r.y, r.width, r.height);
             }
 
-//            // CONTINUES THE INDEX COUNTING
-//            int startIndex = tileSet1.length;
-//            for (int i = 0; i < tileSet2.length; i++) {
-//                int tileIndex = startIndex + i;
-//                tile[tileIndex] = new Tile();
-//                Rectangle r = tileSet2[i];
-//                tile[tileIndex].image = tileSheet2.getSubimage(r.x, r.y, r.width, r.height);
-//            }
+            // CONTINUES THE INDEX COUNTING
+            int startIndex = tileSet1.length;
+            for (int i = 0; i < tileSet2.length; i++) {
+                int tileIndex = startIndex + i;
+                tile[tileIndex] = new Tile();
+                Rectangle r = tileSet2[i];
+                tile[tileIndex].image = tileSheet2.getSubimage(r.x, r.y, r.width, r.height);
+            }
+            
+            // TILES WITH COLLISION
+            tile[3].collision = true;
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
