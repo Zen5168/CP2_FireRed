@@ -11,13 +11,13 @@ public class TileManager {
 
     GamePanel gp;
     Tile[] tile;
-    int mapTileNum [][];
+    int mapTileNum[][];
 
     public TileManager(GamePanel gp) {
 
         this.gp = gp;
 
-        tile = new Tile[10];
+        tile = new Tile[20];
         mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];
 
         getTileImage();
@@ -34,9 +34,22 @@ public class TileManager {
 
             // MAP EACH TILE INDEX TO ITS LOCATION ON THE SHEET: {X, Y, WIDTH, HEIGHT}
             Rectangle[] map = {
-                    new Rectangle(1,  52,  16, 16),   // com.game.tile[0] - GRASS PATH LIGHT GREEN
-                    new Rectangle(103,  1,  16, 16),   // com.game.tile[1] - GRASS PATH VIBRANT GREEN
-                    new Rectangle(120,  1,  16, 16),   // com.game.tile[2] - TALL GRASS
+                new Rectangle(1, 52, 16, 16), // com.game.tile[0] - GRASS PATH LIGHT GREEN
+                new Rectangle(103, 1, 16, 16), // com.game.tile[1] - GRASS PATH VIBRANT GREEN
+                new Rectangle(120, 1, 16, 16), // com.game.tile[2] - TALL GRASS
+                new Rectangle(239, 290, 16, 16), // com.game.tile[3] - TREE UPPER LEFT
+                new Rectangle(256, 290, 16, 16), // com.game.tile[4] - TREE UPPER RIGHT
+                new Rectangle(239, 307, 16, 16), // com.game.tile[5] - TREE MID LEFT
+                new Rectangle(256, 307, 16, 16), // com.game.tile[6] - TREE MID RIGHT
+                new Rectangle(239, 324, 16, 16), // com.game.tile[7] - TREE LOWER LEFT
+                new Rectangle(256, 324, 16, 16), // com.game.tile[8] - TREE LOWER RIGHT
+                new Rectangle(273, 290, 16, 16), // com.game.tile[9] - WALL OF TREE UPPER LEFT
+                new Rectangle(290, 290, 16, 16), // com.game.tile[10] - WALL OF TREE UPPER RIGHT
+                new Rectangle(273, 307, 16, 16), // com.game.tile[11] - WALL OF TREE MID LEFT
+                new Rectangle(290, 307, 16, 16), // com.game.tile[12] - WALL OF TREE MID RIGHT
+                new Rectangle(273, 324, 16, 16), // com.game.tile[13] - WALL OF TREE LOWER LEFT
+                new Rectangle(290, 324, 16, 16), // com.game.tile[14] - WALL OF TREE LOWER RIGHT
+                new Rectangle(290, 1, 16, 16), // com.game.tile[15] - BUSH
             };
 
             for (int i = 0; i < map.length; i++) {
@@ -80,10 +93,11 @@ public class TileManager {
                 }
             }
             br.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void draw(Graphics2D g2) {
 
         int col = 0;
@@ -91,11 +105,11 @@ public class TileManager {
         int x = 0;
         int y = 0;
 
-        while(col < gp.maxScreenCol && row < gp.maxScreenRow) {
+        while (col < gp.maxScreenCol && row < gp.maxScreenRow) {
 
             int tileNum = mapTileNum[col][row];
 
-            g2.drawImage(tile[tileNum].image,x, y, gp.tileSize, gp.tileSize,null);
+            g2.drawImage(tile[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
             col++;
             x += gp.tileSize;
 
