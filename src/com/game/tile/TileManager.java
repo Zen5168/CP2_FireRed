@@ -17,7 +17,7 @@ public class TileManager {
 
         this.gp = gp;
 
-        tile = new Tile[20];
+        tile = new Tile[100];
         mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];
 
         getTileImage();
@@ -31,41 +31,54 @@ public class TileManager {
 
         try {
             BufferedImage tileSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/Tileset.png"));
+            BufferedImage tileSheet2 = ImageIO.read(getClass().getResourceAsStream("/res/image/Tileset.png")); // (PLACEHOLDER)
 
             // MAP EACH TILE INDEX TO ITS LOCATION ON THE SHEET: {X, Y, WIDTH, HEIGHT}
-            Rectangle[] map = {
-                new Rectangle(1, 52, 16, 16), // com.game.tile[0] - GRASS PATH LIGHT GREEN
-                new Rectangle(103, 1, 16, 16), // com.game.tile[1] - GRASS PATH VIBRANT GREEN
-                new Rectangle(120, 1, 16, 16), // com.game.tile[2] - TALL GRASS
-                new Rectangle(239, 290, 16, 16), // com.game.tile[3] - TREE UPPER LEFT
-                new Rectangle(256, 290, 16, 16), // com.game.tile[4] - TREE UPPER RIGHT
-                new Rectangle(239, 307, 16, 16), // com.game.tile[5] - TREE MID LEFT
-                new Rectangle(256, 307, 16, 16), // com.game.tile[6] - TREE MID RIGHT
-                new Rectangle(239, 324, 16, 16), // com.game.tile[7] - TREE LOWER LEFT
-                new Rectangle(256, 324, 16, 16), // com.game.tile[8] - TREE LOWER RIGHT
-                new Rectangle(273, 290, 16, 16), // com.game.tile[9] - WALL OF TREE UPPER LEFT
-                new Rectangle(290, 290, 16, 16), // com.game.tile[10] - WALL OF TREE UPPER RIGHT
-                new Rectangle(273, 307, 16, 16), // com.game.tile[11] - WALL OF TREE MID LEFT
-                new Rectangle(290, 307, 16, 16), // com.game.tile[12] - WALL OF TREE MID RIGHT
-                new Rectangle(273, 324, 16, 16), // com.game.tile[13] - WALL OF TREE LOWER LEFT
-                new Rectangle(290, 324, 16, 16), // com.game.tile[14] - WALL OF TREE LOWER RIGHT
-                new Rectangle(290, 1, 16, 16), // com.game.tile[15] - BUSH
+            Rectangle[] tileSet1 = {
+                new Rectangle(1, 52, 16, 16), // Tile[0] - GRASS PATH LIGHT GREEN
+                new Rectangle(103, 1, 16, 16), // Tile[1] - GRASS PATH VIBRANT GREEN
+                new Rectangle(120, 1, 16, 16), // Tile[2] - TALL GRASS
+                new Rectangle(239, 290, 16, 16), // Tile[3] - TREE UPPER LEFT
+                new Rectangle(256, 290, 16, 16), // Tile[4] - TREE UPPER RIGHT
+                new Rectangle(239, 307, 16, 16), // Tile[5] - TREE MID LEFT
+                new Rectangle(256, 307, 16, 16), // Tile[6] - TREE MID RIGHT
+                new Rectangle(239, 324, 16, 16), // Tile[7] - TREE LOWER LEFT
+                new Rectangle(256, 324, 16, 16), // Tile[8] - TREE LOWER RIGHT
+                new Rectangle(273, 290, 16, 16), // Tile[9] - WALL OF TREE UPPER LEFT
+                new Rectangle(290, 290, 16, 16), // Tile[10] - WALL OF TREE UPPER RIGHT
+                new Rectangle(273, 307, 16, 16), // Tile[11] - WALL OF TREE MID LEFT
+                new Rectangle(290, 307, 16, 16), // Tile[12] - WALL OF TREE MID RIGHT
+                new Rectangle(273, 324, 16, 16), // Tile[13] - WALL OF TREE LOWER LEFT
+                new Rectangle(290, 324, 16, 16), // Tile[14] - WALL OF TREE LOWER RIGHT
+                new Rectangle(290, 1, 16, 16), // Tile[15] - BUSH
             };
 
-            for (int i = 0; i < map.length; i++) {
+            Rectangle[] tileSet2 = {
+                new Rectangle(1, 52, 16, 16), // Tile[16] - GRASS PATH LIGHT GREEN (PLACEHOLDER)
+            };
+
+            for (int i = 0; i < tileSet1.length; i++) {
                 tile[i] = new Tile();
-                Rectangle r = map[i];
+                Rectangle r = tileSet1[i];
                 tile[i].image = tileSheet.getSubimage(r.x, r.y, r.width, r.height);
             }
 
+            // CONTINUES THE INDEX COUNTING
+            int startIndex = tileSet1.length;
+            for (int i = 0; i < tileSet2.length; i++) {
+                int tileIndex = startIndex + i;
+                tile[tileIndex] = new Tile();
+                Rectangle r = tileSet2[i];
+                tile[tileIndex].image = tileSheet2.getSubimage(r.x, r.y, r.width, r.height);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     //=====================================
     // MAP LOADER
     //=====================================
+
     public void loadMap(String filePath) {
 
         try {
