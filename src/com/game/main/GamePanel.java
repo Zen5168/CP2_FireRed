@@ -1,4 +1,4 @@
-package com.game.gui;
+package com.game.main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,6 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    public CollisionChecker cChecker = new CollisionChecker (this);
     public Player player = new Player(this, keyH);
 
     public GamePanel() {
