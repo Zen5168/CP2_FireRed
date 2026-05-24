@@ -33,11 +33,19 @@ public class GamePanel extends JPanel implements Runnable {
     //========================================
     int FPS = 60;
 
-    TileManager tileM = new TileManager(this);
+    public TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     public CollisionChecker cChecker = new CollisionChecker (this);
     public Player player = new Player(this, keyH);
+    public WildEncounterManager encounterManager = new WildEncounterManager();
+    
+    // GAME STATE
+    public GameState gameState = GameState.OVERWORLD;
+    public BattleScreen battleScreen;
+    public BattleUI battleUI;
+    public com.game.pokemons.Pokemon currentWildPokemon;
+    public com.game.trainers.Player playerTrainer;
 
     public GamePanel() {
 
@@ -46,6 +54,17 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true); // PREVENTS FLICKERING (BETTER RENDERING)
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        
+        battleScreen = new BattleScreen(this);
+        battleUI = new BattleUI(this);
+        
+        // INITIALIZE PLAYER TRAINER WITH STARTER POKEMON
+        playerTrainer = new com.game.trainers.Player("Red", 23, 21);
+        playerTrainer.addPokemon(new com.game.pokemons.Charmander(5)); // STARTER POKEMON
+        
+        // ADD SOME ITEMS FOR TESTING
+        playerTrainer.getBag().addItem(new com.game.items.Pokeball(), 5);
+        playerTrainer.getBag().addItem(new com.game.items.Potion(), 3);
     }
 
     public void startGameThread() {
@@ -93,7 +112,18 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
 
-        player.update();
+        if (gameState == GameState.OVERWORLD) {
+            player.update();
+        } else if (gameState == GameState.BATTLE) {
+            battleScreen.updateTransition();
+            battleUI.update();
+            
+            // HANDLE BATTLE INPUT
+            if (keyH.hasKeyPress()) {
+                String key = keyH.getNextKeyPress();
+                battleUI.handleInput(key);
+            }
+        }
     }
 
     @Override
@@ -103,8 +133,17 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        tileM.draw(g2);
-        player.draw(g2);
+        if (gameState == GameState.OVERWORLD) {
+            tileM.draw(g2);
+            player.draw(g2);
+        } else if (gameState == GameState.BATTLE) {
+            // DRAW BATTLE SCREEN
+            com.game.pokemons.Pokemon playerPokemon = battleUI.getPlayerPokemon();
+            com.game.pokemons.Pokemon enemyPokemon = battleUI.getEnemyPokemon();
+            
+            battleScreen.draw(g2, playerPokemon, enemyPokemon);
+            battleUI.draw(g2);
+        }
 
         g2.dispose(); // DISPOSES GRAPHICS CONTEXT
     }
