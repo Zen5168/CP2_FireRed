@@ -199,6 +199,9 @@ public class Player extends Entity {
         
         // INITIALIZE BATTLE UI
         gp.battleUI.initBattle(gp.playerTrainer, playerPokemon, wildPokemon, false);
+        
+        // RESET HP ANIMATION FOR NEW BATTLE
+        gp.battleScreen.resetHPAnimation(playerPokemon, wildPokemon);
     }
 
     //=====================================

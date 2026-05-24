@@ -116,6 +116,12 @@ public class GamePanel extends JPanel implements Runnable {
             player.update();
         } else if (gameState == GameState.BATTLE) {
             battleScreen.updateTransition();
+            
+            // UPDATE HP BAR ANIMATION
+            com.game.pokemons.Pokemon playerPokemon = battleUI.getPlayerPokemon();
+            com.game.pokemons.Pokemon enemyPokemon = battleUI.getEnemyPokemon();
+            battleScreen.updateHPAnimation(playerPokemon, enemyPokemon);
+            
             battleUI.update();
             
             // HANDLE BATTLE INPUT
