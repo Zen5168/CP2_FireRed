@@ -2,6 +2,7 @@ package com.game.entity;
 
 import com.game.main.GamePanel;
 import com.game.logic.*;
+import com.game.pokemons.Pokemon;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.*;
@@ -15,6 +16,9 @@ public class Player extends Entity {
     public final int screenY;
 
     private BufferedImage[][] walkingSprites; // [DIRECTION][FRAME]
+    
+    private int lastTileX = -1;
+    private int lastTileY = -1;
 
     public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -121,9 +125,80 @@ public class Player extends Entity {
                 spriteNum = (spriteNum == 0) ? 2 : 0; // LEFT FOOT OR RIGHT FOOT
                 spriteCounter = 0;
             }
+            
+            // CHECK FOR WILD ENCOUNTERS
+            checkWildEncounter();
         } else {
             spriteNum = 1; // STANDING OR NEUTRAL
         }
+    }
+    
+    //=====================================
+    // WILD ENCOUNTER CHECK
+    //=====================================
+    private void checkWildEncounter() {
+        // GET CURRENT TILE POSITION
+        int currentTileX = worldX / gp.tileSize;
+        int currentTileY = worldY / gp.tileSize;
+        
+        // CHECK IF PLAYER MOVED TO A NEW TILE
+        if (currentTileX != lastTileX || currentTileY != lastTileY) {
+            lastTileX = currentTileX;
+            lastTileY = currentTileY;
+            
+            // GET THE TILE THE PLAYER IS STANDING ON
+            int tileNum = gp.tileM.mapTileNum[currentTileX][currentTileY];
+            
+            // CHECK IF IT'S A GRASS TILE
+            if (gp.tileM.tile[tileNum].hasWildEncounter) {
+                if (gp.encounterManager.checkForEncounter()) {
+                    triggerWildBattle();
+                }
+            }
+        }
+    }
+    
+    //=====================================
+    // TRIGGER WILD BATTLE
+    //=====================================
+    private void triggerWildBattle() {
+        // CHECK IF PLAYER HAS ANY CONSCIOUS POKEMON
+        boolean hasConsciousPokemon = false;
+        for (Pokemon p : gp.playerTrainer.getParty()) {
+            if (!p.isFainted()) {
+                hasConsciousPokemon = true;
+                break;
+            }
+        }
+        
+        // PREVENT BATTLE IF ALL POKEMON ARE FAINTED
+        if (!hasConsciousPokemon) {
+            System.out.println("All your Pokemon have fainted! Cannot enter battle.");
+            return;
+        }
+        
+        Pokemon wildPokemon = gp.encounterManager.generateWildPokemon();
+        
+        System.out.println("\n========================================");
+        System.out.println("   A wild " + wildPokemon.getName() + " appeared!");
+        System.out.println("========================================");
+        
+        // SWITCH TO BATTLE STATE
+        gp.currentWildPokemon = wildPokemon;
+        gp.gameState = GameState.BATTLE;
+        gp.battleScreen.startTransition();
+        
+        // GET FIRST CONSCIOUS POKEMON
+        Pokemon playerPokemon = null;
+        for (Pokemon p : gp.playerTrainer.getParty()) {
+            if (!p.isFainted()) {
+                playerPokemon = p;
+                break;
+            }
+        }
+        
+        // INITIALIZE BATTLE UI
+        gp.battleUI.initBattle(gp.playerTrainer, playerPokemon, wildPokemon, false);
     }
 
     //=====================================

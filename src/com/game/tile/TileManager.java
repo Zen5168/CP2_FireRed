@@ -65,6 +65,9 @@ public class TileManager {
             // TILES WITH COLLISION
             tile[3].collision = true;
             
+            // TILES WITH WILD ENCOUNTERS
+            tile[2].hasWildEncounter = true; // TALL GRASS
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
