@@ -436,9 +436,7 @@ public class BattleUI {
             currentState = BattleState.DIALOGUE;
         } else {
             addDialogue("Got away safely!");
-            currentState = BattleState.DIALOGUE;
-            // SIGNAL TO END BATTLE
-            gp.gameState = GameState.OVERWORLD;
+            currentState = BattleState.VICTORY; // Use VICTORY state so dialogue shows before exiting
         }
     }
     
