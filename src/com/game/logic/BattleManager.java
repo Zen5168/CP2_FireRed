@@ -46,7 +46,11 @@ public class BattleManager {
                     Item selectedItem = selectItem(player);
                     if (selectedItem != null) {
                         if (selectedItem instanceof Pokeball) {
-                            handleCatchAttempt(player, (Pokeball) selectedItem, enemyMon);
+                            boolean caught = handleCatchAttempt(player, (Pokeball) selectedItem, enemyMon);
+                            if (caught) {
+                                audio.stopCurrent();
+                                return true; // END BATTLE SUCCESSFULLY
+                            }
                         } else {
                             selectedItem.use(playerMon);
                             player.getBag().removeItem(selectedItem.getName(), 1);
@@ -157,7 +161,7 @@ public class BattleManager {
     // ======================================
     // CATCHING MECHANIC
     // ======================================
-    private void handleCatchAttempt(Player player, Pokeball ball, Pokemon target) {
+    private boolean handleCatchAttempt(Player player, Pokeball ball, Pokemon target) {
         System.out.println("\nYou threw a " + ball.getName() + "!");
 
         player.getBag().removeItem(ball.getName(), 1);
@@ -177,8 +181,9 @@ public class BattleManager {
             System.out.println("Gotcha! " + target.getName() + " was caught!");
             player.addPokemon(target);
 
-            // END THE LOOP IN BATTLE
-            target.setHp(0);
+            // Don't set HP to 0 - the battle will end naturally
+            // The calling method will check isFainted() which will be false
+            return true; // Catch successful
         } else {
             System.out.println("Oh no! The Pokemon broke free!");
 
@@ -187,6 +192,7 @@ public class BattleManager {
 
             System.out.println("The wild " + target.getName() + " counters!");
             engine.executeTurn(target, activeMon, enemyMove);
+            return false; // Catch failed
         }
     }
 

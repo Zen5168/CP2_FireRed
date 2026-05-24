@@ -21,7 +21,7 @@ public class BattleScreen {
     }
     
     //=====================================
-    // LOAD BATTLE SPRITES
+    // LOAD POKEMON BATTLE SPRITES
     //=====================================
     private void loadBattleAssets() {
         try {
@@ -34,19 +34,19 @@ public class BattleScreen {
             // FORMAT: [POKEMON_ID][FRONT_SPRITE, BACK_SPRITE]
             Rectangle[][] spriteMap = {
                 // BULBASAUR [0]
-                {new Rectangle(11, 47, 63, 63), new Rectangle(11, 47, 63, 63)},
+                {new Rectangle(12, 46, 63, 63), new Rectangle(12, 111, 63, 63)},
                 
                 // CHARMANDER [1]
-                {new Rectangle(11, 45, 66, 66), new Rectangle(11, 47, 63, 63)},
+                {new Rectangle(402, 46, 66, 66), new Rectangle(402, 111, 63, 63)},
                 
                 // SQUIRTLE [2]
-                {new Rectangle(0, 64, 32, 32), new Rectangle(32, 64, 32, 32)},
+                {new Rectangle(792, 46, 63, 63), new Rectangle(792, 111, 63, 63)},
                 
                 // PIDGEY [3]
-                {new Rectangle(0, 96, 32, 32), new Rectangle(32, 96, 32, 32)},
+                {new Rectangle(12, 212, 63, 63), new Rectangle(12, 276, 63, 63)},
                 
                 // RATTATA [4]
-                {new Rectangle(0, 128, 32, 32), new Rectangle(32, 128, 32, 32)},
+                {new Rectangle(401, 212, 63, 63), new Rectangle(401, 276, 63, 63)},        
                 
                 // ADD MORE POKEMON HERE AS NEEDED
                 // {new Rectangle(x, y, width, height), new Rectangle(x, y, width, height)},
