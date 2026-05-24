@@ -407,6 +407,7 @@ public class BattleUI {
                 playerTrainer.addPokemon(enemyPokemon);
                 // Don't set HP to 0 - just end the battle
                 currentState = BattleState.VICTORY;
+                return; // Exit immediately to prevent state override
             } else {
                 addDialogue("Oh no! The Pokemon broke free!");
                 // ENEMY ATTACKS
