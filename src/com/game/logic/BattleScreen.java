@@ -15,6 +15,11 @@ public class BattleScreen {
     private boolean isTransitioning = false;
     private int transitionSpeed = 15;
     
+    // HP BAR ANIMATION
+    private double playerDisplayedHP = 0;
+    private double enemyDisplayedHP = 0;
+    private double hpAnimationSpeed = 2.0; // HP points per frame
+    
     public BattleScreen(GamePanel gp) {
         this.gp = gp;
         loadBattleAssets();
@@ -103,6 +108,63 @@ public class BattleScreen {
     }
     
     //=====================================
+    // UPDATE HP ANIMATION
+    //=====================================
+    public void updateHPAnimation(Pokemon playerPokemon, Pokemon enemyPokemon) {
+        // Initialize displayed HP on first call
+        if (playerDisplayedHP == 0 && playerPokemon != null) {
+            playerDisplayedHP = playerPokemon.getHp();
+        }
+        if (enemyDisplayedHP == 0 && enemyPokemon != null) {
+            enemyDisplayedHP = enemyPokemon.getHp();
+        }
+        
+        // Animate player HP
+        if (playerPokemon != null) {
+            double targetHP = playerPokemon.getHp();
+            if (playerDisplayedHP > targetHP) {
+                playerDisplayedHP -= hpAnimationSpeed;
+                if (playerDisplayedHP < targetHP) {
+                    playerDisplayedHP = targetHP;
+                }
+            } else if (playerDisplayedHP < targetHP) {
+                playerDisplayedHP += hpAnimationSpeed;
+                if (playerDisplayedHP > targetHP) {
+                    playerDisplayedHP = targetHP;
+                }
+            }
+        }
+        
+        // Animate enemy HP
+        if (enemyPokemon != null) {
+            double targetHP = enemyPokemon.getHp();
+            if (enemyDisplayedHP > targetHP) {
+                enemyDisplayedHP -= hpAnimationSpeed;
+                if (enemyDisplayedHP < targetHP) {
+                    enemyDisplayedHP = targetHP;
+                }
+            } else if (enemyDisplayedHP < targetHP) {
+                enemyDisplayedHP += hpAnimationSpeed;
+                if (enemyDisplayedHP > targetHP) {
+                    enemyDisplayedHP = targetHP;
+                }
+            }
+        }
+    }
+    
+    //=====================================
+    // RESET HP ANIMATION (CALL WHEN NEW BATTLE STARTS)
+    //=====================================
+    public void resetHPAnimation(Pokemon playerPokemon, Pokemon enemyPokemon) {
+        if (playerPokemon != null) {
+            playerDisplayedHP = playerPokemon.getHp();
+        }
+        if (enemyPokemon != null) {
+            enemyDisplayedHP = enemyPokemon.getHp();
+        }
+    }
+    
+    //=====================================
     // DRAW BATTLE SCREEN
     //=====================================
     public void draw(Graphics2D g2, Pokemon playerPokemon, Pokemon wildPokemon) {
@@ -114,48 +176,50 @@ public class BattleScreen {
         g2.setColor(new Color(139, 90, 43));
         g2.fillRect(0, gp.screenHeight / 2, gp.screenWidth, gp.screenHeight / 2);
         
-        // DRAW WILD POKEMON (ENEMY SIDE - TOP RIGHT)
+        // DRAW WILD POKEMON (ENEMY SIDE - TOP RIGHT) - BIGGER SIZE
         if (wildPokemon != null) {
-            int enemyX = gp.screenWidth - 200;
-            int enemyY = 100;
+            int enemyX = gp.screenWidth - 280;
+            int enemyY = 80;
+            int enemySpriteSize = 160; // Increased from 96
             
             if (pokemonSprites != null) {
                 BufferedImage enemySprite = getPokemonSprite(wildPokemon.getName(), false);
                 if (enemySprite != null) {
-                    g2.drawImage(enemySprite, enemyX, enemyY, 96, 96, null);
+                    g2.drawImage(enemySprite, enemyX, enemyY, enemySpriteSize, enemySpriteSize, null);
                 } else {
                     // FALLBACK: DRAW PLACEHOLDER
-                    drawPlaceholderSprite(g2, enemyX, enemyY, 96, 96, Color.RED);
+                    drawPlaceholderSprite(g2, enemyX, enemyY, enemySpriteSize, enemySpriteSize, Color.RED);
                 }
             } else {
                 // FALLBACK: DRAW PLACEHOLDER
-                drawPlaceholderSprite(g2, enemyX, enemyY, 96, 96, Color.RED);
+                drawPlaceholderSprite(g2, enemyX, enemyY, enemySpriteSize, enemySpriteSize, Color.RED);
             }
             
             // ENEMY INFO BOX
-            drawInfoBox(g2, wildPokemon, 50, 50, false);
+            drawInfoBox(g2, wildPokemon, 50, 50, false, enemyDisplayedHP);
         }
         
-        // DRAW PLAYER POKEMON (PLAYER SIDE - BOTTOM LEFT)
+        // DRAW PLAYER POKEMON (PLAYER SIDE - BOTTOM LEFT) - BIGGER SIZE
         if (playerPokemon != null) {
-            int playerX = 100;
-            int playerY = gp.screenHeight - 250;
+            int playerX = 80;
+            int playerY = gp.screenHeight - 320;
+            int playerSpriteSize = 160; // Increased from 96
             
             if (pokemonSprites != null) {
                 BufferedImage playerSprite = getPokemonSprite(playerPokemon.getName(), true);
                 if (playerSprite != null) {
-                    g2.drawImage(playerSprite, playerX, playerY, 96, 96, null);
+                    g2.drawImage(playerSprite, playerX, playerY, playerSpriteSize, playerSpriteSize, null);
                 } else {
                     // FALLBACK: DRAW PLACEHOLDER
-                    drawPlaceholderSprite(g2, playerX, playerY, 96, 96, Color.BLUE);
+                    drawPlaceholderSprite(g2, playerX, playerY, playerSpriteSize, playerSpriteSize, Color.BLUE);
                 }
             } else {
                 // FALLBACK: DRAW PLACEHOLDER
-                drawPlaceholderSprite(g2, playerX, playerY, 96, 96, Color.BLUE);
+                drawPlaceholderSprite(g2, playerX, playerY, playerSpriteSize, playerSpriteSize, Color.BLUE);
             }
             
             // PLAYER INFO BOX (MOVED UP TO AVOID UI OVERLAP)
-            drawInfoBox(g2, playerPokemon, gp.screenWidth - 300, gp.screenHeight - 280, true);
+            drawInfoBox(g2, playerPokemon, gp.screenWidth - 300, gp.screenHeight - 280, true, playerDisplayedHP);
         }
         
         // TRANSITION EFFECT (DRAWN LAST)
@@ -220,7 +284,7 @@ public class BattleScreen {
     //=====================================
     // DRAW INFO BOX
     //=====================================
-    private void drawInfoBox(Graphics2D g2, Pokemon pokemon, int x, int y, boolean showExp) {
+    private void drawInfoBox(Graphics2D g2, Pokemon pokemon, int x, int y, boolean showExp, double displayedHP) {
         // BOX BACKGROUND
         g2.setColor(new Color(248, 248, 248, 230));
         g2.fillRoundRect(x, y, 250, showExp ? 90 : 70, 10, 10);
@@ -239,8 +303,8 @@ public class BattleScreen {
         g2.setColor(new Color(200, 200, 200));
         g2.fillRect(x + 50, y + 40, 180, 12);
         
-        // HP BAR
-        double hpPercent = (double) pokemon.getHp() / pokemon.getMaxHp();
+        // HP BAR WITH ANIMATION
+        double hpPercent = displayedHP / pokemon.getMaxHp();
         Color hpColor;
         if (hpPercent > 0.5) {
             hpColor = new Color(0, 200, 0);
@@ -250,21 +314,33 @@ public class BattleScreen {
             hpColor = new Color(255, 0, 0);
         }
         g2.setColor(hpColor);
-        g2.fillRect(x + 50, y + 40, (int)(180 * hpPercent), 12);
+        int hpBarWidth = (int)(180 * hpPercent);
+        g2.fillRect(x + 50, y + 40, Math.max(0, hpBarWidth), 12);
+        
+        // HP BAR BORDER
+        g2.setColor(Color.BLACK);
+        g2.setStroke(new BasicStroke(1));
+        g2.drawRect(x + 50, y + 40, 180, 12);
         
         // HP TEXT
-        g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.PLAIN, 12));
         g2.drawString("HP:", x + 10, y + 50);
         
         // ALWAYS SHOW HP NUMBERS (FOR BOTH PLAYER AND OPPONENT)
-        g2.drawString(pokemon.getHp() + "/" + pokemon.getMaxHp(), x + 50, y + 65);
+        // Show animated HP value
+        int displayedHPInt = (int)Math.ceil(displayedHP);
+        g2.drawString(displayedHPInt + "/" + pokemon.getMaxHp(), x + 50, y + 65);
         
         if (showExp) {
             // EXP BAR (ONLY FOR PLAYER)
             g2.setColor(new Color(100, 150, 255));
             double expPercent = (double) pokemon.getExp() / pokemon.getNextLevelExp();
             g2.fillRect(x + 50, y + 75, (int)(180 * expPercent), 8);
+            
+            // EXP BAR BORDER
+            g2.setColor(Color.BLACK);
+            g2.setStroke(new BasicStroke(1));
+            g2.drawRect(x + 50, y + 75, 180, 8);
         }
     }
     
