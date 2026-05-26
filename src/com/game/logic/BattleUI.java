@@ -399,8 +399,15 @@ public class BattleUI {
             addDialogue("You threw a " + item.getName() + "!");
             Pokeball ball = (Pokeball) item;
             playerTrainer.getBag().removeItem(itemName, 1);
+            
+            // START POKEBALL THROW ANIMATION
+            // CALCULATE TARGET POSITION (ENEMY POKEMON LOCATION)
+            int targetX = gp.screenWidth - 350 + 110; // CENTER OF ENEMY SPRITE
+            int targetY = 40 + 110; // CENTER OF ENEMY SPRITE
+            boolean willCatch = ball.tryCatch(enemyPokemon);
+            gp.battleScreen.startPokeballThrow(targetX, targetY, willCatch);
 
-            if (ball.tryCatch(enemyPokemon)) {
+            if (willCatch) {
                 addDialogue("Gotcha! " + enemyPokemon.getName() + " was caught!");
                 playerTrainer.addPokemon(enemyPokemon);
                 // Don't set HP to 0 - just end the battle
