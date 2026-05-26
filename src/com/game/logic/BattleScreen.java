@@ -229,6 +229,9 @@ public class BattleScreen {
         trainerIntroFrameCounter = 0;
         trainerSlideOffset = -200; // START OFF-SCREEN FOR SLIDE-IN EFFECT
         
+        // RESET POKEMON VISIBILITY (FIX FOR BUG WHERE POKEMON DON'T APPEAR AFTER CATCH)
+        hideEnemyPokemon = false;
+        
         // START POKEBALL THROW ANIMATION SYNCED WITH TRAINER
         showPokeballThrow = true;
         pokeballAnimationStage = -1; // SPECIAL STAGE FOR TRAINER INTRO
@@ -250,7 +253,7 @@ public class BattleScreen {
             }
         }
         
-        // UPDATE TRAINER INTRO ANIMATION
+        // UPDATE TRAINER INTRO ANIMATION (USED FOR BOTH BATTLE START AND POKEMON SWITCH)
         if (showTrainerIntro) {
             // SLIDE-IN EFFECT 
             if (trainerSlideOffset < 0) {
@@ -333,6 +336,33 @@ public class BattleScreen {
         wobbleAngle = 0;
         
         System.out.println("Pokeball animation initialized. Start pos: " + pokeballX + ", " + pokeballY);
+    }
+    
+    //=====================================
+    // START POKEMON SWITCH ANIMATION
+    //=====================================
+    public void startPokemonSwitchAnimation(int targetX, int targetY) {
+        System.out.println("Starting pokemon switch animation! Target: " + targetX + ", " + targetY);
+        
+        // USE TRAINER INTRO ANIMATION
+        showTrainerIntro = true;
+        trainerIntroFrame = 0;
+        trainerIntroFrameCounter = 0;
+        trainerSlideOffset = -200; // START OFF-SCREEN FOR SLIDE-IN EFFECT
+        
+        // START POKEBALL THROW ANIMATION SYNCED WITH TRAINER
+        showPokeballThrow = true;
+        catchSuccessful = false; // NOT A CATCH, JUST A SWITCH
+        hideEnemyPokemon = false; // DON'T HIDE ENEMY POKEMON
+        
+        // USE SPECIAL STAGE FOR TRAINER INTRO ANIMATION
+        pokeballAnimationStage = -1; // SPECIAL STAGE FOR TRAINER INTRO
+        pokeballAnimationCounter = 0;
+        pokeballFrame = 0;
+        pokeballX = -100; // START OFF-SCREEN
+        pokeballY = gp.screenHeight - 200;
+        
+        System.out.println("Pokemon switch animation initialized with trainer intro style");
     }
     
     //=====================================
@@ -436,7 +466,10 @@ public class BattleScreen {
                 if (pokeballAnimationCounter > 30) {
                     showPokeballThrow = false;
                     pokeballAnimationStage = 0;
-                    hideEnemyPokemon = false;
+                    // ONLY SHOW POKEMON AGAIN IF CATCH FAILED
+                    if (!catchSuccessful) {
+                        hideEnemyPokemon = false;
+                    }
                     wobbleAngle = 0;
                 }
                 break;
@@ -519,7 +552,7 @@ public class BattleScreen {
         g2.setColor(new Color(139, 90, 43));
         g2.fillRect(0, gp.screenHeight / 2, gp.screenWidth, gp.screenHeight / 2);
         
-        // SHOW TRAINER INTRO ANIMATION IF ACTIVE 
+        // SHOW TRAINER INTRO ANIMATION IF ACTIVE (USED FOR BOTH BATTLE START AND POKEMON SWITCH)
         if (showTrainerIntro && trainerIntroFrames != null) {
             // DRAW TRAINER THROWING POKEBALL ANIMATION
             BufferedImage currentFrame = trainerIntroFrames[trainerIntroFrame];
@@ -532,7 +565,30 @@ public class BattleScreen {
             
             g2.drawImage(currentFrame, trainerX, trainerY, trainerWidth, trainerHeight, null);
             
-            // DON'T DRAW POKEMON DURING INTRO ANIMATION
+            // ALWAYS DRAW WILD POKEMON DURING ANIMATION (FIXES THE BUG!)
+            if (wildPokemon != null && !hideEnemyPokemon) {
+                int enemyX = gp.screenWidth - 350;
+                int enemyY = 40;
+                int enemySpriteSize = 220;
+                
+                if (pokemonSprites != null) {
+                    BufferedImage enemySprite = getPokemonSprite(wildPokemon.getName(), false);
+                    if (enemySprite != null) {
+                        g2.drawImage(enemySprite, enemyX, enemyY, enemySpriteSize, enemySpriteSize, null);
+                    } else {
+                        // FALLBACK: DRAW PLACEHOLDER
+                        drawPlaceholderSprite(g2, enemyX, enemyY, enemySpriteSize, enemySpriteSize, Color.RED);
+                    }
+                } else {
+                    // FALLBACK: DRAW PLACEHOLDER
+                    drawPlaceholderSprite(g2, enemyX, enemyY, enemySpriteSize, enemySpriteSize, Color.RED);
+                }
+                
+                // ENEMY INFO BOX
+                drawInfoBox(g2, wildPokemon, 50, 50, false, enemyDisplayedHP);
+            }
+            
+            // DON'T DRAW PLAYER POKEMON DURING ANIMATION
         } else {
             // DRAW WILD POKEMON (ENEMY SIDE - TOP RIGHT) - MUCH BIGGER SIZE
             // ONLY DRAW IF NOT HIDDEN (WHEN CAUGHT IN POKEBALL)
