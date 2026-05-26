@@ -169,17 +169,17 @@ public class BattleScreen {
             
             System.out.println("Pokeball sheet loaded: " + pokeballSheet.getWidth() + "x" + pokeballSheet.getHeight());
             
-            // INITIALIZE POKEBALL SPRITE ARRAY
-            pokeballSprites = new BufferedImage[2]; // [0=CLOSED, 1=OPENED]
+            // POKEBALL SPRITE ARRAY
+            pokeballSprites = new BufferedImage[2]; // [0 = CLOSED, 1 = OPENED]
             
             // ADJUST THESE COORDINATES TO MATCH YOUR SPRITE LAYOUT
-            // FORMAT: X, Y, WIDTH, HEIGHT (all in pixels)
+            // FORMAT: X, Y, WIDTH, HEIGHT
             Rectangle[] pokeballFrameMap = {
-                // CLOSED POKEBALL - First 14x14 sprite
+                // CLOSED POKEBALL 
                 new Rectangle(33, 1, 14, 14),    
                 
-                // OPENED POKEBALL - Second 14x14 sprite (14 pixels to the right)
-                new Rectangle(3, 18, 14, 14),   
+                // OPENED POKEBALL  
+                new Rectangle(33, 18, 14, 14),   
             };
             
             // EXTRACT FRAMES USING THE MAP
@@ -209,13 +209,12 @@ public class BattleScreen {
             if (allLoaded) {
                 System.out.println("✓ Pokeball sprites loaded successfully!");
             } else {
-                System.out.println("✗ Some pokeball sprites failed to load! Creating placeholders...");
+                System.out.println("✗ Some pokeball sprites failed to load!");
             }
             
         } catch (Exception e) {
             System.out.println("✗ Could not load pokeball sprites: " + e.getMessage());
             e.printStackTrace();
-            System.out.println("Creating placeholder pokeball sprites...");
         }
     }
     
@@ -274,7 +273,7 @@ public class BattleScreen {
                 }
             }
             
-            // UPDATE POKEBALL POSITION SYNCED WITH TRAINER ANIMATION
+            // POKEBALL POSITION SYNCED WITH TRAINER ANIMATION
             if (showPokeballThrow && pokeballAnimationStage == -1) {
                 // SYNC POKEBALL WITH TRAINER FRAMES
                 if (trainerIntroFrame >= 2 && trainerIntroFrame <= 4) {
@@ -590,9 +589,6 @@ public class BattleScreen {
             if (pokeballSprite != null) {
                 // USE DIFFERENT SIZE FOR TRAINER INTRO VS CATCHING
                 int pokeballSize = (pokeballAnimationStage == -1) ? 48 : 64;
-                
-                // DEBUG: Print pokeball position
-                // System.out.println("Drawing pokeball at: " + (int)pokeballX + ", " + (int)pokeballY + " Stage: " + pokeballAnimationStage);
                 
                 // APPLY WOBBLE ROTATION
                 if (wobbleAngle != 0) {
