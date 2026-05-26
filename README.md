@@ -1,6 +1,6 @@
 # Pokemon FireRed Java Remake
 
-An authentic recreation of the Pokemon FireRed experience built using Java. This project utilizes a local SQLite database for move-sets and stats, allowing for a completely offline gameplay experience.
+A recreation of the Pokemon FireRed experience built using Java. This project utilizes a local SQLite database for move-sets and stats, allowing for a completely offline gameplay experience.
 
 ## Features
 - **Offline Support**: Migrated from MySQL to SQLite for zero-configuration setup.
