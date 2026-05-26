@@ -90,8 +90,6 @@ public class BattleUI {
     // UPDATE
     //=====================================
     public void update() {
-        // REMOVED AUTO-ADVANCE - Now requires button press
-        // Battle messages will only advance when player presses a button
     }
 
     //=====================================
@@ -156,10 +154,10 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // Confirm
+            case "U": // CONFIRM
                 selectMainMenuOption();
                 break;
-            case "I": // Back (not applicable in main menu)
+            case "I": // BACK (NOT APPLICABLE IN MAIN MENU)
                 break;
         }
     }
@@ -245,12 +243,12 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // Confirm
+            case "U": // CONFIRM
                 if (fightMenuMoves[selectedOption] != null) {
                     executePlayerMove(fightMenuMoves[selectedOption]);
                 }
                 break;
-            case "I": // Back
+            case "I": // BACK
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -279,10 +277,10 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // Confirm
+            case "U": // CONFIRM
                 enterBagItems();
                 break;
-            case "I": // Back
+            case "I": // BACK
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -316,10 +314,10 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // Confirm
+            case "U": // CONFIRM
                 useItem(bagItems.get(selectedOption));
                 break;
-            case "I": // Back
+            case "I": // BACK
                 currentState = BattleState.BAG_MENU;
                 selectedOption = selectedCategory;
                 break;
@@ -348,10 +346,10 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // Confirm
+            case "U": // CONFIRM
                 switchPokemon(selectedOption);
                 break;
-            case "I": // Back
+            case "I": // BACK
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -464,7 +462,7 @@ public class BattleUI {
             currentState = BattleState.DIALOGUE;
         } else {
             addDialogue("Got away safely!");
-            currentState = BattleState.VICTORY; // Use VICTORY state so dialogue shows before exiting
+            currentState = BattleState.VICTORY; // USE VICTORY STATE SO DIALOGUE SHOWS BEFORE EXITING
         }
     }
 
@@ -475,7 +473,6 @@ public class BattleUI {
         Moves bestMove = null;
         double maxDamage = -1;
 
-        // DEBUG: Check enemy moves
         System.out.println("\n=== ENEMY AI SELECTING MOVE ===");
         System.out.println("Enemy Pokemon: " + enemyPokemon.getName());
 
@@ -511,7 +508,7 @@ public class BattleUI {
             }
         }
 
-        // FALLBACK: If no best move found, use first available move with PP
+        // FALLBACK: IF NO BEST MOVE FOUND, USE FIRST AVAILABLE MOVE WITH PP
         if (bestMove == null) {
             System.out.println("No best move found, using fallback...");
             for (Moves move : enemyMoves) {
@@ -523,7 +520,7 @@ public class BattleUI {
             }
         }
 
-        // LAST RESORT: Use first move regardless of PP
+        // LAST RESORT: USE FIRST MOVE REGARDLESS OF PP
         if (bestMove == null && enemyMoves[0] != null) {
             System.out.println("LAST RESORT: Using first move regardless of PP");
             bestMove = enemyMoves[0];
@@ -713,7 +710,6 @@ public class BattleUI {
         // SHOW CONTROLS HINT FOR DIALOGUE
         g2.setFont(new Font("Arial", Font.PLAIN, 12));
         g2.setColor(new Color(100, 100, 100));
-        g2.drawString("Press U/I/J/K/Space/Enter to continue", 20, gp.screenHeight - 10);
     }
 
     //=====================================
@@ -771,7 +767,6 @@ public class BattleUI {
             g2.drawString(mainMenuOptions[i], optX, optY);
         }
 
-        drawControlsHint(g2);
     }
 
     //=====================================
@@ -841,7 +836,6 @@ public class BattleUI {
             }
         }
 
-        drawControlsHint(g2);
     }
 
     //=====================================
@@ -931,8 +925,6 @@ public class BattleUI {
 
             g2.drawString(bagCategories[i], boxX + 30, optY);
         }
-
-        drawControlsHint(g2);
     }
 
     //=====================================
@@ -970,8 +962,6 @@ public class BattleUI {
                     .get(bagCategories[selectedCategory]).get(itemName);
             g2.drawString(itemName + " x" + quantity, boxX + 30, optY);
         }
-
-        drawControlsHint(g2);
     }
 
     //=====================================
@@ -1011,16 +1001,6 @@ public class BattleUI {
             g2.drawString(p.getName() + " Lv" + p.getLevel() + status, boxX + 30, optY);
         }
 
-        drawControlsHint(g2);
-    }
-
-    //=====================================
-    // DRAW CONTROLS HINT
-    //=====================================
-    private void drawControlsHint(Graphics2D g2) {
-        g2.setFont(new Font("Arial", Font.PLAIN, 12));
-        g2.setColor(new Color(100, 100, 100));
-        g2.drawString("WASD: Navigate | U: Confirm | I: Back", 20, gp.screenHeight - 10);
     }
 
     //=====================================

@@ -47,7 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     public com.game.pokemons.Pokemon currentWildPokemon;
     public com.game.trainers.Player playerTrainer;
 
-    public GamePanel() {
+    public GamePanel(String playerName, com.game.pokemons.Pokemon starterPokemon) {
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
@@ -58,9 +58,9 @@ public class GamePanel extends JPanel implements Runnable {
         battleScreen = new BattleScreen(this);
         battleUI = new BattleUI(this);
         
-        // INITIALIZE PLAYER TRAINER WITH STARTER POKEMON
-        playerTrainer = new com.game.trainers.Player("Red", 23, 21);
-        playerTrainer.addPokemon(new com.game.pokemons.Charmander(5)); // STARTER POKEMON
+        // INITIALIZE PLAYER TRAINER WITH CUSTOM NAME AND STARTER POKEMON
+        playerTrainer = new com.game.trainers.Player(playerName, 23, 21);
+        playerTrainer.addPokemon(starterPokemon);
         
         // ADD SOME ITEMS FOR TESTING
         playerTrainer.getBag().addItem(new com.game.items.Pokeball(), 5);
