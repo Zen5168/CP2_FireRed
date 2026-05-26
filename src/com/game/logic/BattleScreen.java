@@ -11,6 +11,7 @@ public class BattleScreen {
     private GamePanel gp;
     private BufferedImage[][] pokemonSprites; // [ROW][COL]
     private BufferedImage[] trainerIntroFrames; // TRAINER THROWING POKEBALL ANIMATION FRAMES
+    private BufferedImage[] pokeballSprites; // [0=CLOSED, 1=OPENED]
     
     private int transitionAlpha = 0;
     private boolean isTransitioning = false;
@@ -28,6 +29,22 @@ public class BattleScreen {
     private int trainerIntroFrameDelay = 8; // FRAMES TO WAIT BEFORE CHANGING SPRITE
     private int trainerIntroTotalFrames = 5; // TOTAL FRAMES IN ANIMATION 
     private int trainerSlideOffset = 0; // FOR SLIDE-IN ANIMATION
+    
+    // POKEBALL THROW ANIMATION
+    private boolean showPokeballThrow = false;
+    private double pokeballX = 0;
+    private double pokeballY = 0;
+    private int pokeballTargetX = 0;
+    private int pokeballTargetY = 0;
+    private double pokeballVelocityX = 0;
+    private double pokeballVelocityY = 0;
+    private int pokeballFrame = 0; // 0 = CLOSED, 1 = OPENED
+    private int pokeballAnimationStage = 0; // 0 = THROWING, 1 = OPENING, 2 = CATCHING, 3 = COMPLETE
+    private int pokeballAnimationCounter = 0;
+    private boolean catchSuccessful = false;
+    private int wobbleCount = 0;
+    private double wobbleAngle = 0;
+    private boolean hideEnemyPokemon = false; // HIDE ENEMY WHEN CAUGHT IN POKEBALL
     
     public BattleScreen(GamePanel gp) {
         this.gp = gp;
@@ -137,6 +154,69 @@ public class BattleScreen {
             System.out.println("Could not load trainer intro animation: " + e.getMessage());
             e.printStackTrace();
         }
+        
+        //=====================================
+        // LOAD POKEBALL SPRITES
+        //=====================================
+        try {
+            BufferedImage pokeballSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/pokeball.png"));
+            
+            if (pokeballSheet == null) {
+                System.out.println("ERROR: Pokeball sprite sheet is null! File not found or couldn't be read.");
+                System.out.println("Creating placeholder pokeball sprites...");
+                return;
+            }
+            
+            System.out.println("Pokeball sheet loaded: " + pokeballSheet.getWidth() + "x" + pokeballSheet.getHeight());
+            
+            // INITIALIZE POKEBALL SPRITE ARRAY
+            pokeballSprites = new BufferedImage[2]; // [0=CLOSED, 1=OPENED]
+            
+            // ADJUST THESE COORDINATES TO MATCH YOUR SPRITE LAYOUT
+            // FORMAT: X, Y, WIDTH, HEIGHT (all in pixels)
+            Rectangle[] pokeballFrameMap = {
+                // CLOSED POKEBALL - First 14x14 sprite
+                new Rectangle(33, 1, 14, 14),    
+                
+                // OPENED POKEBALL - Second 14x14 sprite (14 pixels to the right)
+                new Rectangle(3, 18, 14, 14),   
+            };
+            
+            // EXTRACT FRAMES USING THE MAP
+            boolean allLoaded = true;
+            for (int i = 0; i < pokeballFrameMap.length; i++) {
+                Rectangle frameRect = pokeballFrameMap[i];
+                
+                // CHECK IF COORDINATES ARE WITHIN BOUNDS
+                if (frameRect.x + frameRect.width <= pokeballSheet.getWidth() &&
+                    frameRect.y + frameRect.height <= pokeballSheet.getHeight()) {
+                    
+                    pokeballSprites[i] = pokeballSheet.getSubimage(
+                        frameRect.x, 
+                        frameRect.y, 
+                        frameRect.width, 
+                        frameRect.height
+                    );
+                    System.out.println("Loaded pokeball sprite " + i + " at (" + frameRect.x + "," + frameRect.y + ") size " + frameRect.width + "x" + frameRect.height + ": SUCCESS");
+                } else {
+                    System.out.println("ERROR: Pokeball sprite " + i + " coordinates out of bounds!");
+                    System.out.println("  Requested: x=" + frameRect.x + " y=" + frameRect.y + " w=" + frameRect.width + " h=" + frameRect.height);
+                    System.out.println("  Sheet size: " + pokeballSheet.getWidth() + "x" + pokeballSheet.getHeight());
+                    allLoaded = false;
+                }
+            }
+            
+            if (allLoaded) {
+                System.out.println("✓ Pokeball sprites loaded successfully!");
+            } else {
+                System.out.println("✗ Some pokeball sprites failed to load! Creating placeholders...");
+            }
+            
+        } catch (Exception e) {
+            System.out.println("✗ Could not load pokeball sprites: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("Creating placeholder pokeball sprites...");
+        }
     }
     
     //=====================================
@@ -149,6 +229,14 @@ public class BattleScreen {
         trainerIntroFrame = 0;
         trainerIntroFrameCounter = 0;
         trainerSlideOffset = -200; // START OFF-SCREEN FOR SLIDE-IN EFFECT
+        
+        // START POKEBALL THROW ANIMATION SYNCED WITH TRAINER
+        showPokeballThrow = true;
+        pokeballAnimationStage = -1; // SPECIAL STAGE FOR TRAINER INTRO
+        pokeballAnimationCounter = 0;
+        pokeballFrame = 0;
+        pokeballX = -100; // START OFF-SCREEN
+        pokeballY = gp.screenHeight - 200;
     }
     
     //=====================================
@@ -182,9 +270,185 @@ public class BattleScreen {
                 if (trainerIntroFrame >= trainerIntroTotalFrames) {
                     showTrainerIntro = false;
                     trainerIntroFrame = 0;
+                    showPokeballThrow = false; // END POKEBALL ANIMATION TOO
+                }
+            }
+            
+            // UPDATE POKEBALL POSITION SYNCED WITH TRAINER ANIMATION
+            if (showPokeballThrow && pokeballAnimationStage == -1) {
+                // SYNC POKEBALL WITH TRAINER FRAMES
+                if (trainerIntroFrame >= 2 && trainerIntroFrame <= 4) {
+                    // CALCULATE POKEBALL POSITION BASED ON TRAINER POSITION
+                    int trainerX = -30 + trainerSlideOffset;
+                    pokeballX = trainerX + 200 + (trainerIntroFrame - 2) * 80;
+                    pokeballY = (gp.screenHeight - 280 - 140) + 100 - (trainerIntroFrame - 2) * 40;
+                    
+                    // ROTATE POKEBALL
+                    if (trainerIntroFrameCounter % 2 == 0) {
+                        pokeballFrame = (pokeballFrame == 0) ? 1 : 0;
+                    }
+                } else if (trainerIntroFrame < 2) {
+                    // HIDE POKEBALL BEFORE THROW
+                    pokeballX = -100;
+                } else {
+                    // POKEBALL CONTINUES OFF-SCREEN AFTER THROW
+                    pokeballX += 20;
+                    pokeballY -= 5;
                 }
             }
         }
+        
+        // UPDATE POKEBALL THROW ANIMATION (FOR CATCHING)
+        if (showPokeballThrow && pokeballAnimationStage >= 0) {
+            updatePokeballAnimation();
+        }
+    }
+    
+    //=====================================
+    // START POKEBALL THROW ANIMATION
+    //=====================================
+    public void startPokeballThrow(int targetX, int targetY, boolean willCatchSucceed) {
+        System.out.println("Starting pokeball throw animation! Target: " + targetX + ", " + targetY + " Success: " + willCatchSucceed);
+        showPokeballThrow = true;
+        catchSuccessful = willCatchSucceed;
+        hideEnemyPokemon = false;
+        
+        // START POSITION (BOTTOM LEFT, PLAYER SIDE)
+        pokeballX = 100;
+        pokeballY = gp.screenHeight - 200;
+        
+        // TARGET POSITION (ENEMY POKEMON)
+        pokeballTargetX = targetX;
+        pokeballTargetY = targetY;
+        
+        // CALCULATE VELOCITY FOR ARC TRAJECTORY
+        int dx = pokeballTargetX - (int)pokeballX;
+        int dy = pokeballTargetY - (int)pokeballY;
+        pokeballVelocityX = dx / 30.0; // REACH TARGET IN 30 FRAMES
+        pokeballVelocityY = dy / 30.0 - 5; // ADD UPWARD ARC
+        
+        pokeballFrame = 0; // START WITH CLOSED POKEBALL
+        pokeballAnimationStage = 0; // THROWING STAGE
+        pokeballAnimationCounter = 0;
+        wobbleCount = 0;
+        wobbleAngle = 0;
+        
+        System.out.println("Pokeball animation initialized. Start pos: " + pokeballX + ", " + pokeballY);
+    }
+    
+    //=====================================
+    // UPDATE POKEBALL ANIMATION
+    //=====================================
+    private void updatePokeballAnimation() {
+        pokeballAnimationCounter++;
+        
+        switch (pokeballAnimationStage) {
+            case 0: // THROWING STAGE
+                // UPDATE POSITION WITH ARC TRAJECTORY
+                pokeballX += pokeballVelocityX;
+                pokeballY += pokeballVelocityY;
+                pokeballVelocityY += 0.3; // GRAVITY
+                
+                // ROTATE POKEBALL (VISUAL EFFECT)
+                if (pokeballAnimationCounter % 3 == 0) {
+                    pokeballFrame = (pokeballFrame == 0) ? 1 : 0;
+                }
+                
+                // CHECK IF REACHED TARGET
+                if (pokeballY >= pokeballTargetY) {
+                    pokeballY = pokeballTargetY;
+                    pokeballX = pokeballTargetX;
+                    pokeballAnimationStage = 1; // MOVE TO OPENING STAGE
+                    pokeballAnimationCounter = 0;
+                    pokeballFrame = 1; // OPEN POKEBALL
+                }
+                break;
+                
+            case 1: // OPENING STAGE (POKEBALL OPENS AND CAPTURES POKEMON)
+                pokeballFrame = 1; // KEEP OPENED
+                
+                // WAIT FOR A MOMENT THEN CLOSE
+                if (pokeballAnimationCounter > 15) {
+                    pokeballFrame = 0; // CLOSE POKEBALL
+                    hideEnemyPokemon = true; // HIDE ENEMY POKEMON (CAPTURED IN BALL)
+                    pokeballAnimationStage = 2; // MOVE TO CATCHING STAGE
+                    pokeballAnimationCounter = 0;
+                    wobbleCount = 0;
+                }
+                break;
+                
+            case 2: // CATCHING STAGE (WOBBLE ANIMATION)
+                pokeballFrame = 0; // KEEP CLOSED
+                
+                if (catchSuccessful) {
+                    // POKEBALL FALLS TO GROUND
+                    if (pokeballAnimationCounter < 10) {
+                        pokeballY += 2; // FALL DOWN
+                    }
+                    
+                    // WOBBLE ANIMATION (3 WOBBLES)
+                    if (pokeballAnimationCounter >= 10 && wobbleCount < 3) {
+                        int wobblePhase = (pokeballAnimationCounter - 10) % 40;
+                        
+                        if (wobblePhase < 20) {
+                            // WOBBLE LEFT TO RIGHT
+                            wobbleAngle = Math.sin(wobblePhase * Math.PI / 10) * 15;
+                        } else if (wobblePhase == 20) {
+                            // PAUSE BETWEEN WOBBLES
+                            wobbleAngle = 0;
+                            wobbleCount++;
+                        }
+                    }
+                    
+                    // END AFTER 3 WOBBLES + PAUSE
+                    if (pokeballAnimationCounter > 130) {
+                        wobbleAngle = 0;
+                        pokeballAnimationStage = 3; // COMPLETE - SUCCESS
+                        pokeballAnimationCounter = 0;
+                    }
+                } else {
+                    // POKEBALL FALLS TO GROUND
+                    if (pokeballAnimationCounter < 10) {
+                        pokeballY += 2; // FALL DOWN
+                    }
+                    
+                    // WOBBLE ONCE THEN BREAK FREE
+                    if (pokeballAnimationCounter >= 10 && pokeballAnimationCounter < 30) {
+                        int wobblePhase = (pokeballAnimationCounter - 10);
+                        wobbleAngle = Math.sin(wobblePhase * Math.PI / 10) * 15;
+                    }
+                    
+                    // BREAK FREE
+                    if (pokeballAnimationCounter >= 30) {
+                        wobbleAngle = 0;
+                        pokeballFrame = 1; // OPEN POKEBALL
+                        hideEnemyPokemon = false; // SHOW ENEMY POKEMON AGAIN
+                        
+                        if (pokeballAnimationCounter > 50) {
+                            pokeballAnimationStage = 3; // COMPLETE - FAILED
+                            pokeballAnimationCounter = 0;
+                        }
+                    }
+                }
+                break;
+                
+            case 3: // COMPLETE
+                // WAIT A MOMENT THEN END
+                if (pokeballAnimationCounter > 30) {
+                    showPokeballThrow = false;
+                    pokeballAnimationStage = 0;
+                    hideEnemyPokemon = false;
+                    wobbleAngle = 0;
+                }
+                break;
+        }
+    }
+    
+    //=====================================
+    // CHECK IF POKEBALL ANIMATION IS ACTIVE
+    //=====================================
+    public boolean isPokeballAnimationActive() {
+        return showPokeballThrow;
     }
     
     //=====================================
@@ -272,7 +536,8 @@ public class BattleScreen {
             // DON'T DRAW POKEMON DURING INTRO ANIMATION
         } else {
             // DRAW WILD POKEMON (ENEMY SIDE - TOP RIGHT) - MUCH BIGGER SIZE
-            if (wildPokemon != null) {
+            // ONLY DRAW IF NOT HIDDEN (WHEN CAUGHT IN POKEBALL)
+            if (wildPokemon != null && !hideEnemyPokemon) {
                 int enemyX = gp.screenWidth - 350;
                 int enemyY = 40;
                 int enemySpriteSize = 220;
@@ -317,6 +582,42 @@ public class BattleScreen {
                 // PLAYER INFO BOX (POSITIONED TO NOT OVERLAP WITH SPRITE)
                 drawInfoBox(g2, playerPokemon, gp.screenWidth - 300, gp.screenHeight - 300, true, playerDisplayedHP);
             }
+        }
+        
+        // DRAW POKEBALL THROW ANIMATION (DRAWN OVER EVERYTHING ELSE)
+        if (showPokeballThrow && pokeballSprites != null) {
+            BufferedImage pokeballSprite = pokeballSprites[pokeballFrame];
+            if (pokeballSprite != null) {
+                // USE DIFFERENT SIZE FOR TRAINER INTRO VS CATCHING
+                int pokeballSize = (pokeballAnimationStage == -1) ? 48 : 64;
+                
+                // DEBUG: Print pokeball position
+                // System.out.println("Drawing pokeball at: " + (int)pokeballX + ", " + (int)pokeballY + " Stage: " + pokeballAnimationStage);
+                
+                // APPLY WOBBLE ROTATION
+                if (wobbleAngle != 0) {
+                    // SAVE ORIGINAL TRANSFORM
+                    var originalTransform = g2.getTransform();
+                    
+                    // ROTATE AROUND POKEBALL CENTER
+                    int centerX = (int)pokeballX + pokeballSize / 2;
+                    int centerY = (int)pokeballY + pokeballSize / 2;
+                    g2.rotate(Math.toRadians(wobbleAngle), centerX, centerY);
+                    
+                    // DRAW POKEBALL
+                    g2.drawImage(pokeballSprite, (int)pokeballX, (int)pokeballY, pokeballSize, pokeballSize, null);
+                    
+                    // RESTORE ORIGINAL TRANSFORM
+                    g2.setTransform(originalTransform);
+                } else {
+                    // DRAW POKEBALL WITHOUT ROTATION
+                    g2.drawImage(pokeballSprite, (int)pokeballX, (int)pokeballY, pokeballSize, pokeballSize, null);
+                }
+            } else {
+                System.out.println("ERROR: Pokeball sprite is null! Frame: " + pokeballFrame);
+            }
+        } else if (showPokeballThrow && pokeballSprites == null) {
+            System.out.println("ERROR: showPokeballThrow is true but pokeballSprites is null!");
         }
         
         // TRANSITION EFFECT (DRAWN LAST)
