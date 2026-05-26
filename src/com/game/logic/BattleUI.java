@@ -451,7 +451,18 @@ public class BattleUI {
             return;
         }
 
+        // START POKEBALL SWITCH ANIMATION
+        // CALCULATE TARGET POSITION (WHERE PLAYER POKEMON APPEARS)
+        int targetX = 50 + 140; // CENTER OF PLAYER SPRITE AREA
+        int targetY = gp.screenHeight - 420 + 140; // CENTER OF PLAYER SPRITE AREA
+        gp.battleScreen.startPokemonSwitchAnimation(targetX, targetY);
+        
         playerPokemon = newPokemon;
+        
+        // RESET HP ANIMATION FOR NEW POKEMON
+        gp.battleScreen.resetHPAnimation(playerPokemon, enemyPokemon);
+        
+        addDialogue("Come back!");
         addDialogue("Go! " + playerPokemon.getName() + "!");
 
         // ENEMY ATTACKS
