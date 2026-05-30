@@ -49,29 +49,29 @@ public class KeyHandler implements KeyListener {
             }
         }
         
-        // ACTION KEYS (UIJK = XYAB on Xbox controller)
+        // ACTION KEYS (UIJK = AXYB on Xbox controller)
         if (code == KeyEvent.VK_U) {
             if (!uPressed) {
                 uPressed = true;
-                addKeyPress("U"); // X button (confirm/select)
+                addKeyPress("U");
             }
         }
         if (code == KeyEvent.VK_I) {
             if (!iPressed) {
                 iPressed = true;
-                addKeyPress("I"); // Y button (back/cancel)
+                addKeyPress("I");
             }
         }
         if (code == KeyEvent.VK_J) {
             if (!jPressed) {
                 jPressed = true;
-                addKeyPress("J"); // A button (alternative confirm)
+                addKeyPress("J");
             }
         }
         if (code == KeyEvent.VK_K) {
             if (!kPressed) {
                 kPressed = true;
-                addKeyPress("K"); // B button (alternative back)
+                addKeyPress("K");
             }
         }
         

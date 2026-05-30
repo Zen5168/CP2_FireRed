@@ -102,7 +102,7 @@ public class BattleUI {
             case BATTLE_ACTION:
             case VICTORY:
             case DEFEAT:
-                if (input.equals("U") || input.equals("SPACE") || input.equals("J") || input.equals("ENTER")) {
+                if (input.equals("U") || input.equals("SPACE") || input.equals("ENTER")) {
                     nextDialogue();
                 }
                 break;
@@ -154,10 +154,8 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // CONFIRM
+            case "U":
                 selectMainMenuOption();
-                break;
-            case "I": // BACK (NOT APPLICABLE IN MAIN MENU)
                 break;
         }
     }
@@ -243,12 +241,12 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // CONFIRM
+            case "U":
                 if (fightMenuMoves[selectedOption] != null) {
                     executePlayerMove(fightMenuMoves[selectedOption]);
                 }
                 break;
-            case "I": // BACK
+            case "I":
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -277,10 +275,10 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // CONFIRM
+            case "U":
                 enterBagItems();
                 break;
-            case "I": // BACK
+            case "I":
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -314,10 +312,10 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // CONFIRM
+            case "U":
                 useItem(bagItems.get(selectedOption));
                 break;
-            case "I": // BACK
+            case "I":
                 currentState = BattleState.BAG_MENU;
                 selectedOption = selectedCategory;
                 break;
@@ -346,10 +344,10 @@ public class BattleUI {
                     selectedOption++;
                 }
                 break;
-            case "U": // CONFIRM
+            case "U":
                 switchPokemon(selectedOption);
                 break;
-            case "I": // BACK
+            case "I":
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
