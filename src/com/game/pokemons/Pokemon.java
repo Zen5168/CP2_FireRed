@@ -269,4 +269,11 @@ public abstract class Pokemon {
             this.hp = newHp;
         }
     }
+    
+    public void heal(int amount) {
+        this.hp += amount;
+        if (this.hp > this.maxHp) {
+            this.hp = this.maxHp;
+        }
+    }
 }

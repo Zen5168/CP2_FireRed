@@ -19,6 +19,13 @@ public class Player extends Entity {
     
     private int lastTileX = -1;
     private int lastTileY = -1;
+    
+    // GRID-BASED MOVEMENT VARIABLES
+    private boolean isMoving = false;
+    private int pixelCounter = 0;
+    private String movementDirection = "";
+    private int targetX = 0;
+    private int targetY = 0;
 
     public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -75,61 +82,138 @@ public class Player extends Entity {
     }
 
     //=====================================
-    // WALKING ANIMATION
+    // GRID-BASED MOVEMENT 
     //=====================================
     public void update() {
 
-        if (keyH.ctrlPressed) {
-            speed = 4; // RUN SPEED
-        } else {
-            speed = 2; // WALK SPEED
-        }
-
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-            if (keyH.upPressed) {
-                direction = "up";
-            } else if (keyH.downPressed) {
-                direction = "down";
-            } else if (keyH.leftPressed) {
-                direction = "left";
-            } else if (keyH.rightPressed) {
-                direction = "right";
-            }
-
-            // CHECK TILE COLLISION
-            collisionOn = false;
-            gp.cChecker.checkTile(this);
-
-            // IF COLLISION IS FALSE, PLAYER CAN MOVE
-            if (collisionOn == false) {
-
-                switch (direction) {
-
-                    case "up":
-                        worldY -= speed;
-                        break;
-                    case "down":
-                        worldY += speed;
-                        break;
-                    case "left":
-                        worldX -= speed;
-                        break;
-                    case "right":
-                        worldX += speed;
-                        break;
+        // DETERMINE MOVEMENT SPEED
+        int moveSpeed = keyH.ctrlPressed ? 3 : 2; // RUN or WALK
+        
+        // CHECK FOR BUILDING ENTRY/EXIT WITH U or J KEYS
+        if (keyH.hasKeyPress()) {
+            String key = keyH.getNextKeyPress();
+            System.out.println(">>> KEY PRESSED: " + key + " <<<");
+            // U = A BUTTON (CONFIRM/ACTION), J = X BUTTON (ALTERNATE ACTION)
+            if (key.equals("U") || key.equals("J")) {
+                System.out.println(">>> ACTION KEY DETECTED! <<<");
+                int playerTileX = worldX / gp.tileSize;
+                int playerTileY = worldY / gp.tileSize;
+                System.out.println("Player world position: (" + worldX + ", " + worldY + ")");
+                System.out.println("Player tile position: (" + playerTileX + ", " + playerTileY + ")");
+                
+                if (gp.buildingManager.isInBuilding()) {
+                    System.out.println("Checking exit...");
+                    gp.buildingManager.checkBuildingExit(playerTileX, playerTileY);
+                } else {
+                    System.out.println("Checking entry...");
+                    gp.buildingManager.checkBuildingEntry(playerTileX, playerTileY);
                 }
             }
+        }
 
+        // IF CURRENTLY MOVING, CONTINUE THE MOVEMENT ANIMATION
+        if (isMoving) {
+            pixelCounter += moveSpeed;
+            
+            // MOVE TOWARDS TARGET
+            switch (movementDirection) {
+                case "up":
+                    worldY -= moveSpeed;
+                    break;
+                case "down":
+                    worldY += moveSpeed;
+                    break;
+                case "left":
+                    worldX -= moveSpeed;
+                    break;
+                case "right":
+                    worldX += moveSpeed;
+                    break;
+            }
+            
+            // Animate sprite
             spriteCounter++;
             if (spriteCounter > 12) {
                 spriteNum = (spriteNum == 0) ? 2 : 0; // LEFT FOOT OR RIGHT FOOT
                 spriteCounter = 0;
             }
             
-            // CHECK FOR WILD ENCOUNTERS
-            checkWildEncounter();
-        } else {
-            spriteNum = 1; // STANDING OR NEUTRAL
+            // CHECK IF REACHED TARGET TILE
+            if (pixelCounter >= gp.tileSize) {
+                // SNAP TO EXACT TILE POSITION
+                worldX = targetX;
+                worldY = targetY;
+                isMoving = false;
+                pixelCounter = 0;
+                spriteNum = 1; // STANDING SPRITE
+                
+                // CHECK FOR WILD ENCOUNTERS (ONLY IF NOT IN A BUILDING)
+                if (!gp.buildingManager.isInBuilding()) {
+                    checkWildEncounter();
+                }
+            }
+        } 
+        // IF NOT MOVING, CHECK FOR NEW INPUT
+        else {
+            if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+                // DETERMINE DIRECTION
+                if (keyH.upPressed) {
+                    direction = "up";
+                    movementDirection = "up";
+                } else if (keyH.downPressed) {
+                    direction = "down";
+                    movementDirection = "down";
+                } else if (keyH.leftPressed) {
+                    direction = "left";
+                    movementDirection = "left";
+                } else if (keyH.rightPressed) {
+                    direction = "right";
+                    movementDirection = "right";
+                }
+                
+                // CALCULATE TARGET TILE
+                targetX = worldX;
+                targetY = worldY;
+                
+                switch (movementDirection) {
+                    case "up":
+                        targetY -= gp.tileSize;
+                        break;
+                    case "down":
+                        targetY += gp.tileSize;
+                        break;
+                    case "left":
+                        targetX -= gp.tileSize;
+                        break;
+                    case "right":
+                        targetX += gp.tileSize;
+                        break;
+                }
+                
+                // CHECK COLLISION AT TARGET TILE
+                collisionOn = false;
+                
+                // TEMPORARILY SET POSITION TO TARGET FOR COLLISION CHECK
+                int oldX = worldX;
+                int oldY = worldY;
+                worldX = targetX;
+                worldY = targetY;
+                
+                gp.cChecker.checkTile(this);
+                
+                // RESTORE POSITION
+                worldX = oldX;
+                worldY = oldY;
+                
+                // IF NO COLLISION, START MOVING
+                if (!collisionOn) {
+                    isMoving = true;
+                    pixelCounter = 0;
+                    spriteNum = 0; // START WALKING ANIMATION
+                }
+            } else {
+                spriteNum = 1; // STANDING SPRITE
+            }
         }
     }
     

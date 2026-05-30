@@ -7,4 +7,6 @@ public class Tile {
     public BufferedImage image;
     public boolean collision = false;
     public boolean hasWildEncounter = false;
+    public boolean isPokeCenterDoor = false;
+    public boolean isMartDoor = false;
 }

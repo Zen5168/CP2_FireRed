@@ -25,9 +25,9 @@ public class GamePanel extends JPanel implements Runnable {
     //========================================
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol; 
-    public final int worldHeight = tileSize * maxWorldRow; 
-    
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
+
     //========================================
     // FPS
     //========================================
@@ -36,10 +36,11 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
-    public CollisionChecker cChecker = new CollisionChecker (this);
+    public CollisionChecker cChecker = new CollisionChecker(this);
     public Player player = new Player(this, keyH);
     public WildEncounterManager encounterManager = new WildEncounterManager();
-    
+    public com.game.world.BuildingManager buildingManager;
+
     // GAME STATE
     public GameState gameState = GameState.OVERWORLD;
     public BattleScreen battleScreen;
@@ -54,14 +55,15 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true); // PREVENTS FLICKERING (BETTER RENDERING)
         this.addKeyListener(keyH);
         this.setFocusable(true);
-        
+
         battleScreen = new BattleScreen(this);
         battleUI = new BattleUI(this);
-        
+        buildingManager = new com.game.world.BuildingManager(this);
+
         // INITIALIZE PLAYER TRAINER WITH CUSTOM NAME AND STARTER POKEMON
         playerTrainer = new com.game.trainers.Player(playerName, 23, 21);
         playerTrainer.addPokemon(starterPokemon);
-        
+
         // ADD SOME ITEMS FOR TESTING
         playerTrainer.getBag().addItem(new com.game.items.Pokeball(), 5);
         playerTrainer.getBag().addItem(new com.game.items.Potion(), 3);
@@ -114,16 +116,17 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (gameState == GameState.OVERWORLD) {
             player.update();
+            buildingManager.update(); // UPDATE TRANSITIONS
         } else if (gameState == GameState.BATTLE) {
             battleScreen.updateTransition();
-            
+
             // UPDATE HP BAR ANIMATION
             com.game.pokemons.Pokemon playerPokemon = battleUI.getPlayerPokemon();
             com.game.pokemons.Pokemon enemyPokemon = battleUI.getEnemyPokemon();
             battleScreen.updateHPAnimation(playerPokemon, enemyPokemon);
-            
+
             battleUI.update();
-            
+
             // HANDLE BATTLE INPUT
             if (keyH.hasKeyPress()) {
                 String key = keyH.getNextKeyPress();
@@ -140,13 +143,25 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
 
         if (gameState == GameState.OVERWORLD) {
-            tileM.draw(g2);
-            player.draw(g2);
+            if (buildingManager.isInBuilding()) {
+                // DRAW INTERIOR ROOM
+                buildingManager.drawInterior(g2);
+                player.draw(g2);
+            } else {
+                // DRAW OVERWORLD
+                tileM.draw(g2); // DRAW BASE TILES (GRASS, PATHS, ETC.)
+                buildingManager.draw(g2); // DRAW BUILDINGS
+                player.draw(g2); // DRAW PLAYER ON TOP
+            }
+            
+            // DRAW TRANSITION OVERLAY (ALWAYS ON TOP)
+            buildingManager.drawTransition(g2);
+            
         } else if (gameState == GameState.BATTLE) {
             // DRAW BATTLE SCREEN
             com.game.pokemons.Pokemon playerPokemon = battleUI.getPlayerPokemon();
             com.game.pokemons.Pokemon enemyPokemon = battleUI.getEnemyPokemon();
-            
+
             battleScreen.draw(g2, playerPokemon, enemyPokemon);
             battleUI.draw(g2);
         }
