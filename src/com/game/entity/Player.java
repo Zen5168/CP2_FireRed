@@ -16,16 +16,19 @@ public class Player extends Entity {
     public final int screenY;
 
     private BufferedImage[][] walkingSprites; // [DIRECTION][FRAME]
-    
+
     private int lastTileX = -1;
     private int lastTileY = -1;
-    
+
     // GRID-BASED MOVEMENT VARIABLES
     private boolean isMoving = false;
     private int pixelCounter = 0;
     private String movementDirection = "";
     private int targetX = 0;
     private int targetY = 0;
+    private boolean justTurned = false; // PREVENT IMMEDIATE WALKING AFTER TURNING
+    private long turnTime = 0; // TIME WHEN PLAYER TURNED
+    private static final long TURN_DELAY_MS = 100; // DELAY BEFORE WALKING AFTER TURNING (0.1 SECONDS)
 
     public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -53,7 +56,6 @@ public class Player extends Entity {
 
         try {
             BufferedImage playerSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/FMC_sprite_sheet.png"));
-            int bgRGB = playerSheet.getRGB(0, 0);
 
             walkingSprites = new BufferedImage[4][3];
 
@@ -87,8 +89,8 @@ public class Player extends Entity {
     public void update() {
 
         // DETERMINE MOVEMENT SPEED
-        int moveSpeed = keyH.ctrlPressed ? 3 : 2; // RUN or WALK
-        
+        int moveSpeed = keyH.ctrlPressed ? 3 : 2; // RUN OR WALK
+
         // CHECK FOR BUILDING ENTRY/EXIT WITH U or J KEYS
         if (keyH.hasKeyPress()) {
             String key = keyH.getNextKeyPress();
@@ -100,7 +102,7 @@ public class Player extends Entity {
                 int playerTileY = worldY / gp.tileSize;
                 System.out.println("Player world position: (" + worldX + ", " + worldY + ")");
                 System.out.println("Player tile position: (" + playerTileX + ", " + playerTileY + ")");
-                
+
                 if (gp.buildingManager.isInBuilding()) {
                     System.out.println("Checking exit...");
                     gp.buildingManager.checkBuildingExit(playerTileX, playerTileY);
@@ -114,7 +116,7 @@ public class Player extends Entity {
         // IF CURRENTLY MOVING, CONTINUE THE MOVEMENT ANIMATION
         if (isMoving) {
             pixelCounter += moveSpeed;
-            
+
             // MOVE TOWARDS TARGET
             switch (movementDirection) {
                 case "up":
@@ -130,14 +132,14 @@ public class Player extends Entity {
                     worldX += moveSpeed;
                     break;
             }
-            
+
             // Animate sprite
             spriteCounter++;
             if (spriteCounter > 12) {
                 spriteNum = (spriteNum == 0) ? 2 : 0; // LEFT FOOT OR RIGHT FOOT
                 spriteCounter = 0;
             }
-            
+
             // CHECK IF REACHED TARGET TILE
             if (pixelCounter >= gp.tileSize) {
                 // SNAP TO EXACT TILE POSITION
@@ -146,35 +148,57 @@ public class Player extends Entity {
                 isMoving = false;
                 pixelCounter = 0;
                 spriteNum = 1; // STANDING SPRITE
-                
+
                 // CHECK FOR WILD ENCOUNTERS (ONLY IF NOT IN A BUILDING)
                 if (!gp.buildingManager.isInBuilding()) {
                     checkWildEncounter();
                 }
             }
-        } 
-        // IF NOT MOVING, CHECK FOR NEW INPUT
+        } // IF NOT MOVING, CHECK FOR NEW INPUT
         else {
             if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-                // DETERMINE DIRECTION
+                // DETERMINE DESIRED DIRECTION
+                String desiredDirection = "";
                 if (keyH.upPressed) {
-                    direction = "up";
-                    movementDirection = "up";
+                    desiredDirection = "up";
                 } else if (keyH.downPressed) {
-                    direction = "down";
-                    movementDirection = "down";
+                    desiredDirection = "down";
                 } else if (keyH.leftPressed) {
-                    direction = "left";
-                    movementDirection = "left";
+                    desiredDirection = "left";
                 } else if (keyH.rightPressed) {
-                    direction = "right";
-                    movementDirection = "right";
+                    desiredDirection = "right";
                 }
-                
+
+                // IF PLAYER IS FACING A DIFFERENT DIRECTION, JUST TURN (DON'T MOVE)
+                if (!direction.equals(desiredDirection)) {
+                    direction = desiredDirection;
+                    spriteNum = 1; // STANDING SPRITE (FACING NEW DIRECTION)
+                    justTurned = true; // SET FLAG TO PREVENT IMMEDIATE MOVEMENT
+                    turnTime = System.currentTimeMillis(); // RECORD TURN TIME
+                    return; // DON'T MOVE, JUST TURN
+                }
+
+                // IF JUST TURNED, CHECK IF ENOUGH TIME HAS PASSED
+                if (justTurned) {
+                    long currentTime = System.currentTimeMillis();
+                    long elapsedTime = currentTime - turnTime;
+
+                    // IF NOT ENOUGH TIME HAS PASSED, DON'T WALK YET
+                    if (elapsedTime < TURN_DELAY_MS) {
+                        return; // WAIT FOR DELAY TO PASS
+                    }
+
+                    // ENOUGH TIME HAS PASSED, ALLOW WALKING
+                    justTurned = false;
+                }
+
+                // IF ALREADY FACING THE DESIRED DIRECTION, PROCEED WITH MOVEMENT
+                movementDirection = desiredDirection;
+
                 // CALCULATE TARGET TILE
                 targetX = worldX;
                 targetY = worldY;
-                
+
                 switch (movementDirection) {
                     case "up":
                         targetY -= gp.tileSize;
@@ -189,22 +213,22 @@ public class Player extends Entity {
                         targetX += gp.tileSize;
                         break;
                 }
-                
+
                 // CHECK COLLISION AT TARGET TILE
                 collisionOn = false;
-                
+
                 // TEMPORARILY SET POSITION TO TARGET FOR COLLISION CHECK
                 int oldX = worldX;
                 int oldY = worldY;
                 worldX = targetX;
                 worldY = targetY;
-                
+
                 gp.cChecker.checkTile(this);
-                
+
                 // RESTORE POSITION
                 worldX = oldX;
                 worldY = oldY;
-                
+
                 // IF NO COLLISION, START MOVING
                 if (!collisionOn) {
                     isMoving = true;
@@ -212,11 +236,13 @@ public class Player extends Entity {
                     spriteNum = 0; // START WALKING ANIMATION
                 }
             } else {
+                // NO KEYS PRESSED - RESET THE TURN FLAG
+                justTurned = false;
                 spriteNum = 1; // STANDING SPRITE
             }
         }
     }
-    
+
     //=====================================
     // WILD ENCOUNTER CHECK
     //=====================================
@@ -224,15 +250,15 @@ public class Player extends Entity {
         // GET CURRENT TILE POSITION
         int currentTileX = worldX / gp.tileSize;
         int currentTileY = worldY / gp.tileSize;
-        
+
         // CHECK IF PLAYER MOVED TO A NEW TILE
         if (currentTileX != lastTileX || currentTileY != lastTileY) {
             lastTileX = currentTileX;
             lastTileY = currentTileY;
-            
+
             // GET THE TILE THE PLAYER IS STANDING ON
             int tileNum = gp.tileM.mapTileNum[currentTileX][currentTileY];
-            
+
             // CHECK IF IT'S A GRASS TILE
             if (gp.tileM.tile[tileNum].hasWildEncounter) {
                 if (gp.encounterManager.checkForEncounter()) {
@@ -241,7 +267,7 @@ public class Player extends Entity {
             }
         }
     }
-    
+
     //=====================================
     // TRIGGER WILD BATTLE
     //=====================================
@@ -254,24 +280,24 @@ public class Player extends Entity {
                 break;
             }
         }
-        
+
         // PREVENT BATTLE IF ALL POKEMON ARE FAINTED
         if (!hasConsciousPokemon) {
             System.out.println("All your Pokemon have fainted! Cannot enter battle.");
             return;
         }
-        
+
         Pokemon wildPokemon = gp.encounterManager.generateWildPokemon();
-        
+
         System.out.println("\n========================================");
         System.out.println("   A wild " + wildPokemon.getName() + " appeared!");
         System.out.println("========================================");
-        
+
         // SWITCH TO BATTLE STATE
         gp.currentWildPokemon = wildPokemon;
         gp.gameState = GameState.BATTLE;
         gp.battleScreen.startTransition();
-        
+
         // GET FIRST CONSCIOUS POKEMON
         Pokemon playerPokemon = null;
         for (Pokemon p : gp.playerTrainer.getParty()) {
@@ -280,10 +306,10 @@ public class Player extends Entity {
                 break;
             }
         }
-        
+
         // INITIALIZE BATTLE UI
         gp.battleUI.initBattle(gp.playerTrainer, playerPokemon, wildPokemon, false);
-        
+
         // RESET HP ANIMATION FOR NEW BATTLE
         gp.battleScreen.resetHPAnimation(playerPokemon, wildPokemon);
     }

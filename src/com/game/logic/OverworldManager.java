@@ -135,17 +135,6 @@ public class OverworldManager {
         } else {
             System.out.println("You bumped into something!");
         }
-
-        //================================
-        // POKEMON CENTER
-        //================================
-        if (nextTile.getName().equals("Pokemon Center")) {
-            System.out.println("Welcome to the Pokemon Center! Healing your party...");
-            for (Pokemon p : player.getParty()) {
-                p.setHp(p.getMaxHp());
-            }
-            System.out.println("Your Pokemon are now healthy!!");
-        }
     }
 
     //================================

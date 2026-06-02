@@ -50,30 +50,22 @@ public class BuildingManager {
                 15 * gp.tileSize, // WORLD Y
                 4, // WIDTH IN TILES
                 4, // HEIGHT IN TILES
-                pokeCenterSprite,
-                new Rectangle(gp.tileSize, 3 * gp.tileSize, gp.tileSize, gp.tileSize), // DOOR AREA
-                "/res/maps/pokecenter_interior.txt",
-                new Point(5, 8), // INTERIOR SPAWN
-                new Point(21, 19) // EXIT SPAWN 
+                pokeCenterSprite
         );
         buildings.add(pokeCenter);
 
-        BufferedImage pokeMartSprite = buildingSheet.getSubimage(31, 880, 64, 64);  // SPRITE LOCATION: X=31, Y=880, SIZE=64X64
+        // POKEMART AT WORLD TILE POSITION (26, 15)
+        // SPRITE LOCATION: X=31, Y=880, SIZE=64X64
+        BufferedImage pokeMartSprite = buildingSheet.getSubimage(31, 880, 64, 64);
         Building pokeMart = new Building(
                 "PokeMart",
-                // POKEMART AT WORLD TILE POSITION (26, 15)
                 26 * gp.tileSize, // WORLD X
                 15 * gp.tileSize, // WORLD Y
                 4, // WIDTH IN TILES
                 4, // HEIGHT IN TILES
-                pokeMartSprite,
-                new Rectangle(gp.tileSize, 3 * gp.tileSize, gp.tileSize, gp.tileSize), // DOOR AREA
-                "/res/maps/pokemart_interior.txt",
-                new Point(5, 8), // INTERIOR SPAWN
-                new Point(27, 19) // EXIT SPAWN 
+                pokeMartSprite
         );
         buildings.add(pokeMart);
-
     }
 
     //=============================
@@ -116,8 +108,16 @@ public class BuildingManager {
             // PLAYER CAN ENTER FROM THE DOOR TILE OR ONE TILE BELOW IT
             boolean atDoor = (playerTileX == doorTileX) && (playerTileY == doorTileY);
             boolean belowDoor = (playerTileX == doorTileX) && (playerTileY == doorTileY + 1);
-                
-            return;
+            
+            // PLAYER MUST BE FACING UP TO ENTER
+            boolean facingUp = gp.player.direction.equals("up");
+            
+            if ((atDoor || belowDoor) && facingUp) {
+                // DETERMINE BUILDING TYPE
+                String buildingType = building.getName().contains("Center") ? "POKECENTER" : "POKEMART";
+                enterBuilding(buildingType, building);
+                return;
+            }
         }
     }
 

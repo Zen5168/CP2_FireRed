@@ -43,55 +43,6 @@ public class TileManager {
                 new Rectangle(290, 1, 16, 16), // Tile[3] - BUSH
             };
 
-            // BUILDING TILES (16x16 sprites from buildings_sprites.png)
-            // Pokemon Center (4x4 tiles = 16 tiles total, index 4-19)
-            Rectangle[] pokeCenterTiles = {
-                // Row 1 (Top)
-                new Rectangle(30, 768, 16, 16), // Tile[4] - Top-left
-                new Rectangle(46, 768, 16, 16), // Tile[5] - Top-center-left
-                new Rectangle(62, 768, 16, 16), // Tile[6] - Top-center-right
-                new Rectangle(78, 768, 16, 16), // Tile[7] - Top-right
-                // Row 2
-                new Rectangle(30, 784, 16, 16), // Tile[8] - Mid-left
-                new Rectangle(46, 784, 16, 16), // Tile[9] - Mid-center-left
-                new Rectangle(62, 784, 16, 16), // Tile[10] - Mid-center-right
-                new Rectangle(78, 784, 16, 16), // Tile[11] - Mid-right
-                // Row 3
-                new Rectangle(30, 800, 16, 16), // Tile[12] - Lower-left
-                new Rectangle(46, 800, 16, 16), // Tile[13] - Lower-center-left
-                new Rectangle(62, 800, 16, 16), // Tile[14] - Lower-center-right
-                new Rectangle(78, 800, 16, 16), // Tile[15] - Lower-right
-                // Row 4 (Bottom with door)
-                new Rectangle(30, 816, 16, 16), // Tile[16] - Bottom-left
-                new Rectangle(46, 816, 16, 16), // Tile[17] - Bottom-center-left (DOOR)
-                new Rectangle(62, 816, 16, 16), // Tile[18] - Bottom-center-right
-                new Rectangle(78, 816, 16, 16), // Tile[19] - Bottom-right
-            };
-
-            // PokeMart (4x4 tiles = 16 tiles total, index 20-35)
-            Rectangle[] pokeMartTiles = {
-                // Row 1 (Top)
-                new Rectangle(31, 880, 16, 16), // Tile[20] - Top-left
-                new Rectangle(47, 880, 16, 16), // Tile[21] - Top-center-left
-                new Rectangle(63, 880, 16, 16), // Tile[22] - Top-center-right
-                new Rectangle(79, 880, 16, 16), // Tile[23] - Top-right
-                // Row 2
-                new Rectangle(31, 896, 16, 16), // Tile[24] - Mid-left
-                new Rectangle(47, 896, 16, 16), // Tile[25] - Mid-center-left
-                new Rectangle(63, 896, 16, 16), // Tile[26] - Mid-center-right
-                new Rectangle(79, 896, 16, 16), // Tile[27] - Mid-right
-                // Row 3
-                new Rectangle(31, 912, 16, 16), // Tile[28] - Lower-left
-                new Rectangle(47, 912, 16, 16), // Tile[29] - Lower-center-left
-                new Rectangle(63, 912, 16, 16), // Tile[30] - Lower-center-right
-                new Rectangle(79, 912, 16, 16), // Tile[31] - Lower-right
-                // Row 4 (Bottom with door)
-                new Rectangle(31, 928, 16, 16), // Tile[32] - Bottom-left
-                new Rectangle(47, 928, 16, 16), // Tile[33] - Bottom-center-left (DOOR)
-                new Rectangle(63, 928, 16, 16), // Tile[34] - Bottom-center-right
-                new Rectangle(79, 928, 16, 16), // Tile[35] - Bottom-right
-            };
-
             for (int i = 0; i < tileSet1.length; i++) {
                 tile[i] = new Tile();
                 Rectangle r = tileSet1[i];
@@ -107,38 +58,12 @@ public class TileManager {
             // Rectangle r = tileSet2[i];
             // tile[tileIndex].image = tileSheet2.getSubimage(r.x, r.y, r.width, r.height);
             // }
-            // LOAD POKEMON CENTER TILES (INDEX 4-19)
-            for (int i = 0; i < pokeCenterTiles.length; i++) {
-                int tileIndex = 4 + i;
-                tile[tileIndex] = new Tile();
-                Rectangle r = pokeCenterTiles[i];
-                tile[tileIndex].image = buildingSheet.getSubimage(r.x, r.y, r.width, r.height);
-                tile[tileIndex].collision = true; // Buildings have collision
-            }
-
-            // LOAD POKEMART TILES (INDEX 20-35)
-            for (int i = 0; i < pokeMartTiles.length; i++) {
-                int tileIndex = 20 + i;
-                tile[tileIndex] = new Tile();
-                Rectangle r = pokeMartTiles[i];
-                tile[tileIndex].image = buildingSheet.getSubimage(r.x, r.y, r.width, r.height);
-                tile[tileIndex].collision = true; // Buildings have collision
-            }
 
             // TILES WITH COLLISION
             tile[3].collision = true;
 
             // TILES WITH WILD ENCOUNTERS
             tile[2].hasWildEncounter = true; // TALL GRASS
-
-            // BUILDING TILES 
-            for (int i = 4; i <= 35; i++) {
-                tile[i].collision = true;
-            }
-
-            tile[18].isPokeCenterDoor = true;
-
-            tile[33].isMartDoor = true;
 
         } catch (IOException e) {
             e.printStackTrace();
