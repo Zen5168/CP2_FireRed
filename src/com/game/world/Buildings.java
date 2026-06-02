@@ -4,11 +4,6 @@ import com.game.trainers.*;
 
 public class Buildings {
     
-    public enum BuildingType {
-        POKEMON_CENTER,
-        POKEMART
-    }
-    
     public static void healPokemon(Player player) {
         System.out.println("\n========================================");
         System.out.println("   Welcome to the Pokemon Center!");
