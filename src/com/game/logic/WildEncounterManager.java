@@ -6,7 +6,7 @@ import java.util.Random;
 public class WildEncounterManager {
 
     private Random random;
-    private static final double ENCOUNTER_RATE = 0.20; // 20% chance per step on grass
+    private static final double ENCOUNTER_RATE = 0.10; // 20% CHANCE PER STEP ON GRASS
 
     public WildEncounterManager() {
         this.random = new Random();
@@ -16,10 +16,10 @@ public class WildEncounterManager {
     // STEP ON GRASS TILE
     //=====================================
     public boolean checkForEncounter() {
-        // Roll a random number between 0.0 and 1.0
+        // ROLL A RANDOM NUMBER BETWEEN 0.0 AND 1.0
         double roll = random.nextDouble();
         
-        // Return true if roll is less than encounter rate
+        // RETURN TRUE IF ROLL IS LESS THAN ENCOUNTER RATE
         return roll < ENCOUNTER_RATE;
     }
 
@@ -28,14 +28,14 @@ public class WildEncounterManager {
     //=====================================
     public Pokemon generateWildPokemon() {
         int encounterRoll = random.nextInt(100);
-        int level = 3 + random.nextInt(4); // LEVEL 3-6
+        int level = 11 + random.nextInt(5); // LEVEL 3-6
 
         // ENCOUNTER TABLE (BASED ON RARITY)
         if (encounterRoll < 50) {
             // 50% CHANCE - RATTATA
             return new Rattata(level);
         } else {
-            // 40% CHANCE - PIDGEY
+            // 5% CHANCE - PIDGEY
             return new Pidgey(level);
         }
     }

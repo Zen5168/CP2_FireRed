@@ -6,6 +6,7 @@ import com.game.pokemons.Pokemon;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.*;
+import com.game.ui.BattleUI;
 
 public class Player extends Entity {
 
@@ -87,31 +88,17 @@ public class Player extends Entity {
     // GRID-BASED MOVEMENT 
     //=====================================
     public void update() {
+        
+        // DISABLE PLAYER MOVEMENT IF DIALOGUE OR SHOP IS ACTIVE
+        if (gp.dialogueManager != null && gp.dialogueManager.isDialogueActive()) {
+            return;
+        }
+        if (gp.shopUI != null && gp.shopUI.isShopActive()) {
+            return;
+        }
 
         // DETERMINE MOVEMENT SPEED
         int moveSpeed = keyH.ctrlPressed ? 3 : 2; // RUN OR WALK
-
-        // CHECK FOR BUILDING ENTRY/EXIT WITH U or J KEYS
-        if (keyH.hasKeyPress()) {
-            String key = keyH.getNextKeyPress();
-            System.out.println(">>> KEY PRESSED: " + key + " <<<");
-            // U = A BUTTON (CONFIRM/ACTION), J = X BUTTON (ALTERNATE ACTION)
-            if (key.equals("U") || key.equals("J")) {
-                System.out.println(">>> ACTION KEY DETECTED! <<<");
-                int playerTileX = worldX / gp.tileSize;
-                int playerTileY = worldY / gp.tileSize;
-                System.out.println("Player world position: (" + worldX + ", " + worldY + ")");
-                System.out.println("Player tile position: (" + playerTileX + ", " + playerTileY + ")");
-
-                if (gp.buildingManager.isInBuilding()) {
-                    System.out.println("Checking exit...");
-                    gp.buildingManager.checkBuildingExit(playerTileX, playerTileY);
-                } else {
-                    System.out.println("Checking entry...");
-                    gp.buildingManager.checkBuildingEntry(playerTileX, playerTileY);
-                }
-            }
-        }
 
         // IF CURRENTLY MOVING, CONTINUE THE MOVEMENT ANIMATION
         if (isMoving) {
@@ -133,7 +120,7 @@ public class Player extends Entity {
                     break;
             }
 
-            // Animate sprite
+            // ANIMATE SPRITE
             spriteCounter++;
             if (spriteCounter > 12) {
                 spriteNum = (spriteNum == 0) ? 2 : 0; // LEFT FOOT OR RIGHT FOOT

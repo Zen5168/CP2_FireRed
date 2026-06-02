@@ -1,17 +1,19 @@
 package com.game.main;
 
+import com.game.ui.BattleUI;
 import javax.swing.*;
 import java.awt.*;
 import com.game.logic.*;
 import com.game.entity.*;
 import com.game.tile.TileManager;
+import com.game.ui.BattleUI;
 
 public class GamePanel extends JPanel implements Runnable {
 
     //========================================
     // SCREEN SETTINGS
     //========================================
-    final int originalTileSize = 16; // 16x16 Tile
+    final int originalTileSize = 16; // 16x16 TILE
     final int scale = 3; // TILE SCALING 
 
     public final int tileSize = originalTileSize * scale; // MAKES THE TILE 48x48
@@ -47,6 +49,8 @@ public class GamePanel extends JPanel implements Runnable {
     public BattleUI battleUI;
     public com.game.pokemons.Pokemon currentWildPokemon;
     public com.game.trainers.Player playerTrainer;
+    public com.game.ui.DialogueManager dialogueManager;
+    public com.game.ui.ShopUI shopUI;
 
     public GamePanel(String playerName, com.game.pokemons.Pokemon starterPokemon) {
 
@@ -59,6 +63,8 @@ public class GamePanel extends JPanel implements Runnable {
         battleScreen = new BattleScreen(this);
         battleUI = new BattleUI(this);
         buildingManager = new com.game.world.BuildingManager(this);
+        dialogueManager = new com.game.ui.DialogueManager(this);
+        shopUI = new com.game.ui.ShopUI(this);
 
         // INITIALIZE PLAYER TRAINER WITH CUSTOM NAME AND STARTER POKEMON
         playerTrainer = new com.game.trainers.Player(playerName, 23, 21);
@@ -104,7 +110,6 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             if (timer >= 1000000000) {
-                System.out.println("FPS: " + drawCount); // FPS DISPLAY
                 drawCount = 0;
                 timer = 0;
             }
@@ -115,8 +120,48 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
 
         if (gameState == GameState.OVERWORLD) {
-            player.update();
-            buildingManager.update(); // UPDATE TRANSITIONS
+            // CHECKS IF DIALOGUE OR SHOP IS ACTIVE
+            if (dialogueManager.isDialogueActive()) {
+                // HANDLES DIALOGUE INPUT
+                if (keyH.hasKeyPress()) {
+                    String key = keyH.getNextKeyPress();
+                    dialogueManager.handleInput(key);
+                }
+            } else if (shopUI.isShopActive()) {
+                // HANDLESS SHOP INPUT
+                if (keyH.hasKeyPress()) {
+                    String key = keyH.getNextKeyPress();
+                    shopUI.handleInput(key);
+                }
+            } else {
+                // NORMAL OVERWORLD GAMEPLAY
+                player.update();
+                buildingManager.update(); // UPDATE TRANSITIONS
+                
+                // CHECK FOR U KEY PRESS FOR INTERACTIONS
+                if (keyH.hasKeyPress()) {
+                    String key = keyH.getNextKeyPress();
+                    if (key.equals("U") || key.equals("J")) {
+                        int playerTileX = player.worldX / tileSize;
+                        int playerTileY = player.worldY / tileSize;
+                        
+                        if (buildingManager.isInBuilding()) {
+                            // INSIDE A BUILDING - CHECK FOR EXIT OR NPC INTERACTION
+                            
+                            // FIRST CHECK IF TRYING TO EXIT BUILDING
+                            if (buildingManager.checkBuildingExit(playerTileX, playerTileY)) {
+                                // BUILDING EXIT HANDLED
+                            } else {
+                                // NOT AT EXIT, CHECK FOR NPC INTERACTION
+                                buildingManager.getInteriorManager().checkNPCInteraction();
+                            }
+                        } else {
+                            // OUTSIDE - CHECK FOR BUILDING ENTRY
+                            buildingManager.checkBuildingEntry(playerTileX, playerTileY);
+                        }
+                    }
+                }
+            }
         } else if (gameState == GameState.BATTLE) {
             battleScreen.updateTransition();
 
@@ -157,6 +202,13 @@ public class GamePanel extends JPanel implements Runnable {
             // DRAW TRANSITION OVERLAY (ALWAYS ON TOP)
             buildingManager.drawTransition(g2);
             
+            // Draw HUD (MONEY DISPLAY)
+            drawHUD(g2);
+            
+            // DRAW DIALOGUE BOX AND SHOP UI ON TOP
+            dialogueManager.draw(g2);
+            shopUI.draw(g2);
+            
         } else if (gameState == GameState.BATTLE) {
             // DRAW BATTLE SCREEN
             com.game.pokemons.Pokemon playerPokemon = battleUI.getPlayerPokemon();
@@ -167,5 +219,41 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         g2.dispose(); // DISPOSES GRAPHICS CONTEXT
+    }
+    
+    //========================================
+    // DRAW HUD (MONEY DISPLAY)
+    //========================================
+    private void drawHUD(Graphics2D g2) {
+        // ONLY SHOW HUD IF DIALOGUE AND SHOP ARE NOT ACTIVE
+        if (dialogueManager.isDialogueActive() || shopUI.isShopActive()) {
+            return;
+        }
+        
+        // MONEY BOX IN TOP-RIGHT CORNER
+        int boxWidth = 150;
+        int boxHeight = 50;
+        int boxX = screenWidth - boxWidth - 10;
+        int boxY = 10;
+        
+        // OUTER BORDER (DARK BLUE)
+        g2.setColor(new Color(32, 56, 136));
+        g2.fillRoundRect(boxX - 3, boxY - 3, boxWidth + 6, boxHeight + 6, 8, 8);
+        
+        // INNER BOX (WHITE BACKGROUND)
+        g2.setColor(new Color(248, 248, 248));
+        g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 8, 8);
+        
+        // MONEY LABEL
+        g2.setFont(new Font("Arial", Font.PLAIN, 14));
+        g2.setColor(new Color(88, 88, 88));
+        g2.drawString("MONEY", boxX + 10, boxY + 20);
+        
+        // MONEY AMOUNT (RIGHT-ALIGNED)
+        g2.setFont(new Font("Arial", Font.BOLD, 16));
+        g2.setColor(new Color(0, 0, 0));
+        String moneyText = "$" + playerTrainer.getMoney();
+        int moneyWidth = g2.getFontMetrics().stringWidth(moneyText);
+        g2.drawString(moneyText, boxX + boxWidth - moneyWidth - 10, boxY + 40);
     }
 }

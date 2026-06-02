@@ -1,10 +1,17 @@
-package com.game.logic;
+package com.game.ui;
 
 import com.game.main.GamePanel;
 import com.game.pokemons.Pokemon;
 import com.game.moves.Moves;
 import com.game.items.*;
 import com.game.trainers.Player;
+import com.game.logic.*;
+import com.game.logic.BattleEngine;
+import com.game.logic.BattleEngine;
+import com.game.logic.GameState;
+import com.game.logic.GameState;
+import com.game.logic.Type;
+import com.game.logic.Type;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -408,9 +415,9 @@ public class BattleUI {
             if (willCatch) {
                 addDialogue("Gotcha! " + enemyPokemon.getName() + " was caught!");
                 playerTrainer.addPokemon(enemyPokemon);
-                // Don't set HP to 0 - just end the battle
+                // ENDS THE BATTLE
                 currentState = BattleState.VICTORY;
-                return; // Exit immediately to prevent state override
+                return; // EXIT IMMEDIATELY
             } else {
                 addDialogue("Oh no! The Pokemon broke free!");
                 // ENEMY ATTACKS
@@ -524,7 +531,9 @@ public class BattleUI {
             }
         }
 
-        // FALLBACK: IF NO BEST MOVE FOUND, USE FIRST AVAILABLE MOVE WITH PP
+        //========================================================
+        //  IF NO BEST MOVE FOUND, USE FIRST AVAILABLE MOVE WITH PP
+        //========================================================
         if (bestMove == null) {
             System.out.println("No best move found, using fallback...");
             for (Moves move : enemyMoves) {
@@ -562,9 +571,17 @@ public class BattleUI {
             currentState = BattleState.DEFEAT;
         } else if (enemyPokemon.isFainted()) {
             addDialogue("The wild " + enemyPokemon.getName() + " fainted!");
+            
+            // CALCULATE AND AWARD EXP
             int expGained = (200 * enemyPokemon.getLevel()) / 7;
             playerPokemon.gainExp(expGained);
             addDialogue(playerPokemon.getName() + " gained " + expGained + " EXP!");
+            
+            // CALCULATE AND AWARD MONEY
+            int moneyGained = enemyPokemon.getLevel() * 200; // BASE FORMULA: 200 PER LEVEL
+            playerTrainer.addMoney(moneyGained);
+            addDialogue("You received $" + moneyGained + "!");
+            
             currentState = BattleState.VICTORY;
         } else {
         }
@@ -612,11 +629,13 @@ public class BattleUI {
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
             } else if (currentState == BattleState.DIALOGUE || currentState == BattleState.BATTLE_ACTION) {
+                
                 // CHECK IF BATTLE SHOULD END (BOTH POKEMON STILL ALIVE = CONTINUE)
                 if (!playerPokemon.isFainted() && !enemyPokemon.isFainted()) {
                     currentState = BattleState.MAIN_MENU;
                     selectedOption = 0;
                 } else {
+                    
                     // SOMEONE FAINTED, CHECKBATTLEEND SHOULD HAVE BEEN CALLED
                     checkBattleEnd();
                 }
@@ -627,11 +646,13 @@ public class BattleUI {
     }
 
     //=====================================
-    // EXECUTE DAMAGE ONLY (CALLED AFTER MOVE MESSAGE)
+    // EXECUTE DAMAGE ONLY
     //=====================================
     private void executeDamageOnly(BattleAction action) {
+        
         // CHECK IF ATTACKER FAINTED BEFORE THIS ACTION
         if (action.attacker.isFainted()) {
+            
             // ATTACKER FAINTED, SKIP THIS ACTION
             return;
         }
@@ -640,7 +661,7 @@ public class BattleUI {
         String battleResult = action.engine.executeTurnWithResult(
                 action.attacker, action.defender, action.move);
 
-        // ADD EFFECTIVENESS/RESULT MESSAGES TO QUEUE (WILL SHOW AFTER NEXT BUTTON PRESS)
+        // ADD EFFECTIVENESS/RESULT MESSAGES TO QUEUE
         if (battleResult != null && !battleResult.isEmpty()) {
             String[] messages = battleResult.split("\n");
             for (String msg : messages) {
@@ -652,6 +673,7 @@ public class BattleUI {
 
         // CHECK IF DEFENDER FAINTED AFTER THIS ACTION
         if (action.defender.isFainted()) {
+            
             // CLEAR REMAINING ACTIONS SINCE BATTLE IS ENDING
             actionQueue.clear();
             checkBattleEnd();
@@ -693,7 +715,7 @@ public class BattleUI {
     }
 
     //=====================================
-    // DRAW DIALOGUE BOX (FIRE RED STYLE)
+    // DRAW DIALOGUE BOX 
     //=====================================
     private void drawDialogueBox(Graphics2D g2) {
         int boxX = 10;
@@ -729,7 +751,7 @@ public class BattleUI {
     }
 
     //=====================================
-    // DRAW MAIN MENU (FIRE RED STYLE)
+    // DRAW MAIN MENU
     //=====================================
     private void drawMainMenuFireRed(Graphics2D g2) {
         // MAIN DIALOGUE BOX
@@ -738,7 +760,7 @@ public class BattleUI {
         int boxWidth = gp.screenWidth / 2 - 15;
         int boxHeight = 130;
 
-        // LEFT BOX - "What will [Pokemon] do?"
+        // LEFT BOX - "WHAT WILL [POKEMON] DO?"
         g2.setColor(new Color(248, 248, 248));
         g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 10, 10);
         g2.setColor(new Color(0, 0, 0));
@@ -770,6 +792,7 @@ public class BattleUI {
             int optY = menuY + 40 + (row * 50);
 
             if (i == selectedOption) {
+                
                 // SELECTION ARROW
                 g2.setColor(Color.BLACK);
                 g2.fillPolygon(
@@ -786,7 +809,7 @@ public class BattleUI {
     }
 
     //=====================================
-    // DRAW FIGHT MENU (FIRE RED STYLE)
+    // DRAW FIGHT MENU
     //=====================================
     private void drawFightMenuFireRed(Graphics2D g2) {
         // MAIN BOX AT BOTTOM
