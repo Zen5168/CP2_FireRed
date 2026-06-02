@@ -303,17 +303,17 @@ public class StarterSelectionScreen extends JDialog {
             case 0: // CHARMANDER
                 selectedPanel = charmanderPanel;
                 starterName = "Charmander";
-                selectedStarter = new Charmander(5);
+                selectedStarter = new Charmander(15);
                 break;
             case 1: // BULBASAUR
                 selectedPanel = bulbasaurPanel;
                 starterName = "Bulbasaur";
-                selectedStarter = new Bulbasaur(5);
+                selectedStarter = new Bulbasaur(15);
                 break;
             case 2: // SQUIRTLE
                 selectedPanel = squirtlePanel;
                 starterName = "Squirtle";
-                selectedStarter = new Squirtle(5);
+                selectedStarter = new Squirtle(15);
                 break;
         }
         

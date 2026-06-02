@@ -1,31 +1,39 @@
 package com.game.world;
 
 import com.game.main.GamePanel;
+import com.game.entity.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class InteriorManager {
 
     private GamePanel gp;
     private BufferedImage interiorSheet;
+    private BufferedImage npcSheet; // NPC SPRITE SHEET
     private HashMap<String, InteriorRoom> interiors;
+    private HashMap<String, ArrayList<NPC>> interiorNPCs;
 
     //=============================
     // CURRENT INTERIOR STATE
     //=============================
     private InteriorRoom currentInterior = null;
     private boolean isInInterior = false;
+    private ArrayList<NPC> currentNPCs = new ArrayList<>();
 
     public InteriorManager(GamePanel gp) {
         this.gp = gp;
         this.interiors = new HashMap<>();
+        this.interiorNPCs = new HashMap<>();
         loadInteriorSprites();
+        loadNPCSprites(); // LOAD NPC SPRITE SHEET
         setupInteriors();
+        setupNPCs();
     }
 
     //=============================
@@ -50,17 +58,37 @@ public class InteriorManager {
             e.printStackTrace();
         }
     }
+    
+    //=============================
+    // LOAD NPC SPRITE SHEET
+    //=============================
+    private void loadNPCSprites() {
+        try {
+            npcSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/overworld_npc.png"));
+            System.out.println("✓ NPC sprite sheet loaded successfully");
+        } catch (Exception e) {
+            System.err.println("========================================");
+            System.err.println("WARNING: Could not load NPC sprite sheet!");
+            System.err.println("  File: /res/image/npc_sprites.png");
+            System.err.println("  NPCs will still work but won't be visible");
+            System.err.println("  Error: " + e.getMessage());
+            System.err.println("========================================");
+            // NPCS CAN STILL FUNCTION WITHOUT SPRITES
+        }
+    }
 
     //=============================
     // INTERIOR SETUP
     //=============================
     private void setupInteriors() {
 
-        // POKEMON CENTER INTERIORT
+        //==========================
+        // POKEMON CENTER INTERIOR
+        //==========================
         InteriorRoom pokeCenterInterior = new InteriorRoom(
                 "POKECENTER",
-                656, 281, // SPRITE X, SPRITE Y (POSITION IN SPRITE SHEET)
-                225, 143, // SPRITE WIDTH, SPRITE HEIGHT (ACTUAL SPRITE SIZE)
+                656, 272, // SPRITE X, SPRITE Y (POSITION IN SPRITE SHEET)
+                225, 153, // SPRITE WIDTH, SPRITE HEIGHT (ACTUAL SPRITE SIZE)
                 14, 8, // ROOM WIDTH TILES, ROOM HEIGHT TILES (14 COLUMNS X 8 ROWS)
                 new Point[]{ // MULTIPLE EXIT DOOR TILES
                     new Point(6, 7),
@@ -83,11 +111,11 @@ public class InteriorManager {
                 );
 
             } catch (Exception e) {
-                System.err.println("  ✗ ERROR loading Pokemon Center sprite: " + e.getMessage());
+                System.err.println("ERROR loading Pokemon Center sprite: " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
-            System.err.println("  ✗ Cannot load sprite: interiorSheet is NULL");
+            System.err.println("Cannot load sprite: interiorSheet is NULL");
         }
 
         //=============================
@@ -96,11 +124,13 @@ public class InteriorManager {
         loadCollisionMap(pokeCenterInterior, "/res/maps/pokecenter_collision.txt");
         interiors.put("POKECENTER", pokeCenterInterior);
 
+        //==========================
         // POKEMART INTERIOR
+        //==========================
         InteriorRoom pokeMartInterior = new InteriorRoom(
                 "POKEMART",
-                463, 281, // SPRITE X, SPRITE Y 
-                176, 128, // SPRITE WIDTH, SPRITE HEIGHT
+                464, 272, // SPRITE X, SPRITE Y 
+                176, 136, // SPRITE WIDTH, SPRITE HEIGHT
                 11, 8, // ROOM WIDTH TILES, ROOMHEIGHT TILES
                 new Point[]{ // MULTIPLE EXIT DOOR TILES
                     new Point(4, 7),
@@ -132,10 +162,54 @@ public class InteriorManager {
         loadCollisionMap(pokeMartInterior, "/res/maps/pokemart_collision.txt");
         interiors.put("POKEMART", pokeMartInterior);
     }
+    
+    //===============================
+    // SETUP NPCs FOR EACH INTERIOR
+    //===============================
+    private void setupNPCs() {
+        // POKEMON CENTER NPC
+        ArrayList<NPC> pokecenterNPCs = new ArrayList<>();
+        // NURSE JOY POSITION
+        NurseJoy nurse = new NurseJoy(gp, 7 * gp.tileSize, 2 * gp.tileSize);
+        
+        if (npcSheet != null) {
+            try {
+                BufferedImage nurseSprite = npcSheet.getSubimage(1, 2, 16, 21);
+                nurse.setSprite(nurseSprite);
+                System.out.println("Nurse Joy sprite loaded");
+            } catch (Exception e) {
+                System.err.println("Could not extract Nurse Joy sprite: " + e.getMessage());
+            }
+        }
+        
+        pokecenterNPCs.add(nurse);
+        interiorNPCs.put("POKECENTER", pokecenterNPCs);
+        
+        // POKEMART NPC
+        ArrayList<NPC> pokemartNPCs = new ArrayList<>();
+        // SHOP CLERK POSITION
+        ShopClerk clerk = new ShopClerk(gp, 1 * gp.tileSize, 3* gp.tileSize);
+        
+        // EXTRACT SHOP CLERK SPRITE FROM SPRITE SHEET
+        if (npcSheet != null) {
+            try {
+                BufferedImage clerkSprite = npcSheet.getSubimage(52, 52, 16, 21);
+                clerk.setSprite(clerkSprite);
+                System.out.println("Shop Clerk sprite loaded");
+            } catch (Exception e) {
+                System.err.println("Could not extract Shop Clerk sprite: " + e.getMessage());
+            }
+        }
+        
+        pokemartNPCs.add(clerk);
+        interiorNPCs.put("POKEMART", pokemartNPCs);
+        
+        System.out.println("✓ NPCs setup complete");
+    }
 
-    //=============================
+    //==============================
     // LOAD COLLISION MAP TEXT FILE
-    //=============================
+    //==============================
     private void loadCollisionMap(InteriorRoom interior, String filePath) {
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
@@ -184,6 +258,9 @@ public class InteriorManager {
             Point spawn = interior.getPlayerSpawnTile();
             gp.player.worldX = spawn.x * gp.tileSize;
             gp.player.worldY = spawn.y * gp.tileSize;
+            
+            // LOAD NPCS FOR THIS INTERIOR
+            currentNPCs = interiorNPCs.getOrDefault(interiorType, new ArrayList<>());
 
             if (interior.getRoomSprite() == null) {
                 System.err.println("WARNING: Interior sprite is NULL! Check sprite sheet coordinates.");
@@ -200,6 +277,7 @@ public class InteriorManager {
         if (isInInterior) {
             currentInterior = null;
             isInInterior = false;
+            currentNPCs = new ArrayList<>(); // CREATE NEW EMPTY LIST INSTEAD OF CLEARING
         }
     }
 
@@ -243,7 +321,7 @@ public class InteriorManager {
                         null
                 );
             } else {
-                // FALLBACK: DRAW A COLORED RECTANGLE IF SPRITE IS NULL
+                // DRAW A COLORED RECTANGLE IF SPRITE IS NULL
                 System.err.println("WARNING: Room sprite is NULL! Drawing fallback rectangle.");
                 g2.setColor(new Color(100, 100, 150)); // BLUE-GRAY COLOR
                 g2.fillRect(screenX, screenY, roomPixelWidth, roomPixelHeight);
@@ -257,6 +335,11 @@ public class InteriorManager {
                 g2.drawString("Interior Sprite Missing", screenX + 50, screenY + 50);
                 g2.drawString("Check sprite coordinates", screenX + 50, screenY + 70);
                 g2.drawString("Size: " + roomPixelWidth + "x" + roomPixelHeight, screenX + 50, screenY + 90);
+            }
+            
+            // Draw NPCs
+            for (NPC npc : currentNPCs) {
+                npc.draw(g2);
             }
         }
     }
@@ -311,5 +394,32 @@ public class InteriorManager {
 
     public String getCurrentInteriorType() {
         return currentInterior != null ? currentInterior.getName() : null;
+    }
+    
+    //=============================
+    // NPC INTERACTION
+    //=============================
+    public void checkNPCInteraction() {
+        if (!isInInterior) {
+            System.out.println("Not in interior - cannot interact with NPCs");
+            return;
+        }
+        
+        System.out.println("Checking NPC interaction... NPCs present: " + currentNPCs.size());
+        
+        for (NPC npc : currentNPCs) {
+            System.out.println("Checking NPC: " + npc.getName() + " - Facing? " + npc.isPlayerFacingNPC());
+            if (npc.isPlayerFacingNPC()) {
+                System.out.println("Interacting with: " + npc.getName());
+                npc.interact();
+                return;
+            }
+        }
+        
+        System.out.println("No NPC in range or not facing NPC");
+    }
+    
+    public ArrayList<NPC> getCurrentNPCs() {
+        return currentNPCs;
     }
 }

@@ -122,10 +122,12 @@ public class BuildingManager {
     }
 
     // CHECK IF PLAYER IS TRYING TO EXIT A BUILDING
-    public void checkBuildingExit(int playerTileX, int playerTileY) {
+    public boolean checkBuildingExit(int playerTileX, int playerTileY) {
         if (isInBuilding && interiorManager.checkExit(playerTileX, playerTileY)) {
             exitBuilding();
+            return true;
         }
+        return false;
     }
 
     private void enterBuilding(String buildingType, Building building) {
@@ -140,13 +142,6 @@ public class BuildingManager {
 
             // ENTER THE INTERIOR ROOM
             interiorManager.enterInterior(buildingType);
-
-            // EXECUTE BUILDING-SPECIFIC ACTIONS
-            if (buildingType.equals("POKECENTER")) {
-                Buildings.healPokemon(gp.playerTrainer);
-            } else if (buildingType.equals("POKEMART")) {
-                Buildings.openShop();
-            }
             
             // UPDATE STATE
             isInBuilding = true;

@@ -10,6 +10,7 @@ public class Player {
     private int x, y;
     private ArrayList<Pokemon> party;
     private Bag bag;
+    private int money; // PLAYER'S MONEY
 
     public Player(String name, int startX, int startY) {
         this.name = name;
@@ -17,6 +18,7 @@ public class Player {
         this.y = startY;
         this.party = new ArrayList<>();
         this.bag = new Bag();
+        this.money = 3000; // STARTING MONEY
     }
 
     public void move(int dx, int dy) {
@@ -62,5 +64,28 @@ public class Player {
     
     public Bag getBag(){
         return bag;
+    }
+    
+    //====================
+    // MONEY MANAGEMENT
+    //====================
+    public int getMoney() {
+        return money;
+    }
+    
+    public void addMoney(int amount) {
+        this.money += amount;
+    }
+    
+    public boolean removeMoney(int amount) {
+        if (money >= amount) {
+            money -= amount;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean hasMoney(int amount) {
+        return money >= amount;
     }
 }
