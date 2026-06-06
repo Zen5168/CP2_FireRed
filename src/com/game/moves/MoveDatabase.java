@@ -6,17 +6,17 @@ import java.io.File;
 
 public class MoveDatabase {
 
-    // SQLite database path - try multiple possible locations
+    // SQLITE DATABASE PATH - TRY MULTIPLE POSSIBLE LOCATIONS
     private static String URL = null;
     
-    // Static block to load SQLite JDBC driver and find database
+    // STATIC BLOCK TO LOAD SQLITE JDBC DRIVER AND FIND DATABASE
     static {
         try {
-            // Load the SQLite JDBC driver
+            // LOAD THE SQLITE JDBC DRIVER
             Class.forName("org.sqlite.JDBC");
-            System.out.println("✅ SQLite JDBC Driver loaded successfully!");
+            System.out.println("SQLite JDBC Driver loaded successfully!");
             
-            // Try to find the database file
+            // TRY TO FIND THE DATABASE FILE
             String[] possiblePaths = {
                 "src/db/moveDB/movedatabase",
                 "movedatabase",
@@ -29,8 +29,8 @@ public class MoveDatabase {
                 File dbFile = new File(path);
                 if (dbFile.exists()) {
                     URL = "jdbc:sqlite:" + path;
-                    System.out.println("✅ Found database at: " + path);
-                    System.out.println("   Absolute path: " + dbFile.getAbsolutePath());
+                    System.out.println("Found database at: " + path);
+                    System.out.println("Absolute path: " + dbFile.getAbsolutePath());
                     break;
                 }
             }
@@ -44,7 +44,7 @@ public class MoveDatabase {
             }
             
         } catch (ClassNotFoundException e) {
-            System.err.println("❌ SQLite JDBC Driver not found!");
+            System.err.println("SQLite JDBC Driver not found!");
             System.err.println("Make sure sqlite-jdbc JAR is in your classpath.");
             System.err.println("Check: lib/sqlite-jdbc-3.53.0.0-natives-all.jar");
             e.printStackTrace();
@@ -54,7 +54,7 @@ public class MoveDatabase {
     public static Moves getMoveFromDB(String moveName) {
         
         if (URL == null) {
-            System.err.println("❌ Cannot load move '" + moveName + "' - database not initialized!");
+            System.err.println("Cannot load move '" + moveName + "' - database not initialized!");
             return null;
         }
         
@@ -69,7 +69,7 @@ public class MoveDatabase {
             if (rs.next()) {
                 String typeString = rs.getString("move_type");
                 
-                // Ensure we handle potential nulls or casing from the DB
+                // HANDLES POTENTIAL NULLS OR CASING FROM THE DB
                 Type moveTypeEnum = Type.valueOf(typeString.toUpperCase().trim());
 
                 Moves move = new Moves(
@@ -81,13 +81,13 @@ public class MoveDatabase {
                     rs.getInt("move_pp")
                 );
                 
-                System.out.println("✅ Loaded move: " + move.moveName + " (Type: " + move.moveType + ", PP: " + move.pp + ")");
+                System.out.println("Loaded move: " + move.moveName + " (Type: " + move.moveType + ", PP: " + move.pp + ")");
                 return move;
             } else {
-                System.err.println("❌ Move not found in database: " + moveName);
+                System.err.println("Move not found in database: " + moveName);
             }
         } catch (SQLException e) {
-            System.err.println("❌ SQLite Database Error: " + e.getMessage());
+            System.err.println("SQLite Database Error: " + e.getMessage());
             System.err.println("Database URL: " + URL);
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
