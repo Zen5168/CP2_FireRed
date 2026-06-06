@@ -18,6 +18,11 @@ public abstract class Pokemon {
     protected int evolutionLevel = -1;
     protected String evolutionName;
     protected Map<Integer, String> moveLevelUpTable = new HashMap<>();
+    
+    //================================
+    // EVOLUTION TRACKING
+    //================================
+    protected boolean pendingEvolution = false;
 
     //================================
     // CALCULATED STATS
@@ -72,6 +77,20 @@ public abstract class Pokemon {
         while (this.exp >= this.nextLevelExp) {
             levelUp();
         }
+        
+        // CHECK FOR EVOLUTION AFTER ALL LEVEL UPS
+        checkEvolution();
+    }
+    
+    //=====================================
+    // EVOLUTION CHECK
+    //=====================================
+    private void checkEvolution() {
+        System.out.println("DEBUG: Checking evolution - Level: " + this.level + ", EvolutionLevel: " + evolutionLevel + ", PendingEvolution: " + pendingEvolution);
+        if (evolutionLevel != -1 && this.level >= evolutionLevel && !pendingEvolution) {
+            pendingEvolution = true;
+            System.out.println("DEBUG: Evolution marked as pending!");
+        }
     }
 
     //=====================================
@@ -107,11 +126,6 @@ public abstract class Pokemon {
             if (!learned) {
                 handleMoveForget(newMove);
             }
-        }
-
-        // CHECK EVOLUTION
-        if (evolutionLevel != -1 && this.level >= evolutionLevel) {
-            evolve();
         }
     }
 
@@ -152,14 +166,18 @@ public abstract class Pokemon {
     //=====================================
     // EVOLUTION
     //=====================================
-    private void evolve() {
-        System.out.println("What? " + this.pokeName + " is evolving!");
+    public void evolve() {
+        System.out.println("DEBUG: evolve() called - pendingEvolution: " + pendingEvolution);
+        if (!pendingEvolution) {
+            System.out.println("DEBUG: No pending evolution, returning early");
+            return;
+        }
 
         try {
             Class<?> evoClass = Class.forName(evolutionName);
             Pokemon evolvedForm = (Pokemon) evoClass.getConstructor(int.class).newInstance(this.level);
 
-            System.out.println(this.pokeName + " evolved into " + evolvedForm.getName() + "!");
+            String oldName = this.pokeName;
 
             // TRANSFER STATS WHEN EVOLVING
             this.pokeName = evolvedForm.getName();
@@ -171,13 +189,36 @@ public abstract class Pokemon {
             this.baseSpeed = evolvedForm.baseSpeed;
             this.type1 = evolvedForm.type1;
             this.type2 = evolvedForm.type2;
+            
+            // Update evolution info for next evolution in chain
+            this.evolutionLevel = evolvedForm.evolutionLevel;
+            this.evolutionName = evolvedForm.evolutionName;
+            this.moveLevelUpTable = evolvedForm.moveLevelUpTable;
 
             calculateStats();
             this.hp = this.maxHp;
+            
+            System.out.println("Congratulations! Your " + oldName + " evolved into " + this.pokeName + "!");
+            
+            pendingEvolution = false;
+            
+            // Check if the new form can also evolve (for level skipping cases)
+            if (this.evolutionLevel != -1 && this.level >= this.evolutionLevel) {
+                pendingEvolution = true;
+            }
 
         } catch (Exception e) {
             System.out.println("Error during evolution: " + e.getMessage());
+            pendingEvolution = false;
         }
+    }
+    
+    //=====================================
+    // EVOLUTION CHECKER
+    //=====================================
+    public boolean hasPendingEvolution() {
+        System.out.println("DEBUG: hasPendingEvolution() called - returning: " + pendingEvolution);
+        return pendingEvolution;
     }
 
     //=====================================

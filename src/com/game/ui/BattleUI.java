@@ -640,7 +640,22 @@ public class BattleUI {
                     checkBattleEnd();
                 }
             } else if (currentState == BattleState.VICTORY || currentState == BattleState.DEFEAT) {
-                gp.gameState = GameState.OVERWORLD;
+                // CHECK IF ANY POKEMON IN PARTY HAS PENDING EVOLUTION
+                Pokemon pokemonToEvolve = null;
+                for (com.game.pokemons.Pokemon p : playerTrainer.getParty()) {
+                    if (p.hasPendingEvolution()) {
+                        pokemonToEvolve = p;
+                        break;
+                    }
+                }
+                
+                if (pokemonToEvolve != null) {
+                    System.out.println("DEBUG: Transitioning to EVOLUTION state");
+                    gp.evolutionUI.startEvolution(pokemonToEvolve);
+                    gp.gameState = GameState.EVOLUTION;
+                } else {
+                    gp.gameState = GameState.OVERWORLD;
+                }
             }
         }
     }
