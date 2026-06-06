@@ -12,19 +12,8 @@ public class Farfetchd extends Pokemon {
         moveLevelUpTable.put(1, "Peck");
         moveLevelUpTable.put(7, "Gust");
 
-        // INITIALIZE MOVES
-        int slot = 0;
-        for (int i = 1; i <= level; i++) {
-            if (moveLevelUpTable.containsKey(i)) {
-                String moveName = moveLevelUpTable.get(i);
-                Moves newMove = MoveDatabase.getMoveFromDB(moveName);
-
-                if (newMove != null && slot < 4) {
-                    this.learnMove(newMove, slot);
-                    slot++;
-                }
-            }
-        }
+        // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
+        initializeMoves();
     }
 }
 

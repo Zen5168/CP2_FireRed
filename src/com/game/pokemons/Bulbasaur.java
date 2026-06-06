@@ -10,20 +10,13 @@ public class Bulbasaur extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
-        moveLevelUpTable.put(7, "Vine Whip");
+        moveLevelUpTable.put(2, "Vine Whip"); // REMINDER: SWITCH TO LVL 7
+        moveLevelUpTable.put(3, "Ember");
+        moveLevelUpTable.put(4, "Bubble");
+        moveLevelUpTable.put(5, "Headbutt");
+        // PLACE HOLDER MOVES
 
-        // INITIALIZE MOVES
-        int slot = 0;
-        for (int i = 1; i <= level; i++) {
-            if (moveLevelUpTable.containsKey(i)) {
-                String moveName = moveLevelUpTable.get(i);
-                Moves newMove = MoveDatabase.getMoveFromDB(moveName);
-
-                if (newMove != null && slot < 4) {
-                    this.learnMove(newMove, slot);
-                    slot++;
-                }
-            }
-        }
+        // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
+        initializeMoves();
     }
 }

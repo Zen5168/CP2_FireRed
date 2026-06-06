@@ -202,6 +202,38 @@ public abstract class Pokemon {
     }
 
     //=====================================
+    // INITIALIZE MOVES BASED ON LEVEL
+    //=====================================
+    protected void initializeMoves() {
+        // Get all learnable moves up to current level
+        List<Integer> learnableLevels = new ArrayList<>();
+        for (Integer lvl : moveLevelUpTable.keySet()) {
+            if (lvl <= this.level) {
+                learnableLevels.add(lvl);
+            }
+        }
+        
+        // Sort levels in ascending order
+        Collections.sort(learnableLevels);
+        
+        // Take the last 4 moves (most recent)
+        int totalMoves = learnableLevels.size();
+        int startIndex = Math.max(0, totalMoves - 4);
+        
+        int slot = 0;
+        for (int i = startIndex; i < totalMoves && slot < 4; i++) {
+            int lvl = learnableLevels.get(i);
+            String moveName = moveLevelUpTable.get(lvl);
+            Moves move = MoveDatabase.getMoveFromDB(moveName);
+            
+            if (move != null) {
+                this.learnMove(move, slot);
+                slot++;
+            }
+        }
+    }
+
+    //=====================================
     // GETTERS & SETTERS
     //=====================================
     public String getName() {
