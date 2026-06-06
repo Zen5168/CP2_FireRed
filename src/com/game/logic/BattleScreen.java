@@ -56,10 +56,10 @@ public class BattleScreen {
     //=====================================
     private void loadBattleAssets() {
         try {
-            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/pokemon_battle_sprites.png"));
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/PokeSprites.png"));
             
             // INITIALIZE SPRITE ARRAY (ADJUST SIZE AS NEEDED)
-            pokemonSprites = new BufferedImage[20][2]; // [POKEMON_ID][0=FRONT, 1=BACK]
+            pokemonSprites = new BufferedImage[30][2]; // [POKEMON_ID][0=FRONT, 1=BACK]
             
             // MAP EACH POKEMON SPRITE TO ITS LOCATION ON THE SHEET: {X, Y, WIDTH, HEIGHT}
             // FORMAT: [POKEMON_ID][FRONT_SPRITE, BACK_SPRITE]
@@ -108,6 +108,24 @@ public class BattleScreen {
                 
                 // SCYTHER [14]
                 {new Rectangle(271, 1367, 63, 63), new Rectangle(271, 1431, 63, 63)},
+
+                  // IVYSAUR [15]
+                {new Rectangle(142, 47, 63, 63), new Rectangle(142, 111, 63, 63)},
+                
+                // CHARMELEON [16]
+                {new Rectangle(532, 47, 63, 63), new Rectangle(532, 111, 63, 63)},
+                
+                // WARTORTLE [17]
+                {new Rectangle(923, 47, 63, 63), new Rectangle(923, 111, 63, 63)},
+                
+                // VENUSAUR [18]
+                {new Rectangle(272, 47, 63, 63), new Rectangle(272, 111, 63, 63)},
+                
+                // CHARIZARD [19]
+                {new Rectangle(661, 47, 63, 63), new Rectangle(661, 111, 63, 63)},
+                
+                // BLASTOISE [20]
+                {new Rectangle(1052, 47, 63, 63), new Rectangle(1052, 111, 63, 63)}
                 
                 // ADD MORE POKEMON HERE AS NEEDED
                 // {new Rectangle(x, y, width, height), new Rectangle(x, y, width, height)},
@@ -747,8 +765,57 @@ public class BattleScreen {
             case "rattata":
                 spriteIndex = 4;
                 break;
-            // ADD MORE POKEMON HERE
+            case "cubone":
+                spriteIndex = 5;
+                break;
+            case "electabuzz":
+                spriteIndex = 6;
+                break;
+            case "farfetch'd":
+            case "farfetchd":
+                spriteIndex = 7;
+                break;
+            case "growlithe":
+                spriteIndex = 8;
+                break;
+            case "jynx":
+                spriteIndex = 9;
+                break;
+            case "kangaskhan":
+                spriteIndex = 10;
+                break;
+            case "machop":
+                spriteIndex = 11;
+                break;
+            case "magmar":
+                spriteIndex = 12;
+                break;
+            case "psyduck":
+                spriteIndex = 13;
+                break;
+            case "scyther":
+                spriteIndex = 14;
+                break;
+            case "ivysaur":
+                spriteIndex = 15;
+                break;
+            case "charmeleon":
+                spriteIndex = 16;
+                break;
+            case "wartortle":
+                spriteIndex = 17;
+                break;
+            case "venusaur":
+                spriteIndex = 18;
+                break;
+            case "charizard":
+                spriteIndex = 19;
+                break;
+            case "blastoise":
+                spriteIndex = 20;
+                break;
             default:
+                System.out.println("WARNING: No sprite mapping found for Pokemon: " + pokemonName);
                 return null; // POKEMON NOT FOUND
         }
         
