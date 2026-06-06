@@ -80,7 +80,7 @@ public class BattleScreen {
                 {new Rectangle(401, 212, 63, 63), new Rectangle(401, 276, 63, 63)},
                 
                 // CUBONE [5]
-                {new Rectangle(1700, 1036, 63, 63), new Rectangle(1700, 1101, 63, 63)},
+                {new Rectangle(1702, 1036, 63, 63), new Rectangle(1702, 1101, 63, 63)},
                 
                 // ELECTABUZZ [6]
                 {new Rectangle(531, 1367, 63, 63), new Rectangle(531, 1431, 63, 63)},
@@ -116,7 +116,7 @@ public class BattleScreen {
                 {new Rectangle(532, 47, 63, 63), new Rectangle(532, 111, 63, 63)},
                 
                 // WARTORTLE [17]
-                {new Rectangle(923, 47, 63, 63), new Rectangle(923, 111, 63, 63)},
+                {new Rectangle(922, 47, 63, 63), new Rectangle(922, 111, 63, 63)},
                 
                 // VENUSAUR [18]
                 {new Rectangle(272, 47, 63, 63), new Rectangle(272, 111, 63, 63)},
@@ -741,7 +741,7 @@ public class BattleScreen {
     //=====================================
     // GET POKEMON SPRITE
     //=====================================
-    private BufferedImage getPokemonSprite(String pokemonName, boolean isBack) {
+    public BufferedImage getPokemonSprite(String pokemonName, boolean isBack) {
         if (pokemonSprites == null || pokemonSprites.length == 0) {
             return null;
         }

@@ -98,6 +98,15 @@ public class BattleManager {
                 // GAIN EXP
                 int expGained = calculateExpReward(enemyMon);
                 playerMon.gainExp(expGained);
+                
+                System.out.println("DEBUG: About to check for evolution in BattleManager");
+                // CHECK FOR EVOLUTION AFTER BATTLE (handle multiple evolutions if level skipped)
+                while (playerMon.hasPendingEvolution()) {
+                    System.out.println("DEBUG: Calling playerMon.evolve()");
+                    playerMon.evolve();
+                }
+                System.out.println("DEBUG: Evolution check complete");
+                
                 return true;
             }
         }
@@ -181,9 +190,13 @@ public class BattleManager {
             System.out.println("Gotcha! " + target.getName() + " was caught!");
             player.addPokemon(target);
 
-            // Don't set HP to 0 - the battle will end naturally
-            // The calling method will check isFainted() which will be false
-            return true; // Catch successful
+            // CHECK FOR EVOLUTION AFTER CATCHING
+            Pokemon activeMon = player.getParty().get(0);
+            while (activeMon.hasPendingEvolution()) {
+                activeMon.evolve();
+            }
+            
+            return true; // CATCH SUCCESSFUL
         } else {
             System.out.println("Oh no! The Pokemon broke free!");
 
@@ -192,7 +205,7 @@ public class BattleManager {
 
             System.out.println("The wild " + target.getName() + " counters!");
             engine.executeTurn(target, activeMon, enemyMove);
-            return false; // Catch failed
+            return false; // CATCH FAILED
         }
     }
 
@@ -252,7 +265,7 @@ public class BattleManager {
     // EXP REWARD
     // ======================================
     private int calculateExpReward(Pokemon faintedMon) {
-        int baseYield = 200;
+        int baseYield = 2000;
         return (baseYield * faintedMon.getLevel()) / 7;
     }
 

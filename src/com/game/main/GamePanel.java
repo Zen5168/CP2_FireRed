@@ -47,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GameState gameState = GameState.OVERWORLD;
     public BattleScreen battleScreen;
     public BattleUI battleUI;
+    public com.game.ui.EvolutionUI evolutionUI;
     public com.game.pokemons.Pokemon currentWildPokemon;
     public com.game.trainers.Player playerTrainer;
     public com.game.ui.DialogueManager dialogueManager;
@@ -62,6 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         battleScreen = new BattleScreen(this);
         battleUI = new BattleUI(this);
+        evolutionUI = new com.game.ui.EvolutionUI(this);
         buildingManager = new com.game.world.BuildingManager(this);
         dialogueManager = new com.game.ui.DialogueManager(this);
         shopUI = new com.game.ui.ShopUI(this);
@@ -177,6 +179,14 @@ public class GamePanel extends JPanel implements Runnable {
                 String key = keyH.getNextKeyPress();
                 battleUI.handleInput(key);
             }
+        } else if (gameState == GameState.EVOLUTION) {
+            evolutionUI.update();
+            
+            // HANDLE EVOLUTION INPUT
+            if (keyH.hasKeyPress()) {
+                String key = keyH.getNextKeyPress();
+                evolutionUI.handleInput(key);
+            }
         }
     }
 
@@ -216,6 +226,9 @@ public class GamePanel extends JPanel implements Runnable {
 
             battleScreen.draw(g2, playerPokemon, enemyPokemon);
             battleUI.draw(g2);
+        } else if (gameState == GameState.EVOLUTION) {
+            // DRAW EVOLUTION SCREEN
+            evolutionUI.draw(g2);
         }
 
         g2.dispose(); // DISPOSES GRAPHICS CONTEXT

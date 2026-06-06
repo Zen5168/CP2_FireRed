@@ -4,5 +4,6 @@ public enum GameState {
     OVERWORLD,
     BATTLE,
     MENU,
-    DIALOGUE
+    DIALOGUE,
+    EVOLUTION
 }

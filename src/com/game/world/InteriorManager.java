@@ -94,7 +94,7 @@ public class InteriorManager {
                     new Point(6, 7),
                     new Point(7, 7)
                 },
-                new Point(6, 7) // PLAYER SPAWN TILE (SPAWN AT X=6, Y=7)
+                new Point(7, 7) // PLAYER SPAWN TILE (SPAWN AT X=6, Y=7)
         );
 
         //=============================
