@@ -5,12 +5,8 @@ import com.game.pokemons.Pokemon;
 import com.game.moves.Moves;
 import com.game.items.*;
 import com.game.trainers.Player;
-import com.game.logic.*;
-import com.game.logic.BattleEngine;
 import com.game.logic.BattleEngine;
 import com.game.logic.GameState;
-import com.game.logic.GameState;
-import com.game.logic.Type;
 import com.game.logic.Type;
 import java.awt.*;
 import java.util.*;
@@ -27,6 +23,7 @@ public class BattleUI {
         FIGHT_MENU, // MOVE SELECTION
         BAG_MENU, // ITEM CATEGORIES
         BAG_ITEMS, // ITEMS IN CATEGORY
+        ITEM_TARGET_SELECTION, // SELECT POKEMON TO USE ITEM ON
         POKEMON_MENU, // POKEMON PARTY
         BATTLE_ACTION, // EXECUTING MOVES
         DIALOGUE, // BATTLE MESSAGES
@@ -62,6 +59,10 @@ public class BattleUI {
     private String[] bagCategories;
     private List<String> bagItems;
     private int selectedCategory = 0;
+    
+    // PERSISTENT SELECTION
+    private int lastSelectedMove = 0; // REMEMBER LAST MOVE SELECTED
+    private int selectedPokemonForItem = 0; // FOR ITEM TARGET SELECTION
 
     // BATTLE DATA
     private Pokemon playerPokemon;
@@ -109,7 +110,7 @@ public class BattleUI {
             case BATTLE_ACTION:
             case VICTORY:
             case DEFEAT:
-                if (input.equals("U") || input.equals("SPACE") || input.equals("ENTER")) {
+                if (input.equals("U") || input.equals("J") || input.equals("SPACE") || input.equals("ENTER")) {
                     nextDialogue();
                 }
                 break;
@@ -128,6 +129,10 @@ public class BattleUI {
 
             case BAG_ITEMS:
                 handleBagItemsInput(input);
+                break;
+
+            case ITEM_TARGET_SELECTION:
+                handleItemTargetInput(input);
                 break;
 
             case POKEMON_MENU:
@@ -162,6 +167,8 @@ public class BattleUI {
                 }
                 break;
             case "U":
+            case "J":
+            case "ENTER":
                 selectMainMenuOption();
                 break;
         }
@@ -193,7 +200,7 @@ public class BattleUI {
     private void enterFightMenu() {
         
         fightMenuMoves = playerPokemon.getMoves();
-        selectedOption = 0;
+        selectedOption = lastSelectedMove; // USE LAST SELECTED MOVE
         currentState = BattleState.FIGHT_MENU;
 
         System.out.println("\n=== ENTERING FIGHT MENU ===");
@@ -249,11 +256,16 @@ public class BattleUI {
                 }
                 break;
             case "U":
+            case "J":
+            case "ENTER":
                 if (fightMenuMoves[selectedOption] != null) {
+                    lastSelectedMove = selectedOption;
                     executePlayerMove(fightMenuMoves[selectedOption]);
                 }
                 break;
             case "I":
+            case "K":
+            case "ESCAPE":
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -283,9 +295,13 @@ public class BattleUI {
                 }
                 break;
             case "U":
+            case "J":
+            case "ENTER":
                 enterBagItems();
                 break;
             case "I":
+            case "K":
+            case "ESCAPE":
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -320,11 +336,61 @@ public class BattleUI {
                 }
                 break;
             case "U":
-                useItem(bagItems.get(selectedOption));
+            case "J":
+            case "ENTER":
+                selectItemForUse(bagItems.get(selectedOption));
                 break;
             case "I":
+            case "K":
+            case "ESCAPE":
                 currentState = BattleState.BAG_MENU;
                 selectedOption = selectedCategory;
+                break;
+        }
+    }
+
+    //=====================================
+    // SELECT ITEM FOR USE (DETERMINE IF TARGET SELECTION NEEDED)
+    //=====================================
+    private void selectItemForUse(String itemName) {
+        Item item = playerTrainer.getBag().getItemObject(itemName);
+
+        if (item instanceof Pokeball) {
+            // POKEBALLS ARE USED DIRECTLY ON THE ENEMY
+            useItem(itemName);
+        } else {
+            // POTIONS AND OTHER ITEMS NEED TARGET SELECTION
+            selectedPokemonForItem = 0; // START AT FIRST POKEMON
+            currentState = BattleState.ITEM_TARGET_SELECTION;
+        }
+    }
+
+    //=====================================
+    // ITEM TARGET SELECTION INPUT
+    //=====================================
+    private void handleItemTargetInput(String input) {
+        int partySize = playerTrainer.getParty().size();
+
+        switch (input) {
+            case "W":
+                if (selectedPokemonForItem > 0) {
+                    selectedPokemonForItem--;
+                }
+                break;
+            case "S":
+                if (selectedPokemonForItem < partySize - 1) {
+                    selectedPokemonForItem++;
+                }
+                break;
+            case "U":
+            case "J":
+            case "ENTER":
+                useItemOnPokemon(bagItems.get(selectedOption), selectedPokemonForItem);
+                break;
+            case "I":
+            case "K":
+            case "ESCAPE":
+                currentState = BattleState.BAG_ITEMS;
                 break;
         }
     }
@@ -352,9 +418,13 @@ public class BattleUI {
                 }
                 break;
             case "U":
+            case "J":
+            case "ENTER":
                 switchPokemon(selectedOption);
                 break;
             case "I":
+            case "K":
+            case "ESCAPE":
                 currentState = BattleState.MAIN_MENU;
                 selectedOption = 0;
                 break;
@@ -437,6 +507,41 @@ public class BattleUI {
             executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
             checkBattleEnd();
         }
+
+        currentState = BattleState.DIALOGUE;
+    }
+
+    //=====================================
+    // USE ITEM ON SPECIFIC POKEMON
+    //=====================================
+    private void useItemOnPokemon(String itemName, int pokemonIndex) {
+        Item item = playerTrainer.getBag().getItemObject(itemName);
+        Pokemon targetPokemon = playerTrainer.getParty().get(pokemonIndex);
+        
+        // CHECK IF ITEM CAN BE USED
+        if (item instanceof Potion) {
+            if (targetPokemon.getHp() >= targetPokemon.getMaxHp()) {
+                addDialogue(targetPokemon.getName() + "'s HP is already full!");
+                currentState = BattleState.DIALOGUE;
+                return;
+            }
+        }
+        
+        // USE THE ITEM
+        item.use(targetPokemon);
+        playerTrainer.getBag().removeItem(itemName, 1);
+        addDialogue("Used " + item.getName() + " on " + targetPokemon.getName() + "!");
+        
+        // IF USED ON CURRENT POKEMON, RESET HP ANIMATION
+        if (targetPokemon == playerPokemon) {
+            gp.battleScreen.resetHPAnimation(playerPokemon, enemyPokemon);
+        }
+
+        // ENEMY ATTACKS
+        Moves enemyMove = getEnemyMove();
+        BattleEngine engine = new BattleEngine();
+        executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
+        checkBattleEnd();
 
         currentState = BattleState.DIALOGUE;
     }
@@ -722,6 +827,9 @@ public class BattleUI {
                 break;
             case BAG_ITEMS:
                 drawBagItemsFireRed(g2);
+                break;
+            case ITEM_TARGET_SELECTION:
+                drawItemTargetSelection(g2);
                 break;
             case POKEMON_MENU:
                 drawPokemonMenuFireRed(g2);
@@ -1055,6 +1163,53 @@ public class BattleUI {
             g2.drawString(p.getName() + " Lv" + p.getLevel() + status, boxX + 30, optY);
         }
 
+    }
+
+    //=====================================
+    // DRAW ITEM TARGET SELECTION
+    //=====================================
+    private void drawItemTargetSelection(Graphics2D g2) {
+        int boxX = 10;
+        int boxY = gp.screenHeight - 200;
+        int boxWidth = gp.screenWidth - 20;
+        int boxHeight = 190;
+
+        g2.setColor(new Color(248, 248, 248));
+        g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 10, 10);
+        g2.setColor(new Color(0, 0, 0));
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRoundRect(boxX, boxY, boxWidth, boxHeight, 10, 10);
+
+        g2.setFont(new Font("Arial", Font.BOLD, 16));
+        String itemName = bagItems.get(selectedOption);
+        g2.drawString("Use " + itemName + " on which Pokemon?", boxX + 15, boxY + 25);
+
+        ArrayList<Pokemon> party = playerTrainer.getParty();
+        g2.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        for (int i = 0; i < party.size() && i < 4; i++) {
+            Pokemon p = party.get(i);
+            int optY = boxY + 50 + (i * 35);
+
+            if (i == selectedPokemonForItem) {
+                g2.setColor(Color.BLACK);
+                g2.fillPolygon(
+                        new int[]{boxX + 15, boxX + 15, boxX + 20},
+                        new int[]{optY - 12, optY - 2, optY - 7},
+                        3
+                );
+            }
+
+            // SHOW HP STATUS AND GRAY OUT FAINTED POKEMON
+            if (p.isFainted()) {
+                g2.setColor(new Color(150, 150, 150)); // GRAY FOR FAINTED
+                g2.drawString(p.getName() + " Lv" + p.getLevel() + " (FAINTED)", boxX + 30, optY);
+            } else {
+                g2.setColor(Color.BLACK);
+                String hpText = " HP:" + p.getHp() + "/" + p.getMaxHp();
+                g2.drawString(p.getName() + " Lv" + p.getLevel() + hpText, boxX + 30, optY);
+            }
+        }
     }
 
     //=====================================
