@@ -77,7 +77,37 @@ public class BattleScreen {
                 {new Rectangle(12, 212, 63, 63), new Rectangle(12, 276, 63, 63)},
                 
                 // RATTATA [4]
-                {new Rectangle(401, 212, 63, 63), new Rectangle(401, 276, 63, 63)},        
+                {new Rectangle(401, 212, 63, 63), new Rectangle(401, 276, 63, 63)},
+                
+                // CUBONE [5]
+                {new Rectangle(1700, 1036, 63, 63), new Rectangle(1700, 1101, 63, 63)},
+                
+                // ELECTABUZZ [6]
+                {new Rectangle(531, 1367, 63, 63), new Rectangle(531, 1431, 63, 63)},
+                
+                // FARFETCH'D [7]
+                {new Rectangle(921, 871, 63, 63), new Rectangle(921, 936, 63, 63)},
+                
+                // GROWLITHE [8]
+                {new Rectangle(1571, 541, 63, 63), new Rectangle(1571, 606, 63, 63)},
+                
+                // JYNX [9]
+                {new Rectangle(401, 1367, 63, 63), new Rectangle(401, 1431, 63, 63)},
+                
+                // KANGASKHAN [10]
+                {new Rectangle(1181, 1200, 63, 63), new Rectangle(1181, 1266, 63, 63)},
+                
+                // MACHOP [11]
+                {new Rectangle(662, 706, 63, 63), new Rectangle(662, 771, 63, 63)},
+                
+                // MAGMAR [12]
+                {new Rectangle(662, 1367, 63, 63), new Rectangle(662, 1431, 63, 63)},
+                
+                // PSYDUCK [13]
+                {new Rectangle(1051, 541, 63, 63), new Rectangle(1051, 607, 63, 63)},
+                
+                // SCYTHER [14]
+                {new Rectangle(271, 1367, 63, 63), new Rectangle(271, 1431, 63, 63)},
                 
                 // ADD MORE POKEMON HERE AS NEEDED
                 // {new Rectangle(x, y, width, height), new Rectangle(x, y, width, height)},
