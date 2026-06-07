@@ -25,6 +25,7 @@ public class BattleUI {
         BAG_ITEMS, // ITEMS IN CATEGORY
         ITEM_TARGET_SELECTION, // SELECT POKEMON TO USE ITEM ON
         POKEMON_MENU, // POKEMON PARTY
+        POKEMON_MENU_FORCED, // FORCED POKEMON SWITCH (AFTER FAINT)
         BATTLE_ACTION, // EXECUTING MOVES
         DIALOGUE, // BATTLE MESSAGES
         VICTORY, // WON THE BATTLE
@@ -136,6 +137,7 @@ public class BattleUI {
                 break;
 
             case POKEMON_MENU:
+            case POKEMON_MENU_FORCED:
                 handlePokemonMenuInput(input);
                 break;
         }
@@ -425,8 +427,11 @@ public class BattleUI {
             case "I":
             case "K":
             case "ESCAPE":
-                currentState = BattleState.MAIN_MENU;
-                selectedOption = 0;
+                // ONLY ALLOW CANCEL IF NOT FORCED SWITCH
+                if (currentState != BattleState.POKEMON_MENU_FORCED) {
+                    currentState = BattleState.MAIN_MENU;
+                    selectedOption = 0;
+                }
                 break;
         }
     }
@@ -549,7 +554,8 @@ public class BattleUI {
     private void switchPokemon(int index) {
         Pokemon newPokemon = playerTrainer.getParty().get(index);
 
-        if (newPokemon == playerPokemon) {
+        // IF CURRENT POKEMON IS FAINTED, ALLOW SWITCHING TO IT
+        if (!playerPokemon.isFainted() && newPokemon == playerPokemon) {
             addDialogue(newPokemon.getName() + " is already in battle!");
             currentState = BattleState.DIALOGUE;
             return;
@@ -567,20 +573,29 @@ public class BattleUI {
         int targetY = gp.screenHeight - 420 + 140; // CENTER OF PLAYER SPRITE AREA
         gp.battleScreen.startPokemonSwitchAnimation(targetX, targetY);
         
+        boolean isForcedSwitch = (currentState == BattleState.POKEMON_MENU_FORCED);
+        
+        // IF CURRENT POKEMON IS FAINTED, DON'T SAY "COME BACK"
+        if (!playerPokemon.isFainted()) {
+            addDialogue("Come back!");
+        }
+        
         playerPokemon = newPokemon;
         
         // RESET HP ANIMATION FOR NEW POKEMON
         gp.battleScreen.resetHPAnimation(playerPokemon, enemyPokemon);
         
-        addDialogue("Come back!");
         addDialogue("Go! " + playerPokemon.getName() + "!");
 
-        // ENEMY ATTACKS
-        Moves enemyMove = getEnemyMove();
-        BattleEngine engine = new BattleEngine();
-        executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
-
-        checkBattleEnd();
+        // ONLY LET ENEMY ATTACK IF THIS WAS A VOLUNTARY SWITCH (NOT FORCED)
+        if (!isForcedSwitch) {
+            // VOLUNTARY SWITCH - ENEMY ATTACKS
+            Moves enemyMove = getEnemyMove();
+            BattleEngine engine = new BattleEngine();
+            executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
+            checkBattleEnd();
+        }
+        
         currentState = BattleState.DIALOGUE;
     }
 
@@ -672,8 +687,18 @@ public class BattleUI {
     private void checkBattleEnd() {
         if (playerPokemon.isFainted()) {
             addDialogue(playerPokemon.getName() + " fainted!");
-            addDialogue("You lost the battle...");
-            currentState = BattleState.DEFEAT;
+            
+            // CHECK IF ALL POKEMON FAINTED
+            if (allPokemonFainted()) {
+                addDialogue("All your Pokemon fainted!");
+                addDialogue("You lost the battle...");
+                currentState = BattleState.DEFEAT;
+            } else {
+                // FORCE PLAYER TO SWITCH TO ANOTHER POKEMON
+                addDialogue("Choose a Pokemon to send out!");
+                currentState = BattleState.POKEMON_MENU_FORCED;
+                selectedOption = 0;
+            }
         } else if (enemyPokemon.isFainted()) {
             addDialogue("The wild " + enemyPokemon.getName() + " fainted!");
             
@@ -690,6 +715,18 @@ public class BattleUI {
             currentState = BattleState.VICTORY;
         } else {
         }
+    }
+    
+    //=====================================
+    // CHECK IF ALL POKEMON FAINTED
+    //=====================================
+    private boolean allPokemonFainted() {
+        for (Pokemon p : playerTrainer.getParty()) {
+            if (!p.isFainted()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     //=====================================
@@ -745,12 +782,37 @@ public class BattleUI {
                     checkBattleEnd();
                 }
             } else if (currentState == BattleState.VICTORY || currentState == BattleState.DEFEAT) {
-                // CHECK IF ANY POKEMON IN PARTY HAS PENDING EVOLUTION
+                // HANDLE DEFEAT - HEAL ALL POKEMON AND TELEPORT TO POKECENTER
+                if (currentState == BattleState.DEFEAT) {
+                    // START FADE OUT TRANSITION FOR WHITEOUT EFFECT
+                    gp.buildingManager.getTransitionManager().startFadeOutIn(() -> {
+                        // HEAL ALL POKEMON
+                        for (Pokemon p : playerTrainer.getParty()) {
+                            p.setHp(p.getMaxHp());
+                        }
+                        
+                        // TELEPORT TO POKECENTER DOOR (OUTSIDE)
+                        // POKEMON CENTER IS AT WORLD TILE (20, 15), DOOR IS AT (21, 18)
+                        // PLACE PLAYER ONE TILE BELOW THE DOOR AT (21, 19)
+                        gp.player.worldX = 21 * gp.tileSize;
+                        gp.player.worldY = 19 * gp.tileSize;
+                        gp.player.direction = "down"; // PLAYER FACING DOWN
+                        
+                        System.out.println("Teleported to Pokemon Center and healed all Pokemon!");
+                        
+                        // SHOW FADE-IN MESSAGE LIKE POKEMON FIRERED
+                        gp.dialogueManager.showMessage("You hurried to the Pokemon Center, \nprotecting your exhausted Pokemon \nfrom further harm...");
+                    });
+                }
+                
+                // CHECK IF ANY POKEMON IN PARTY HAS PENDING EVOLUTION (FOR VICTORY)
                 Pokemon pokemonToEvolve = null;
-                for (com.game.pokemons.Pokemon p : playerTrainer.getParty()) {
-                    if (p.hasPendingEvolution()) {
-                        pokemonToEvolve = p;
-                        break;
+                if (currentState == BattleState.VICTORY) {
+                    for (com.game.pokemons.Pokemon p : playerTrainer.getParty()) {
+                        if (p.hasPendingEvolution()) {
+                            pokemonToEvolve = p;
+                            break;
+                        }
                     }
                 }
                 
@@ -832,6 +894,7 @@ public class BattleUI {
                 drawItemTargetSelection(g2);
                 break;
             case POKEMON_MENU:
+            case POKEMON_MENU_FORCED:
                 drawPokemonMenuFireRed(g2);
                 break;
         }

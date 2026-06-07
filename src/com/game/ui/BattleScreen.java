@@ -72,8 +72,7 @@ public class BattleScreen {
                 {new Rectangle(12, 46, 63, 63), new Rectangle(17, 117, 49, 49)}, // DONE
                 
                 // CHARMANDER [1]
-//                {new Rectangle(402, 46, 63, 63), new Rectangle(402, 111, 63, 63)}, // DONE (THE ORIGNAL SPRITE MAPPING OF CHARMANDER)
-                {new Rectangle(402, 46, 63, 63), new Rectangle(402, 111, 63, 63)}, // USE THIS INDEX TO TEST OTHER SPRITES
+                {new Rectangle(402, 46, 63, 63), new Rectangle(402, 111, 63, 63)}, // DONE
                 
                 // SQUIRTLE [2]
                 {new Rectangle(792, 46, 63, 63), new Rectangle(797, 117, 50, 50)}, // DONE
@@ -252,13 +251,13 @@ public class BattleScreen {
             }
 
             if (allLoaded) {
-                System.out.println("✓ Pokeball sprites loaded successfully!");
+                System.out.println(" Pokeball sprites loaded successfully!");
             } else {
-                System.out.println("✗ Some pokeball sprites failed to load!");
+                System.out.println("Some pokeball sprites failed to load!");
             }
 
         } catch (Exception e) {
-            System.out.println("✗ Could not load pokeball sprites: " + e.getMessage());
+            System.out.println("Could not load pokeball sprites: " + e.getMessage());
             e.printStackTrace();
         }
 
