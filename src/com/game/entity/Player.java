@@ -280,25 +280,33 @@ public class Player extends Entity {
         System.out.println("   A wild " + wildPokemon.getName() + " appeared!");
         System.out.println("========================================");
 
-        // SWITCH TO BATTLE STATE
-        gp.currentWildPokemon = wildPokemon;
-        gp.gameState = GameState.BATTLE;
-        gp.battleScreen.startTransition();
+        // START BATTLE MUSIC IMMEDIATELY WHEN ENCOUNTER HAPPENS
+        gp.audioManager.stopCurrent();
+        gp.audioManager.playWithLoop("Battle.wav", 0);
 
-        // GET FIRST CONSCIOUS POKEMON
-        Pokemon playerPokemon = null;
-        for (Pokemon p : gp.playerTrainer.getParty()) {
-            if (!p.isFainted()) {
-                playerPokemon = p;
-                break;
+        // START ENCOUNTER FLASH TRANSITION 
+        gp.encounterTransition.startEncounterFlash(() -> {
+            
+            // AFTER FLASH COMPLETES, SWITCH TO BATTLE STATE
+            gp.currentWildPokemon = wildPokemon;
+            gp.gameState = GameState.BATTLE;
+            gp.battleScreen.startTransition();
+
+            // GET FIRST CONSCIOUS POKEMON
+            Pokemon playerPokemon = null;
+            for (Pokemon p : gp.playerTrainer.getParty()) {
+                if (!p.isFainted()) {
+                    playerPokemon = p;
+                    break;
+                }
             }
-        }
 
-        // INITIALIZE BATTLE UI
-        gp.battleUI.initBattle(gp.playerTrainer, playerPokemon, wildPokemon, false);
+            // INITIALIZE BATTLE UI
+            gp.battleUI.initBattle(gp.playerTrainer, playerPokemon, wildPokemon, false);
 
-        // RESET HP ANIMATION FOR NEW BATTLE
-        gp.battleScreen.resetHPAnimation(playerPokemon, wildPokemon);
+            // RESET HP ANIMATION FOR NEW BATTLE
+            gp.battleScreen.resetHPAnimation(playerPokemon, wildPokemon);
+        });
     }
 
     //=====================================

@@ -8,6 +8,7 @@ import com.game.logic.*;
 import com.game.entity.*;
 import com.game.tile.TileManager;
 import com.game.ui.BattleUI;
+import com.game.audio.AudioManager;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -43,6 +44,8 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH);
     public WildEncounterManager encounterManager = new WildEncounterManager();
     public com.game.world.BuildingManager buildingManager;
+    public AudioManager audioManager = new AudioManager();
+    public com.game.world.TransitionManager encounterTransition = new com.game.world.TransitionManager();
 
     // GAME STATE
     public GameState gameState = GameState.OVERWORLD;
@@ -82,6 +85,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         gameThread = new Thread(this);
         gameThread.start();
+        
+        // START OVERWORLD BGM
+        audioManager.playWithLoop("BGM.wav", 0);
     }
 
     //========================================
@@ -123,6 +129,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
 
         if (gameState == GameState.OVERWORLD) {
+            // UPDATE ENCOUNTER TRANSITION
+            encounterTransition.update();
+            
             // CHECKS IF DIALOGUE OR SHOP IS ACTIVE
             if (dialogueManager.isDialogueActive()) {
                 // HANDLES DIALOGUE INPUT
@@ -212,6 +221,9 @@ public class GamePanel extends JPanel implements Runnable {
             
             // DRAW TRANSITION OVERLAY (ALWAYS ON TOP)
             buildingManager.drawTransition(g2);
+            
+            // DRAW ENCOUNTER TRANSITION (ON TOP OF BUILDING TRANSITIONS)
+            encounterTransition.draw(g2, screenWidth, screenHeight);
             
             // Draw HUD (MONEY DISPLAY)
             drawHUD(g2);

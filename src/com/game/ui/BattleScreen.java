@@ -298,18 +298,18 @@ public class BattleScreen {
                         backgroundRect.width,
                         backgroundRect.height
                 );
-                System.out.println("✓ Battle background loaded successfully from sprite sheet!");
+                System.out.println("Battle background loaded successfully from sprite sheet!");
             } else {
                 System.out.println("ERROR: Battle background coordinates out of bounds!");
-                System.out.println("  Requested: x=" + backgroundRect.x + " y=" + backgroundRect.y
+                System.out.println("Requested: x=" + backgroundRect.x + " y=" + backgroundRect.y
                         + " w=" + backgroundRect.width + " h=" + backgroundRect.height);
-                System.out.println("  Sheet size: " + backgroundSheet.getWidth() + "x" + backgroundSheet.getHeight());
+                System.out.println("Sheet size: " + backgroundSheet.getWidth() + "x" + backgroundSheet.getHeight());
                 battleBackground = null;
             }
 
         } catch (Exception e) {
-            System.out.println("✗ Could not load battle background: " + e.getMessage());
-            System.out.println("  Using fallback colored background instead.");
+            System.out.println("Could not load battle background: " + e.getMessage());
+            System.out.println("Using fallback colored background instead.");
             e.printStackTrace();
             battleBackground = null;
         }

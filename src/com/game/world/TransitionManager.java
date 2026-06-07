@@ -11,13 +11,16 @@ public class TransitionManager {
     private TransitionType currentTransition = TransitionType.NONE;
     private float alpha = 0.0f; // 0.0 = TRANSPARENT, 1.0 = OPAQUE
     private float fadeSpeed = 0.05f; // SPEED OF FADE (HIGHER = FASTER)
+    private int flashCount = 0; // FOR ENCOUNTER FLASH EFFECT
+    private int flashTimer = 0;
 
     private Runnable onTransitionComplete = null;
 
     public enum TransitionType {
         NONE,
         FADE_OUT, // FADE TO BLACK
-        FADE_IN    // FADE FROM BLACK
+        FADE_IN,   // FADE FROM BLACK
+        ENCOUNTER_FLASH // POKEMON FIRERED STYLE ENCOUNTER FLASH
     }
 
     //=============================
@@ -52,6 +55,18 @@ public class TransitionManager {
             startFadeIn(null);
         });
     }
+    
+    //======================================
+    // START ENCOUNTER FLASH TRANSITION
+    //======================================
+    public void startEncounterFlash(Runnable onComplete) {
+        isTransitioning = true;
+        currentTransition = TransitionType.ENCOUNTER_FLASH;
+        alpha = 0.0f;
+        flashCount = 0;
+        flashTimer = 0;
+        onTransitionComplete = onComplete;
+    }
 
     //=============================
     // UPDATE THE TRANSITION STATE
@@ -77,6 +92,26 @@ public class TransitionManager {
                     completeTransition();
                 }
                 break;
+                
+            case ENCOUNTER_FLASH:
+                flashTimer++;
+                
+                // 1.5 SECOND TRANSITION (90 FRAMES AT 60 FPS)
+                // FLASH PATTERN: 5 QUICK FLASHES (75 FRAMES) THEN HOLD WHITE (15 FRAMES)
+                if (flashCount < 10) { // 5 FLASHES (ON/OFF = 10 STATES)
+                    if (flashTimer >= 8) { // CHANGE EVERY 8 FRAMES
+                        flashTimer = 0;
+                        flashCount++;
+                        alpha = (flashCount % 2 == 0) ? 0.0f : 1.0f; // ALTERNATE BETWEEN TRANSPARENT AND WHITE
+                    }
+                } else {
+                    // AFTER FLASHES, HOLD WHITE FOR 15 FRAMES (~0.25 SECONDS)
+                    alpha = 1.0f;
+                    if (flashTimer >= 95) { // 80 FRAMES (FLASHES) + 15 FRAMES (HOLD) = 95 TOTAL
+                        completeTransition();
+                    }
+                }
+                break;
 
             case NONE:
             default:
@@ -89,9 +124,14 @@ public class TransitionManager {
     //=============================
     public void draw(Graphics2D g2, int screenWidth, int screenHeight) {
         if (isTransitioning || alpha > 0.0f) {
-            // Create a semi-transparent black overlay
+            Color overlayColor = Color.BLACK;
+            
+            if (currentTransition == TransitionType.ENCOUNTER_FLASH) {
+                overlayColor = Color.WHITE;
+            }
+            
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-            g2.setColor(Color.BLACK);
+            g2.setColor(overlayColor);
             g2.fillRect(0, 0, screenWidth, screenHeight);
 
             // RESET COMPOSITE TO DEFAULT
