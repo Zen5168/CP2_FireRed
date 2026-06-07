@@ -1,4 +1,4 @@
-package com.game.logic;
+package com.game.ui;
 
 import com.game.main.GamePanel;
 import com.game.pokemons.Pokemon;
@@ -63,10 +63,13 @@ public class BattleScreen {
             pokemonSprites = new BufferedImage[30][2]; // [POKEMON_ID][0=FRONT, 1=BACK]
 
             // MAP EACH POKEMON SPRITE TO ITS LOCATION ON THE SHEET: {X, Y, WIDTH, HEIGHT}
+            
             // FORMAT: [POKEMON_ID][FRONT_SPRITE, BACK_SPRITE]
+            
             Rectangle[][] spriteMap = { // NOTE TO SELF: RE-MAP THESPRITE FOR A CLEANER LOOK
+                
                 // BULBASAUR [0]
-                {new Rectangle(12, 46, 63, 63), new Rectangle(12, 111, 63, 63)},
+                {new Rectangle(12, 46, 63, 63), new Rectangle(17, 117, 49, 49)},
                 
                 // CHARMANDER [1]
                 {new Rectangle(402, 46, 63, 63), new Rectangle(402, 111, 63, 63)},
