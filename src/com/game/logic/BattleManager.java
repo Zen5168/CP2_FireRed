@@ -60,7 +60,7 @@ public class BattleManager {
                     break;
 
                 case "3":
-                    Pokemon swappedMon = switchPokemon(player, playerMon);
+                    Pokemon swappedMon = switchPokemon(player, playerMon, false);
                     if (swappedMon != null && swappedMon != playerMon) {
                         playerMon = swappedMon;
                         System.out.println("Go! " + playerMon.getName() + "!");
@@ -88,14 +88,27 @@ public class BattleManager {
 
             // CHECK IF ANYONE FAINTED AFTER THE TURN
             if (playerMon.isFainted()) {
-                System.out.println(playerMon.getName() + " fainted! You lost the battle...");
-                audio.stopCurrent();
-                return false;
+                System.out.println(playerMon.getName() + " fainted!");
+                
+                // CHECK IF ALL POKEMON FAINTED
+                if (allPokemonFainted(player)) {
+                    System.out.println("All your Pokemon fainted! You lost the battle...");
+                    audio.stopCurrent();
+                    return false;
+                } else {
+                    // FORCE SWITCH TO ANOTHER POKEMON
+                    System.out.println("Choose a Pokemon to send out!");
+                    Pokemon swappedMon = switchPokemon(player, playerMon, true);
+                    if (swappedMon != null) {
+                        playerMon = swappedMon;
+                        System.out.println("Go! " + playerMon.getName() + "!");
+                    }
+                }
             } else if (enemyMon.isFainted()) {
                 System.out.println("The wild " + enemyMon.getName() + " fainted!");
                 audio.stopCurrent();
 
-                // GAIN EXP
+                // GAIN EXP FOR ALL CONSCIOUS POKEMON
                 int expGained = calculateExpReward(enemyMon);
                 playerMon.gainExp(expGained);
                 
@@ -108,6 +121,18 @@ public class BattleManager {
                 System.out.println("DEBUG: Evolution check complete");
                 
                 return true;
+            }
+        }
+        return true;
+    }
+
+    // ======================================
+    // CHECK IF ALL POKEMON FAINTED
+    // ======================================
+    private boolean allPokemonFainted(Player player) {
+        for (Pokemon p : player.getParty()) {
+            if (!p.isFainted()) {
+                return false;
             }
         }
         return true;
@@ -212,7 +237,7 @@ public class BattleManager {
     // ======================================
     // SWITCH POKEMON
     // ======================================
-    private Pokemon switchPokemon(Player player, Pokemon currentMon) {
+    private Pokemon switchPokemon(Player player, Pokemon currentMon, boolean forced) {
         ArrayList<Pokemon> party = player.getParty();
         System.out.println("\n--- CHOOSE A POKEMON ---");
 
@@ -221,29 +246,45 @@ public class BattleManager {
             String status = p.isFainted() ? "(FAINTED)" : "HP: " + p.getHp() + "/" + p.getMaxHp();
             System.out.println((i + 1) + ". " + p.getName() + " [" + status + "]");
         }
-        System.out.println("0. Cancel");
+        
+        // ONLY ALLOW CANCEL IF NOT FORCED
+        if (!forced) {
+            System.out.println("0. Cancel");
+        }
         System.out.print("Select: ");
 
         try {
             int choice = Integer.parseInt(scanner.nextLine()) - 1;
-            if (choice == -1) {
+            
+            // ONLY ALLOW CANCEL IF NOT FORCED
+            if (choice == -1 && !forced) {
                 return null;
             }
+            
+            // INVALID INPUT, TRY AGAIN
+            if (choice == -1 && forced) {
+                System.out.println("You must choose a Pokemon!");
+                return switchPokemon(player, currentMon, forced);
+            }
+            
             if (choice >= 0 && choice < party.size()) {
                 Pokemon selected = party.get(choice);
 
-                if (selected == currentMon) {
+                if (selected == currentMon && !forced) {
                     System.out.println(selected.getName() + " is already in battle!");
                     return null;
                 }
                 if (selected.isFainted()) {
                     System.out.println(selected.getName() + " has no energy left to battle!");
-                    return null;
+                    return switchPokemon(player, currentMon, forced); // TRY AGAIN
                 }
                 return selected;
             }
         } catch (Exception e) {
             System.out.println("Invalid selection.");
+            if (forced) {
+                return switchPokemon(player, currentMon, forced); // TRY AGAIN IF FORCED
+            }
         }
         return null;
     }

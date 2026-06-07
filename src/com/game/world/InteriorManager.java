@@ -65,7 +65,7 @@ public class InteriorManager {
     private void loadNPCSprites() {
         try {
             npcSheet = ImageIO.read(getClass().getResourceAsStream("/res/image/overworld_npc.png"));
-            System.out.println("✓ NPC sprite sheet loaded successfully");
+            System.out.println("NPC sprite sheet loaded successfully");
         } catch (Exception e) {
             System.err.println("========================================");
             System.err.println("WARNING: Could not load NPC sprite sheet!");
@@ -204,7 +204,7 @@ public class InteriorManager {
         pokemartNPCs.add(clerk);
         interiorNPCs.put("POKEMART", pokemartNPCs);
         
-        System.out.println("✓ NPCs setup complete");
+        System.out.println("NPCs setup complete");
     }
 
     //==============================
