@@ -40,8 +40,8 @@ public class EvolutionUI {
         this.spriteScale = 1.0f;
         this.growing = false;
         
-        // GET OLD SPRITE
-        this.oldSprite = gp.battleScreen.getPokemonSprite(oldName, true);
+        // GET OLD SPRITE (FRONT SPRITE)
+        this.oldSprite = gp.battleScreen.getPokemonSprite(oldName, false);
     }
     
     public void update() {
@@ -89,8 +89,8 @@ public class EvolutionUI {
                     // POKEMON EVOLVES
                     evolvingPokemon.evolve();
                     
-                    // GET NEW SPRITE
-                    newSprite = gp.battleScreen.getPokemonSprite(evolvingPokemon.getName(), true);
+                    // GET NEW SPRITE (FRONT SPRITE)
+                    newSprite = gp.battleScreen.getPokemonSprite(evolvingPokemon.getName(), false);
                     
                     stage = 3;
                     frameCounter = 0;

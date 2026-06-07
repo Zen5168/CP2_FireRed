@@ -1,5 +1,6 @@
 package com.game.main;
 
+import com.game.ui.BattleScreen;
 import com.game.ui.BattleUI;
 import javax.swing.*;
 import java.awt.*;
