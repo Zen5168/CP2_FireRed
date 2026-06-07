@@ -69,19 +69,20 @@ public class BattleScreen {
             Rectangle[][] spriteMap = { // NOTE TO SELF: RE-MAP THESPRITE FOR A CLEANER LOOK
                 
                 // BULBASAUR [0]
-                {new Rectangle(12, 46, 63, 63), new Rectangle(17, 117, 49, 49)},
+                {new Rectangle(12, 46, 63, 63), new Rectangle(17, 117, 49, 49)}, // DONE
                 
                 // CHARMANDER [1]
-                {new Rectangle(402, 46, 63, 63), new Rectangle(402, 111, 63, 63)},
+//                {new Rectangle(402, 46, 63, 63), new Rectangle(402, 111, 63, 63)}, // DONE (THE ORIGNAL SPRITE MAPPING OF CHARMANDER)
+                {new Rectangle(402, 46, 63, 63), new Rectangle(406, 276, 59, 59)}, // USE THIS INDEX TO TEST OTHER SPRITES
                 
                 // SQUIRTLE [2]
-                {new Rectangle(792, 46, 63, 63), new Rectangle(797, 117, 50, 50)},
+                {new Rectangle(792, 46, 63, 63), new Rectangle(797, 117, 50, 50)}, // DONE
                 
                 // PIDGEY [3]
-                {new Rectangle(12, 212, 63, 63), new Rectangle(12, 276, 63, 63)},
+                {new Rectangle(12, 212, 63, 63), new Rectangle(14, 283, 60, 57)}, // DONE
                 
                 // RATTATA [4]
-                {new Rectangle(401, 212, 63, 63), new Rectangle(401, 276, 63, 63)},
+                {new Rectangle(401, 212, 63, 63), new Rectangle(406, 276, 59, 59)}, // DONE
                 
                 // CUBONE [5]
                 {new Rectangle(1702, 1036, 63, 63), new Rectangle(1702, 1101, 63, 63)},
