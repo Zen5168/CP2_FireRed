@@ -784,6 +784,10 @@ public class BattleUI {
             } else if (currentState == BattleState.VICTORY || currentState == BattleState.DEFEAT) {
                 // HANDLE DEFEAT - HEAL ALL POKEMON AND TELEPORT TO POKECENTER
                 if (currentState == BattleState.DEFEAT) {
+                    // STOP BATTLE MUSIC AND RESTART OVERWORLD BGM
+                    gp.audioManager.stopCurrent();
+                    gp.audioManager.playWithLoop("BGM.wav", 0);
+                    
                     // START FADE OUT TRANSITION FOR WHITEOUT EFFECT
                     gp.buildingManager.getTransitionManager().startFadeOutIn(() -> {
                         // HEAL ALL POKEMON
@@ -817,11 +821,18 @@ public class BattleUI {
                 }
                 
                 if (pokemonToEvolve != null) {
-                    System.out.println("DEBUG: Transitioning to EVOLUTION state");
+                    
+                    // MUSIC WILL BE STOPPED IN EVOLUTION UI
                     gp.evolutionUI.startEvolution(pokemonToEvolve);
                     gp.gameState = GameState.EVOLUTION;
                 } else {
+                    // STOP BATTLE MUSIC AND RETURN TO OVERWORLD BGM
+                    gp.audioManager.stopCurrent();
+                    gp.audioManager.playWithLoop("BGM.wav", 0);
                     gp.gameState = GameState.OVERWORLD;
+                    
+                    // RESET ENCOUNTER TRANSITION TO PREVENT BLACK SCREEN
+                    gp.encounterTransition.stopTransition();
                 }
             }
         }

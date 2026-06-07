@@ -40,6 +40,9 @@ public class EvolutionUI {
         this.spriteScale = 1.0f;
         this.growing = false;
         
+        // STOP MUSIC DURING EVOLUTION
+        gp.audioManager.stopCurrent();
+        
         // GET OLD SPRITE (FRONT SPRITE)
         this.oldSprite = gp.battleScreen.getPokemonSprite(oldName, false);
     }
@@ -102,7 +105,6 @@ public class EvolutionUI {
                 
             case 3: // "CONGRATULATIONS!" - SHOW NEW SPRITE
                 if (frameCounter > 120) { // WAIT 2 SECONDS
-                    evolutionComplete = true;
                     
                     // CHECK IF THERE'S ANOTHER POKEMON THAT NEEDS TO EVOLVE
                     boolean hasMoreEvolutions = false;
@@ -115,8 +117,14 @@ public class EvolutionUI {
                     }
                     
                     if (!hasMoreEvolutions) {
-                        // RETURN TO OVERWORLD
+                        // MARK AS COMPLETED AND TRANSITION TO OVERWORLD
+                        evolutionComplete = true;
+                        evolvingPokemon = null;
                         gp.gameState = GameState.OVERWORLD;
+                        gp.audioManager.playWithLoop("BGM.wav", 0);
+                        
+                        // RESET ENCOUNTER TRANSITION TO PREVENT BLACK SCREEN
+                        gp.encounterTransition.stopTransition();
                     }
                 }
                 break;

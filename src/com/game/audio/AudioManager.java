@@ -19,7 +19,7 @@ public class AudioManager {
     public void playWithLoop(String fileName, long startMicroseconds) {
         stopCurrent(); // STOP MUSIC
         try {
-            File soundFile = new File("src/com/game//res.audio/" + fileName);
+            File soundFile = new File("src/res/audio/" + fileName);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
             currentClip = AudioSystem.getClip();
             currentClip.open(audioStream);
