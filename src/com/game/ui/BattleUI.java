@@ -838,6 +838,10 @@ public class BattleUI {
             // ATTACKER FAINTED, SKIP THIS ACTION
             return;
         }
+        
+        // START ATTACK VISUAL EFFECT
+        boolean targetIsEnemy = (action.defender == enemyPokemon);
+        gp.battleScreen.startAttackEffect(action.move.getTypeEnum(), targetIsEnemy);
 
         // EXECUTE THE MOVE AND CAPTURE RESULTS
         String battleResult = action.engine.executeTurnWithResult(

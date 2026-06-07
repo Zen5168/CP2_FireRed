@@ -2,6 +2,7 @@ package com.game.ui;
 
 import com.game.main.GamePanel;
 import com.game.pokemons.Pokemon;
+import com.game.logic.Type;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -46,6 +47,15 @@ public class BattleScreen {
     private int wobbleCount = 0;
     private double wobbleAngle = 0;
     private boolean hideEnemyPokemon = false; // HIDE ENEMY WHEN CAUGHT IN POKEBALL
+
+    // ATTACK VISUAL EFFECTS
+    private boolean showAttackEffect = false;
+    private Type attackEffectType = Type.NONE;
+    private int attackEffectX = 0;
+    private int attackEffectY = 0;
+    private int attackEffectFrame = 0;
+    private int attackEffectMaxFrames = 20;
+    private boolean attackTargetIsEnemy = true;
 
     public BattleScreen(GamePanel gp) {
         this.gp = gp;
@@ -391,6 +401,15 @@ public class BattleScreen {
         if (showPokeballThrow && pokeballAnimationStage >= 0) {
             updatePokeballAnimation();
         }
+        
+        // UPDATE ATTACK EFFECT ANIMATION
+        if (showAttackEffect) {
+            attackEffectFrame++;
+            if (attackEffectFrame >= attackEffectMaxFrames) {
+                showAttackEffect = false;
+                attackEffectFrame = 0;
+            }
+        }
     }
 
     //=====================================
@@ -561,6 +580,391 @@ public class BattleScreen {
                 }
                 break;
         }
+    }
+
+    //=====================================
+    // START ATTACK EFFECT ANIMATION
+    //=====================================
+    public void startAttackEffect(Type moveType, boolean targetIsEnemy) {
+        showAttackEffect = true;
+        attackEffectType = moveType;
+        attackEffectFrame = 0;
+        attackTargetIsEnemy = targetIsEnemy;
+        
+        // SET POSITION BASED ON TARGET
+        if (targetIsEnemy) {
+            // ENEMY POKEMON POSITION
+            attackEffectX = gp.screenWidth - 350 + 110;
+            attackEffectY = 40 + 110;
+        } else {
+            // PLAYER POKEMON POSITION
+            attackEffectX = 50 + 140;
+            attackEffectY = gp.screenHeight - 420 + 140;
+        }
+    }
+    
+    //=====================================
+    // DRAW ATTACK EFFECT
+    //=====================================
+    private void drawAttackEffect(Graphics2D g2) {
+        if (!showAttackEffect) return;
+        
+        float progress = (float) attackEffectFrame / attackEffectMaxFrames;
+        int alpha = (int) (255 * (1 - progress)); // FADE OUT OVER TIME
+        
+        // SAVE ORIGINAL COMPOSITE
+        Composite originalComposite = g2.getComposite();
+        
+        switch (attackEffectType) {
+            case FIRE:
+                drawFireEffect(g2, alpha, progress);
+                break;
+            case WATER:
+                drawWaterEffect(g2, alpha, progress);
+                break;
+            case GRASS:
+                drawGrassEffect(g2, alpha, progress);
+                break;
+            case ELECTRIC:
+                drawElectricEffect(g2, alpha, progress);
+                break;
+            case ICE:
+                drawIceEffect(g2, alpha, progress);
+                break;
+            case FIGHTING:
+                drawFightingEffect(g2, alpha, progress);
+                break;
+            case POISON:
+                drawPoisonEffect(g2, alpha, progress);
+                break;
+            case GROUND:
+                drawGroundEffect(g2, alpha, progress);
+                break;
+            case FLYING:
+                drawFlyingEffect(g2, alpha, progress);
+                break;
+            case PSYCHIC:
+                drawPsychicEffect(g2, alpha, progress);
+                break;
+            case BUG:
+                drawBugEffect(g2, alpha, progress);
+                break;
+            case ROCK:
+                drawRockEffect(g2, alpha, progress);
+                break;
+            case GHOST:
+                drawGhostEffect(g2, alpha, progress);
+                break;
+            case DRAGON:
+                drawDragonEffect(g2, alpha, progress);
+                break;
+            case NORMAL:
+            default:
+                drawNormalEffect(g2, alpha, progress);
+                break;
+        }
+        
+        // RESTORE ORIGINAL COMPOSITE
+        g2.setComposite(originalComposite);
+    }
+    
+    //=====================================
+    // INDIVIDUAL TYPE EFFECTS
+    //=====================================
+    private void drawFireEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        int size = (int) (80 + progress * 100);
+        int x = attackEffectX - size / 2;
+        int y = attackEffectY - size / 2;
+        
+        // OUTER FLAME (ORANGE)
+        g2.setColor(new Color(255, 100, 0, alpha));
+        g2.fillOval(x, y, size, size);
+        
+        // INNER FLAME (YELLOW)
+        int innerSize = (int) (size * 0.6);
+        g2.setColor(new Color(255, 200, 0, alpha));
+        g2.fillOval(x + (size - innerSize) / 2, y + (size - innerSize) / 2, innerSize, innerSize);
+    }
+    
+    private void drawWaterEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // WATER DROPLETS
+        for (int i = 0; i < 6; i++) {
+            double angle = (i * Math.PI / 3) + (progress * Math.PI * 2);
+            int offsetX = (int) (Math.cos(angle) * 60 * progress);
+            int offsetY = (int) (Math.sin(angle) * 60 * progress);
+            
+            g2.setColor(new Color(0, 120, 255, alpha));
+            g2.fillOval(attackEffectX + offsetX - 15, attackEffectY + offsetY - 15, 30, 30);
+            
+            g2.setColor(new Color(150, 200, 255, alpha));
+            g2.fillOval(attackEffectX + offsetX - 10, attackEffectY + offsetY - 10, 20, 20);
+        }
+    }
+    
+    private void drawGrassEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // LEAVES SWIRLING
+        for (int i = 0; i < 8; i++) {
+            double angle = (i * Math.PI / 4) + (progress * Math.PI * 3);
+            int radius = (int) (50 + progress * 40);
+            int offsetX = (int) (Math.cos(angle) * radius);
+            int offsetY = (int) (Math.sin(angle) * radius);
+            
+            g2.setColor(new Color(50, 200, 50, alpha));
+            int[] xPoints = {
+                attackEffectX + offsetX, 
+                attackEffectX + offsetX + 15, 
+                attackEffectX + offsetX + 7
+            };
+            int[] yPoints = {
+                attackEffectY + offsetY, 
+                attackEffectY + offsetY + 10, 
+                attackEffectY + offsetY + 20
+            };
+            g2.fillPolygon(xPoints, yPoints, 3);
+        }
+    }
+    
+    private void drawElectricEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        g2.setStroke(new BasicStroke(4));
+        
+        // LIGHTNING BOLTS
+        for (int i = 0; i < 5; i++) {
+            double angle = (i * Math.PI * 2 / 5);
+            int endX = attackEffectX + (int) (Math.cos(angle) * 80 * progress);
+            int endY = attackEffectY + (int) (Math.sin(angle) * 80 * progress);
+            
+            g2.setColor(new Color(255, 255, 0, alpha));
+            g2.drawLine(attackEffectX, attackEffectY, endX, endY);
+            
+            g2.setColor(new Color(255, 255, 255, alpha));
+            g2.drawLine(attackEffectX, attackEffectY, 
+                       attackEffectX + (int) ((endX - attackEffectX) * 0.7),
+                       attackEffectY + (int) ((endY - attackEffectY) * 0.7));
+        }
+        
+        // ELECTRIC CORE
+        g2.setColor(new Color(255, 255, 200, alpha));
+        g2.fillOval(attackEffectX - 20, attackEffectY - 20, 40, 40);
+    }
+    
+    private void drawIceEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        int size = (int) (60 + progress * 40);
+        
+        // ICE CRYSTALS (HEXAGON)
+        for (int ring = 0; ring < 2; ring++) {
+            int ringSize = size - ring * 20;
+            int[] xPoints = new int[6];
+            int[] yPoints = new int[6];
+            
+            for (int i = 0; i < 6; i++) {
+                double angle = i * Math.PI / 3;
+                xPoints[i] = attackEffectX + (int) (Math.cos(angle) * ringSize);
+                yPoints[i] = attackEffectY + (int) (Math.sin(angle) * ringSize);
+            }
+            
+            g2.setColor(new Color(150, 200, 255, alpha));
+            g2.fillPolygon(xPoints, yPoints, 6);
+            
+            g2.setColor(new Color(200, 230, 255, alpha));
+            g2.setStroke(new BasicStroke(3));
+            g2.drawPolygon(xPoints, yPoints, 6);
+        }
+    }
+    
+    private void drawFightingEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // PUNCH IMPACT LINES
+        g2.setStroke(new BasicStroke(5));
+        for (int i = 0; i < 8; i++) {
+            double angle = i * Math.PI / 4;
+            int startRadius = (int) (20 * progress);
+            int endRadius = (int) (70 * progress);
+            
+            int startX = attackEffectX + (int) (Math.cos(angle) * startRadius);
+            int startY = attackEffectY + (int) (Math.sin(angle) * startRadius);
+            int endX = attackEffectX + (int) (Math.cos(angle) * endRadius);
+            int endY = attackEffectY + (int) (Math.sin(angle) * endRadius);
+            
+            g2.setColor(new Color(200, 50, 0, alpha));
+            g2.drawLine(startX, startY, endX, endY);
+        }
+    }
+    
+    private void drawPoisonEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // POISON BUBBLES
+        for (int i = 0; i < 10; i++) {
+            double angle = i * Math.PI * 2 / 10;
+            int radius = (int) (40 + progress * 50);
+            int offsetX = (int) (Math.cos(angle) * radius);
+            int offsetY = (int) (Math.sin(angle) * radius) - (int) (progress * 30);
+            int bubbleSize = 15 + (i % 3) * 5;
+            
+            g2.setColor(new Color(160, 32, 240, alpha));
+            g2.fillOval(attackEffectX + offsetX - bubbleSize / 2, 
+                       attackEffectY + offsetY - bubbleSize / 2, 
+                       bubbleSize, bubbleSize);
+        }
+    }
+    
+    private void drawGroundEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // ROCKS FLYING UP
+        for (int i = 0; i < 6; i++) {
+            int offsetX = (i - 3) * 30;
+            int offsetY = -(int) (progress * 80);
+            int rockSize = 20 + (i % 3) * 10;
+            
+            g2.setColor(new Color(139, 90, 43, alpha));
+            g2.fillRect(attackEffectX + offsetX - rockSize / 2, 
+                       attackEffectY + offsetY, 
+                       rockSize, rockSize);
+            
+            g2.setColor(new Color(101, 67, 33, alpha));
+            g2.drawRect(attackEffectX + offsetX - rockSize / 2, 
+                       attackEffectY + offsetY, 
+                       rockSize, rockSize);
+        }
+    }
+    
+    private void drawFlyingEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // WIND GUSTS
+        g2.setStroke(new BasicStroke(3));
+        for (int i = 0; i < 5; i++) {
+            int y = attackEffectY - 50 + i * 25;
+            int xOffset = (int) (progress * 100);
+            
+            g2.setColor(new Color(200, 230, 255, alpha));
+            for (int j = 0; j < 3; j++) {
+                int x = attackEffectX - 60 + xOffset + j * 15;
+                g2.drawArc(x, y, 40, 20, 0, 180);
+            }
+        }
+    }
+    
+    private void drawPsychicEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // PSYCHIC RINGS
+        for (int i = 0; i < 4; i++) {
+            int size = (int) (50 + i * 30 + progress * 80);
+            int ringAlpha = (int) (alpha * (1 - i * 0.2));
+            
+            g2.setColor(new Color(255, 0, 255, ringAlpha));
+            g2.setStroke(new BasicStroke(4));
+            g2.drawOval(attackEffectX - size / 2, attackEffectY - size / 2, size, size);
+        }
+    }
+    
+    private void drawBugEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // BUG BITE MARKS
+        for (int i = 0; i < 6; i++) {
+            double angle = i * Math.PI / 3 + progress * Math.PI * 2;
+            int radius = 40;
+            int offsetX = (int) (Math.cos(angle) * radius);
+            int offsetY = (int) (Math.sin(angle) * radius);
+            
+            g2.setColor(new Color(100, 180, 50, alpha));
+            g2.fillOval(attackEffectX + offsetX - 10, attackEffectY + offsetY - 10, 20, 20);
+            
+            g2.setColor(new Color(50, 120, 20, alpha));
+            g2.setStroke(new BasicStroke(2));
+            g2.drawArc(attackEffectX + offsetX - 10, attackEffectY + offsetY - 10, 20, 20, 45, 180);
+        }
+    }
+    
+    private void drawRockEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // FALLING ROCKS
+        for (int i = 0; i < 5; i++) {
+            int offsetX = (i - 2) * 40;
+            int offsetY = (int) (progress * 100) - 50;
+            int rockSize = 30 + (i % 2) * 15;
+            
+            g2.setColor(new Color(120, 100, 80, alpha));
+            int[] xPoints = {
+                attackEffectX + offsetX,
+                attackEffectX + offsetX + rockSize,
+                attackEffectX + offsetX + rockSize - 10,
+                attackEffectX + offsetX + 10
+            };
+            int[] yPoints = {
+                attackEffectY + offsetY,
+                attackEffectY + offsetY + 10,
+                attackEffectY + offsetY + rockSize,
+                attackEffectY + offsetY + rockSize - 5
+            };
+            g2.fillPolygon(xPoints, yPoints, 4);
+        }
+    }
+    
+    private void drawGhostEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // GHOSTLY WISPS
+        for (int i = 0; i < 8; i++) {
+            double angle = i * Math.PI / 4 + progress * Math.PI;
+            int radius = (int) (40 + Math.sin(progress * Math.PI * 4 + i) * 20);
+            int offsetX = (int) (Math.cos(angle) * radius);
+            int offsetY = (int) (Math.sin(angle) * radius);
+            
+            g2.setColor(new Color(120, 0, 180, alpha / 2));
+            g2.fillOval(attackEffectX + offsetX - 20, attackEffectY + offsetY - 20, 40, 40);
+        }
+        
+        // DARK CENTER
+        g2.setColor(new Color(80, 0, 120, alpha));
+        g2.fillOval(attackEffectX - 30, attackEffectY - 30, 60, 60);
+    }
+    
+    private void drawDragonEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // DRAGON RAGE (SPIRAL FLAMES)
+        for (int i = 0; i < 12; i++) {
+            double angle = i * Math.PI / 6 + progress * Math.PI * 3;
+            int radius = (int) (30 + i * 5);
+            int offsetX = (int) (Math.cos(angle) * radius);
+            int offsetY = (int) (Math.sin(angle) * radius);
+            
+            // GRADIENT FROM BLUE TO PURPLE
+            int r = (int) (0 + progress * 200);
+            int g = (int) (100 - progress * 100);
+            int b = 255;
+            
+            g2.setColor(new Color(r, g, b, alpha));
+            g2.fillOval(attackEffectX + offsetX - 15, attackEffectY + offsetY - 15, 30, 30);
+        }
+    }
+    
+    private void drawNormalEffect(Graphics2D g2, int alpha, float progress) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0, Math.min(1, alpha / 255f))));
+        
+        // SIMPLE IMPACT FLASH
+        int size = (int) (50 + progress * 80);
+        g2.setColor(new Color(255, 255, 255, alpha));
+        g2.fillOval(attackEffectX - size / 2, attackEffectY - size / 2, size, size);
+        
+        g2.setColor(new Color(200, 200, 200, alpha));
+        g2.setStroke(new BasicStroke(4));
+        g2.drawOval(attackEffectX - size / 2, attackEffectY - size / 2, size, size);
     }
 
     //=====================================
@@ -778,6 +1182,11 @@ public class BattleScreen {
             }
         } else if (showPokeballThrow && pokeballSprites == null) {
             System.out.println("ERROR: showPokeballThrow is true but pokeballSprites is null!");
+        }
+        
+        // DRAW ATTACK EFFECTS (DRAWN OVER POKEMON)
+        if (showAttackEffect) {
+            drawAttackEffect(g2);
         }
 
         // TRANSITION EFFECT (DRAWN LAST)
