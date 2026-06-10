@@ -49,7 +49,7 @@ public class KeyHandler implements KeyListener {
             }
         }
         
-        // ACTION KEYS (UIJK = AXYB on Xbox controller)
+        // ACTION KEYS (UIJK = AXYB ON XBOX CONTROLLER)
         if (code == KeyEvent.VK_U) {
             if (!uPressed) {
                 uPressed = true;
@@ -84,6 +84,9 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_ENTER) {
             addKeyPress("ENTER");
+        }
+        if (code == KeyEvent.VK_ESCAPE) {
+            addKeyPress("ESCAPE");
         }
     }
 

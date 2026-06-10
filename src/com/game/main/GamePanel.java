@@ -56,6 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
     public com.game.trainers.Player playerTrainer;
     public com.game.ui.DialogueManager dialogueManager;
     public com.game.ui.ShopUI shopUI;
+    public com.game.ui.OverworldMenuUI overworldMenuUI;
 
     public GamePanel(String playerName, com.game.pokemons.Pokemon starterPokemon) {
 
@@ -71,6 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
         buildingManager = new com.game.world.BuildingManager(this);
         dialogueManager = new com.game.ui.DialogueManager(this);
         shopUI = new com.game.ui.ShopUI(this);
+        overworldMenuUI = new com.game.ui.OverworldMenuUI(this);
 
         // INITIALIZE PLAYER TRAINER WITH CUSTOM NAME AND STARTER POKEMON
         playerTrainer = new com.game.trainers.Player(playerName, 23, 21);
@@ -132,8 +134,14 @@ public class GamePanel extends JPanel implements Runnable {
             // UPDATE ENCOUNTER TRANSITION
             encounterTransition.update();
             
-            // CHECKS IF DIALOGUE OR SHOP IS ACTIVE
-            if (dialogueManager.isDialogueActive()) {
+            // CHECKS IF MENU IS ACTIVE
+            if (overworldMenuUI.isMenuActive()) {
+                // HANDLE MENU INPUT
+                if (keyH.hasKeyPress()) {
+                    String key = keyH.getNextKeyPress();
+                    overworldMenuUI.handleInput(key);
+                }
+            } else if (dialogueManager.isDialogueActive()) {
                 // HANDLES DIALOGUE INPUT
                 if (keyH.hasKeyPress()) {
                     String key = keyH.getNextKeyPress();
@@ -150,10 +158,14 @@ public class GamePanel extends JPanel implements Runnable {
                 player.update();
                 buildingManager.update(); // UPDATE TRANSITIONS
                 
-                // CHECK FOR U KEY PRESS FOR INTERACTIONS
+                // CHECK FOR KEY PRESSES
                 if (keyH.hasKeyPress()) {
                     String key = keyH.getNextKeyPress();
-                    if (key.equals("U") || key.equals("J")) {
+                    
+                    // OPEN MENU WITH ESCAPE KEY
+                    if (key.equals("ESCAPE")) {
+                        overworldMenuUI.openMenu();
+                    } else if (key.equals("U") || key.equals("J")) {
                         int playerTileX = player.worldX / tileSize;
                         int playerTileY = player.worldY / tileSize;
                         
@@ -232,6 +244,9 @@ public class GamePanel extends JPanel implements Runnable {
             dialogueManager.draw(g2);
             shopUI.draw(g2);
             
+            // DRAW OVERWORLD MENU ON TOP OF EVERYTHING
+            overworldMenuUI.draw(g2);
+            
         } else if (gameState == GameState.BATTLE) {
             // DRAW BATTLE SCREEN
             com.game.pokemons.Pokemon playerPokemon = battleUI.getPlayerPokemon();
@@ -251,8 +266,8 @@ public class GamePanel extends JPanel implements Runnable {
     // DRAW HUD (MONEY DISPLAY)
     //========================================
     private void drawHUD(Graphics2D g2) {
-        // ONLY SHOW HUD IF DIALOGUE AND SHOP ARE NOT ACTIVE
-        if (dialogueManager.isDialogueActive() || shopUI.isShopActive()) {
+        // ONLY SHOW HUD IF DIALOGUE, SHOP, AND MENU ARE NOT ACTIVE
+        if (dialogueManager.isDialogueActive() || shopUI.isShopActive() || overworldMenuUI.isMenuActive()) {
             return;
         }
         
