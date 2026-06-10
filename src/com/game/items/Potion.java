@@ -5,7 +5,7 @@ import com.game.pokemons.Pokemon;
 public class Potion extends Item {
 
     public Potion() {
-        super("Potion"); 
+        super("Potion", "Restores 20 HP to a Pokemon."); 
     }
 
     @Override

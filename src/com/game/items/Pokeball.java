@@ -8,7 +8,7 @@ public class Pokeball extends Item {
     private double catchRateMultiplier;
 
     public Pokeball() {
-        super("Pokeball");
+        super("Pokeball", "A device for catching wild Pokemon.");
         this.catchRateMultiplier = 1.0;
     }
 
