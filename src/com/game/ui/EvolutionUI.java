@@ -264,9 +264,5 @@ public class EvolutionUI {
     }
     
     public void handleInput(String key) {
-        // ALLOW SKIPPING WITH ENTER/SPACE (BUT NOT DURING THE ANIMATION)
-        if ((key.equals("ENTER") || key.equals("SPACE")) && stage != 2) {
-            frameCounter = 999; // FORCE ADVANCE TO NEXT STAGE
-        }
     }
 }

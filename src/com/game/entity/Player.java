@@ -6,7 +6,6 @@ import com.game.pokemons.Pokemon;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.*;
-import com.game.ui.BattleUI;
 
 public class Player extends Entity {
 
@@ -94,6 +93,11 @@ public class Player extends Entity {
             return;
         }
         if (gp.shopUI != null && gp.shopUI.isShopActive()) {
+            return;
+        }
+        
+        // DISABLE PLAYER MOVEMENT DURING ENCOUNTER TRANSITION
+        if (gp.encounterTransition.isTransitioning()) {
             return;
         }
 

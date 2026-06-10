@@ -444,31 +444,36 @@ public class BattleUI {
 
         BattleEngine engine = new BattleEngine();
 
-        // TURN ORDER AND QUEUE ACTIONS
+        // CLEAR ANY PREVIOUS ACTIONS
+        actionQueue.clear();
+
+        // TURN ORDER - QUEUE MOVES IN CORRECT ORDER
         if (playerPokemon.getSpeed() >= enemyPokemon.getSpeed()) {
             // PLAYER FIRST, THEN ENEMY
-            executeMoveWithDialogue(playerPokemon, enemyPokemon, move, engine);
+            queueMoveWithEffectiveness(playerPokemon, enemyPokemon, move, engine);
 
             Moves enemyMove = getEnemyMove();
-            if (enemyMove != null) {
-                executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
+            if (enemyMove != null && !enemyPokemon.isFainted()) {
+                queueMoveWithEffectiveness(enemyPokemon, playerPokemon, enemyMove, engine);
             }
         } else {
             // ENEMY FIRST, THEN PLAYER
             Moves enemyMove = getEnemyMove();
             if (enemyMove != null) {
-                executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
+                queueMoveWithEffectiveness(enemyPokemon, playerPokemon, enemyMove, engine);
             }
 
-            executeMoveWithDialogue(playerPokemon, enemyPokemon, move, engine);
+            if (!playerPokemon.isFainted()) {
+                queueMoveWithEffectiveness(playerPokemon, enemyPokemon, move, engine);
+            }
         }
     }
 
-    private void executeMoveWithDialogue(Pokemon attacker, Pokemon defender, Moves move, BattleEngine engine) {
-        // QUEUE THE MOVE MESSAGE FIRST
+    private void queueMoveWithEffectiveness(Pokemon attacker, Pokemon defender, Moves move, BattleEngine engine) {
+        // MOVE MESSAGE
         addDialogue(attacker.getName() + " used " + move.moveName + "!");
-
-        // QUEUE THE ACTUAL DAMAGE APPLICATION
+        
+        // QUEUE THE ACTION FOR EXECUTION WHEN MESSAGE IS SHOWN
         actionQueue.add(new BattleAction(attacker, defender, move, engine));
     }
 
@@ -495,22 +500,20 @@ public class BattleUI {
                 return; // EXIT IMMEDIATELY
             } else {
                 addDialogue("Oh no! The Pokemon broke free!");
-                // ENEMY ATTACKS
+                // ENEMY ATTACKS QUEUE 
                 Moves enemyMove = getEnemyMove();
                 BattleEngine engine = new BattleEngine();
-                executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
-                checkBattleEnd();
+                queueMoveWithEffectiveness(enemyPokemon, playerPokemon, enemyMove, engine);
             }
         } else {
             item.use(playerPokemon);
             playerTrainer.getBag().removeItem(itemName, 1);
             addDialogue("Used " + item.getName() + " on " + playerPokemon.getName() + "!");
 
-            // ENEMY ATTACKS
+            // ENEMY ATTACKS - QUEUE IT LIKE REGULAR BATTLE
             Moves enemyMove = getEnemyMove();
             BattleEngine engine = new BattleEngine();
-            executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
-            checkBattleEnd();
+            queueMoveWithEffectiveness(enemyPokemon, playerPokemon, enemyMove, engine);
         }
 
         currentState = BattleState.DIALOGUE;
@@ -542,11 +545,10 @@ public class BattleUI {
             gp.battleScreen.resetHPAnimation(playerPokemon, enemyPokemon);
         }
 
-        // ENEMY ATTACKS
+        // ENEMY ATTACKS QUEUE
         Moves enemyMove = getEnemyMove();
         BattleEngine engine = new BattleEngine();
-        executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
-        checkBattleEnd();
+        queueMoveWithEffectiveness(enemyPokemon, playerPokemon, enemyMove, engine);
 
         currentState = BattleState.DIALOGUE;
     }
@@ -589,11 +591,10 @@ public class BattleUI {
 
         // ONLY LET ENEMY ATTACK IF THIS WAS A VOLUNTARY SWITCH (NOT FORCED)
         if (!isForcedSwitch) {
-            // VOLUNTARY SWITCH - ENEMY ATTACKS
+            // VOLUNTARY SWITCH - ENEMY ATTACKS - QUEUE IT LIKE REGULAR BATTLE
             Moves enemyMove = getEnemyMove();
             BattleEngine engine = new BattleEngine();
-            executeMoveWithDialogue(enemyPokemon, playerPokemon, enemyMove, engine);
-            checkBattleEnd();
+            queueMoveWithEffectiveness(enemyPokemon, playerPokemon, enemyMove, engine);
         }
         
         currentState = BattleState.DIALOGUE;
@@ -740,26 +741,53 @@ public class BattleUI {
     }
 
     private void nextDialogue() {
-        // CHECKS IF WE JUST DISPLAYED A MOVE MESSAGE (CONTAINS "USED")
-        // IF SO, EXECUTE THE CORRESPONDING ACTION NOW
+        // CHECK IF IT DISPLAYED A MOVE MESSAGE AND NEED TO EXECUTE IT
         if (currentDialogue.contains(" used ") && !actionQueue.isEmpty()) {
             System.out.println("[DEBUG] Executing damage after showing: " + currentDialogue);
-            System.out.println("[DEBUG] Action queue size: " + actionQueue.size());
-
+            
             BattleAction action = actionQueue.remove(0);
-            System.out.println("[DEBUG] Executing: " + action.attacker.getName() + " -> " + action.defender.getName());
-
-            executeDamageOnly(action);
-
-            // NOW SHOW THE NEXT MESSAGE (EFFECTIVENESS, ETC.)
-            if (!dialogueQueue.isEmpty()) {
-                currentDialogue = dialogueQueue.remove(0);
-            } else {
+            
+            // CHECK IF ATTACKER FAINTED BEFORE THIS ACTION
+            if (action.attacker.isFainted()) {
+                // ATTACKER FAINTED, SKIP THIS ACTION AND MOVE TO NEXT DIALOGUE
                 currentDialogue = "";
+                nextDialogue(); // RECURSIVELY GET NEXT MESSAGE
+                return;
             }
+            
+            // START ATTACK VISUAL EFFECT
+            boolean targetIsEnemy = (action.defender == enemyPokemon);
+            gp.battleScreen.startAttackEffect(action.move.getTypeEnum(), targetIsEnemy);
+            
+            // EXECUTE THE MOVE AND GET EFFECTIVENESS MESSAGE
+            String battleResult = action.engine.executeTurnWithResult(
+                    action.attacker, action.defender, action.move);
+            
+            // ADD EFFECTIVENESS MESSAGES TO THE FRONT OF THE QUEUE
+            if (battleResult != null && !battleResult.isEmpty()) {
+                String[] messages = battleResult.split("\n");
+                // ADD IN REVERSE ORDER SO THEY APPEAR IN CORRECT ORDER
+                for (int i = messages.length - 1; i >= 0; i--) {
+                    String msg = messages[i].trim();
+                    if (!msg.isEmpty()) {
+                        dialogueQueue.add(0, msg); // ADD TO FRONT OF QUEUE
+                    }
+                }
+            }
+            
+            // CHECK IF DEFENDER FAINTED AFTER THIS ACTION
+            if (action.defender.isFainted()) {
+                // CLEAR REMAINING ACTIONS SINCE BATTLE IS ENDING
+                actionQueue.clear();
+                checkBattleEnd();
+            }
+            
+            // CLEAR CURRENT DIALOGUE TO MOVE TO NEXT
+            currentDialogue = "";
+            nextDialogue(); // RECURSIVELY GET NEXT MESSAGE
             return;
         }
-
+        
         if (!dialogueQueue.isEmpty()) {
             currentDialogue = dialogueQueue.remove(0);
             System.out.println("[DEBUG] Showing dialogue: " + currentDialogue);

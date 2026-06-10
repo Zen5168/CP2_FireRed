@@ -254,14 +254,14 @@ public class BattleScreen {
                     System.out.println("Loaded pokeball sprite " + i + " at (" + frameRect.x + "," + frameRect.y + ") size " + frameRect.width + "x" + frameRect.height + ": SUCCESS");
                 } else {
                     System.out.println("ERROR: Pokeball sprite " + i + " coordinates out of bounds!");
-                    System.out.println("  Requested: x=" + frameRect.x + " y=" + frameRect.y + " w=" + frameRect.width + " h=" + frameRect.height);
-                    System.out.println("  Sheet size: " + pokeballSheet.getWidth() + "x" + pokeballSheet.getHeight());
+                    System.out.println("Requested: x=" + frameRect.x + " y=" + frameRect.y + " w=" + frameRect.width + " h=" + frameRect.height);
+                    System.out.println("Sheet size: " + pokeballSheet.getWidth() + "x" + pokeballSheet.getHeight());
                     allLoaded = false;
                 }
             }
 
             if (allLoaded) {
-                System.out.println(" Pokeball sprites loaded successfully!");
+                System.out.println("Pokeball sprites loaded successfully!");
             } else {
                 System.out.println("Some pokeball sprites failed to load!");
             }
