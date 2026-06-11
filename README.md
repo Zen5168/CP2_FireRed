@@ -3,6 +3,8 @@
 A recreation of the Pokemon FireRed experience built using Java. This project utilizes a local SQLite database for move-sets and stats, allowing for a completely offline gameplay experience.
 
 ## Features
+- **Main Menu**: Choose between starting a new game or continuing from a saved game
+- **Save/Load System**: Save your progress and continue your adventure anytime
 - **Offline Support**: Migrated from MySQL to SQLite for zero-configuration setup.
 - **Core Mechanics**: Includes movement, wild encounters, and database-driven move logic.
 - **Classic Feel**: Sprite-based rendering and res.audio integration.

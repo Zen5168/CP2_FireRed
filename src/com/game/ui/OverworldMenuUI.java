@@ -31,7 +31,7 @@ public class OverworldMenuUI {
         "POKEMON", 
         "BAG", 
         "SAVE", 
-        "EXIT"
+        "SAVE & EXIT"
     };
     
     // BAG STATE
@@ -136,8 +136,8 @@ public class OverworldMenuUI {
             case 2: // SAVE
                 saveGame();
                 break;
-            case 3: // EXIT
-                closeMenu();
+            case 3: // SAVE & EXIT
+                saveAndExit();
                 break;
         }
     }
@@ -268,10 +268,58 @@ public class OverworldMenuUI {
     // SAVE GAME
     //=====================================
     private void saveGame() {
-        // PLACEHOLDER FOR FUTURE SAVE FUNCTIONALITY
-        System.out.println("SAVE GAME - Feature to be implemented");
-        gp.dialogueManager.showMessage("Game saved successfully!");
+        // CHECK IF PLAYER IS INSIDE A BUILDING
+        if (gp.buildingManager.isInBuilding()) {
+            gp.dialogueManager.showMessage("You can't save inside a building!");
+            closeMenu();
+            return;
+        }
+        
+        // CREATE SAVE MANAGER AND SAVE
+        com.game.logic.SaveManager saveManager = new com.game.logic.SaveManager(gp);
+        boolean success = saveManager.saveGame();
+        
+        if (success) {
+            gp.dialogueManager.showMessage("Game saved successfully!");
+        } else {
+            gp.dialogueManager.showMessage("Failed to save game!");
+        }
         closeMenu();
+    }
+    
+    //=====================================
+    // SAVE AND EXIT
+    //=====================================
+    private void saveAndExit() {
+        // CHECK IF PLAYER IS INSIDE A BUILDING
+        if (gp.buildingManager.isInBuilding()) {
+            gp.dialogueManager.showMessage("You can't save inside a building! Exit the building first.");
+            closeMenu();
+            return;
+        }
+        
+        // CREATE SAVE MANAGER AND SAVE
+        com.game.logic.SaveManager saveManager = new com.game.logic.SaveManager(gp);
+        boolean success = saveManager.saveGame();
+        
+        if (success) {
+            // SHOW SAVING MESSAGE BRIEFLY
+            gp.dialogueManager.showMessage("Saving game...");
+            
+            // CLOSE THE GAME AFTER A SHORT DELAY
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000); // WAIT 1 SECOND TO SHOW MESSAGE
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Game saved. Exiting...");
+                System.exit(0); // EXIT THE APPLICATION
+            }).start();
+        } else {
+            gp.dialogueManager.showMessage("Failed to save game! Exit cancelled.");
+            closeMenu();
+        }
     }
     
     //=====================================
