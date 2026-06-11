@@ -1367,9 +1367,9 @@ public class BattleScreen {
         return !isTransitioning && transitionAlpha <= 0;
     }
 
-    //=====================================
+    //============================================
     // SET BATTLE BACKGROUND FROM SPRITE SHEET
-    //=====================================
+    //============================================
     // ALLOWS CHANGING BACKGROUND SPRITE COORDINATES AT RUNTIME
     // USE THIS TO SELECT DIFFERENT BACKGROUNDS FROM YOUR SPRITE SHEET
     public void setBattleBackground(int x, int y, int width, int height) {
@@ -1384,15 +1384,15 @@ public class BattleScreen {
             // CHECK IF COORDINATES ARE VALID
             if (x + width <= backgroundSheet.getWidth() && y + height <= backgroundSheet.getHeight()) {
                 battleBackground = backgroundSheet.getSubimage(x, y, width, height);
-                System.out.println("✓ Battle background updated! Coords: (" + x + "," + y + ") Size: " + width + "x" + height);
+                System.out.println("Battle background updated! Coords: (" + x + "," + y + ") Size: " + width + "x" + height);
             } else {
                 System.out.println("ERROR: Invalid background coordinates!");
-                System.out.println("  Requested: x=" + x + " y=" + y + " w=" + width + " h=" + height);
-                System.out.println("  Sheet size: " + backgroundSheet.getWidth() + "x" + backgroundSheet.getHeight());
+                System.out.println("Requested: x=" + x + " y=" + y + " w=" + width + " h=" + height);
+                System.out.println("Sheet size: " + backgroundSheet.getWidth() + "x" + backgroundSheet.getHeight());
             }
 
         } catch (Exception e) {
-            System.out.println("✗ Could not update battle background: " + e.getMessage());
+            System.out.println("Could not update battle background: " + e.getMessage());
             e.printStackTrace();
         }
     }

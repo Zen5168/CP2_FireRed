@@ -57,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable {
     public com.game.ui.DialogueManager dialogueManager;
     public com.game.ui.ShopUI shopUI;
     public com.game.ui.OverworldMenuUI overworldMenuUI;
+    public com.game.logic.SaveManager saveManager;
 
     public GamePanel(String playerName, com.game.pokemons.Pokemon starterPokemon) {
 
@@ -73,6 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
         dialogueManager = new com.game.ui.DialogueManager(this);
         shopUI = new com.game.ui.ShopUI(this);
         overworldMenuUI = new com.game.ui.OverworldMenuUI(this);
+        saveManager = new com.game.logic.SaveManager(this);
 
         // INITIALIZE PLAYER TRAINER WITH CUSTOM NAME AND STARTER POKEMON
         playerTrainer = new com.game.trainers.Player(playerName, 23, 21);
