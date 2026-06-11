@@ -6,6 +6,7 @@ import com.game.moves.*;
 public class Venusaur extends Pokemon {
 
     public Venusaur(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Venusaur", Type.GRASS, Type.POISON, level, 80, 82, 83, 100, 100, 80);
 
         // MOVE TABLE (LEVEL, "MOVE NAME")

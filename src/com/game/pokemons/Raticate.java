@@ -3,10 +3,11 @@ package com.game.pokemons;
 import com.game.logic.*;
 import com.game.moves.*;
 
-public class Rattata extends Pokemon {
+public class Raticate extends Pokemon {
 
-    public Rattata(int level) {
-        super("Rattata", Type.NORMAL, Type.NONE, level, 30, 56, 35, 25, 35, 72);
+    public Raticate(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
+        super("Raticate", Type.NORMAL, Type.NONE, level, 30, 56, 35, 25, 35, 72);
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");

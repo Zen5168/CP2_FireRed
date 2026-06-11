@@ -5,6 +5,7 @@ import com.game.logic.*;
 public class Bulbasaur extends Pokemon {
 
     public Bulbasaur(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Bulbasaur", Type.GRASS, Type.NONE, level, 45, 49, 49, 65, 65, 45);
 
         // EVOLUTION SETUP

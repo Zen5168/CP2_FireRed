@@ -5,6 +5,7 @@ import com.game.logic.*;
 public class Blastoise extends Pokemon {
 
     public Blastoise(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Blastoise", Type.WATER, Type.NONE, level, 79, 83, 100, 85, 105, 78);
 
         // MOVE TABLE (LEVEL, "MOVE NAME")

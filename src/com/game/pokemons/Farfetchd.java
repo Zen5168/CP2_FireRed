@@ -5,6 +5,7 @@ import com.game.logic.*;
 public class Farfetchd extends Pokemon {
 
     public Farfetchd(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Farfetch'd", Type.NORMAL, Type.FLYING, level, 45, 49, 65, 49, 65, 45);
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
