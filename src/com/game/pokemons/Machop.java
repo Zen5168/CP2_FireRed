@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Machop extends Pokemon {
 
@@ -10,7 +9,11 @@ public class Machop extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Rock Smash");
-        moveLevelUpTable.put(7, "Power-Up Punch");
+        moveLevelUpTable.put(12, "Power-Up Punch");
+        moveLevelUpTable.put(14, "Brutal Swing");
+        moveLevelUpTable.put(16, "Bullet Punch");
+        moveLevelUpTable.put(18, "Knock Off");
+        moveLevelUpTable.put(25, "Brick Break");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

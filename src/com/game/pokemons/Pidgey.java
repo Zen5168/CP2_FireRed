@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Pidgey extends Pokemon {
 
@@ -10,6 +9,9 @@ public class Pidgey extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
+        moveLevelUpTable.put(9, "Gust");
+        moveLevelUpTable.put(13, "Quick Attack");
+        moveLevelUpTable.put(17, "Twister");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

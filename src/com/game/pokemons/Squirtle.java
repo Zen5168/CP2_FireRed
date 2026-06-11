@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Squirtle extends Pokemon {
 
@@ -14,8 +13,9 @@ public class Squirtle extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
-        moveLevelUpTable.put(7, "Bubble");
-        moveLevelUpTable.put(13, "Water Gun");
+        moveLevelUpTable.put(3, "Water Whip");
+        moveLevelUpTable.put(12, "Bite");
+        moveLevelUpTable.put(15, "Bubble Beam");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

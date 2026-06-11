@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Charmeleon extends Pokemon {
 
@@ -14,10 +13,12 @@ public class Charmeleon extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
-        moveLevelUpTable.put(7, "Ember");
-        moveLevelUpTable.put(13, "Flame Wheel");
-        moveLevelUpTable.put(20, "Slash");
-        moveLevelUpTable.put(27, "Flamethrower");
+        moveLevelUpTable.put(4, "Ember");
+        moveLevelUpTable.put(12, "Dragon Breath");
+        moveLevelUpTable.put(17, "Fire Fang");
+        moveLevelUpTable.put(20, "Fire Spin");
+        moveLevelUpTable.put(24, "Slash");
+        moveLevelUpTable.put(30, "FlameThrower");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

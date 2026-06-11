@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Magmar extends Pokemon {
 
@@ -10,7 +9,14 @@ public class Magmar extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Ember");
-        moveLevelUpTable.put(7, "Flame Wheel");
+        moveLevelUpTable.put(1, "Smog");
+        moveLevelUpTable.put(12, "Clear Smog");
+        moveLevelUpTable.put(16, "Flame Wheel");
+        moveLevelUpTable.put(28, "Fire Punch");
+        moveLevelUpTable.put(34, "Lava Plume");
+        moveLevelUpTable.put(46, "Flamethrower");
+        moveLevelUpTable.put(58, "Fire Blast");
+        moveLevelUpTable.put(64, "Hyper Beam");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

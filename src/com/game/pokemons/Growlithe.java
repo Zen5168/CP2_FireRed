@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Growlithe extends Pokemon {
 
@@ -10,7 +9,15 @@ public class Growlithe extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Ember");
-        moveLevelUpTable.put(7, "Flame Wheel");
+        moveLevelUpTable.put(8, "Bite");
+        moveLevelUpTable.put(12, "Flame Wheel");
+        moveLevelUpTable.put(24, "Fire Fang");
+        moveLevelUpTable.put(28, "Retaliate");
+        moveLevelUpTable.put(32, "Crunch");
+        moveLevelUpTable.put(36, "Take Down");
+        moveLevelUpTable.put(40, "Flamethrower");
+        moveLevelUpTable.put(48, "Play Rough");
+        moveLevelUpTable.put(56, "Flare Blitz");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Farfetchd extends Pokemon {
 
@@ -10,7 +9,17 @@ public class Farfetchd extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Peck");
-        moveLevelUpTable.put(7, "Gust");
+        moveLevelUpTable.put(10, "Gust");
+        moveLevelUpTable.put(12, "Steel Wing");
+        moveLevelUpTable.put(16, "Aerial Ace");
+        moveLevelUpTable.put(20, "Knock Off");
+        moveLevelUpTable.put(22, "Quick Attack");
+        moveLevelUpTable.put(24, "Brutal Swing");
+        moveLevelUpTable.put(25, "False Swipe");
+        moveLevelUpTable.put(30, "Slash");
+        moveLevelUpTable.put(40, "Air Slash");
+        moveLevelUpTable.put(42, "Leaf Blade");
+        moveLevelUpTable.put(55, "Brave Bird");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

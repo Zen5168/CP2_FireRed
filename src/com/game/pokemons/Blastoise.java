@@ -1,7 +1,6 @@
 package com.game.pokemons;
 
 import com.game.logic.*;
-import com.game.moves.*;
 
 public class Blastoise extends Pokemon {
 
@@ -10,11 +9,12 @@ public class Blastoise extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
-        moveLevelUpTable.put(7, "Bubble");
-        moveLevelUpTable.put(13, "Water Gun");
-        moveLevelUpTable.put(20, "Bite");
-        moveLevelUpTable.put(27, "Water Pulse");
-        moveLevelUpTable.put(36, "Hydro Pump");
+        moveLevelUpTable.put(3, "Water Whip");
+        moveLevelUpTable.put(12, "Bite");
+        moveLevelUpTable.put(15, "Bubble Beam");
+        moveLevelUpTable.put(20, "Icy Wind");
+        moveLevelUpTable.put(35, "Aqua Jet");
+        moveLevelUpTable.put(45, "Liquidation");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();
