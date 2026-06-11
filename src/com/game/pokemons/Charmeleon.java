@@ -5,6 +5,7 @@ import com.game.logic.*;
 public class Charmeleon extends Pokemon {
 
     public Charmeleon(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Charmeleon", Type.FIRE, Type.NONE, level, 58, 64, 78, 58, 65, 80);
 
         // EVOLUTION SETUP

@@ -2,21 +2,23 @@ package com.game.pokemons;
 
 import com.game.logic.*;
 
-public class Pidgey extends Pokemon {
+public class Pidgeotto extends Pokemon {
 
-    public Pidgey(int level) {
+    public Pidgeotto(int level) {
         // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
-        super("Pidgey", Type.NORMAL, Type.FLYING, level, 40, 45, 40, 35, 35, 56);
+        super("Pidgeotto", Type.NORMAL, Type.FLYING, level, 63, 60, 55, 50, 50, 71);
 
         // EVOLUTION SETUP
-        this.evolutionLevel = 18;
-        this.evolutionName = "com.game.pokemons.Pidgeotto";
+        this.evolutionLevel = 36;
+        this.evolutionName = "com.game.pokemons.Pidgeot";
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
         moveLevelUpTable.put(9, "Gust");
         moveLevelUpTable.put(13, "Quick Attack");
         moveLevelUpTable.put(17, "Twister");
+        moveLevelUpTable.put(21, "Wing Attack");
+        moveLevelUpTable.put(33, "Air Slash");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();

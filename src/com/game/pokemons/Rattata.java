@@ -5,6 +5,7 @@ import com.game.logic.*;
 public class Rattata extends Pokemon {
 
     public Rattata(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Rattata", Type.NORMAL, Type.NONE, level, 30, 56, 35, 25, 35, 72);
         
         // EVOLUTION SETUP

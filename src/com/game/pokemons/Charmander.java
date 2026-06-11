@@ -5,6 +5,7 @@ import com.game.logic.*;
 public class Charmander extends Pokemon {
 
     public Charmander(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Charmander", Type.FIRE, Type.NONE, level, 39, 52, 60, 43, 50, 65);
 
         // EVOLUTION SETUP

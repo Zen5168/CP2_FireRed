@@ -5,6 +5,7 @@ import com.game.logic.*;
 public class Charizard extends Pokemon {
 
     public Charizard(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Charizard", Type.FIRE, Type.FLYING, level, 78, 84, 78, 109, 85, 100);
 
         // MOVE TABLE (LEVEL, "MOVE NAME")

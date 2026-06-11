@@ -6,6 +6,7 @@ import com.game.moves.*;
 public class Ivysaur extends Pokemon {
 
     public Ivysaur(int level) {
+        // name, type1, type2, level, Hp, Atk, Def, SpAtk, SpDef, Speed
         super("Ivysaur", Type.GRASS, Type.POISON, level, 60, 62, 63, 80, 80, 60);
 
         // EVOLUTION SETUP
