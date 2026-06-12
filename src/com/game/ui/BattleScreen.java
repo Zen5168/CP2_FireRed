@@ -139,7 +139,28 @@ public class BattleScreen {
                {new Rectangle(661, 47, 63, 63), new Rectangle(661, 114, 64, 66)}, // DONE
                 
                 // BLASTOISE [20]
-                {new Rectangle(1052, 47, 63, 63), new Rectangle(1051, 111, 64, 63)} // DONE
+                {new Rectangle(1052, 47, 63, 63), new Rectangle(1051, 111, 64, 63)}, // DONE
+                 
+                // Golduck [21]
+                {new Rectangle(1186, 547, 63, 63), new Rectangle(1186 , 609, 59, 65)}, // DONE
+                
+                // Machoke [22]
+                {new Rectangle(796, 714, 63, 63), new Rectangle(796, 774, 59, 60)}, // DONE
+                
+                // Marowak [23]
+                {new Rectangle(1832, 1043, 63, 63), new Rectangle(1839, 1105, 56, 60)}, // DONE
+                
+                // Pidgeot [24]
+                {new Rectangle(271, 213, 63, 63), new Rectangle(271, 284, 61, 58)}, // DONE
+                
+                // Pidgeotto [25]
+                {new Rectangle(151, 216, 63, 63), new Rectangle(146, 278, 59, 58)}, // DONE
+                
+                // Pikachu [26]
+                {new Rectangle(1194, 217, 63, 63), new Rectangle(1186, 283, 59, 58)}, // DONE
+                
+                // Raticate [27]
+                {new Rectangle(536, 230, 63, 63), new Rectangle(536, 277, 59, 58)}, // DONE
 
             // ADD MORE POKEMON HERE AS NEEDED
             // {new Rectangle(x, y, width, height), new Rectangle(x, y, width, height)},
@@ -1282,6 +1303,27 @@ public class BattleScreen {
                 break;
             case "blastoise":
                 spriteIndex = 20;
+                break;
+            case "golduck":
+                spriteIndex = 21;
+                break;
+            case "machoke":
+                spriteIndex = 22;
+                break;
+            case "marowak":
+                spriteIndex = 23;
+                break;
+            case "pidgeot":
+                spriteIndex = 24;
+                break;
+            case "pidgeotto":
+                spriteIndex = 25;
+                break;
+            case "pikachu":
+                spriteIndex = 26;
+                break;
+            case "raticate":
+                spriteIndex = 27;
                 break;
             default:
                 System.out.println("WARNING: No sprite mapping found for Pokemon: " + pokemonName);
