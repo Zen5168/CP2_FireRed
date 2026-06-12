@@ -1098,7 +1098,7 @@ public class BattleUI {
                 g2.drawString("PP " + move.pp + "/" + move.maxPp, optX, optY + 18);
 
                 // TYPE (COLORED BOX)
-                drawTypeBox(g2, move.moveType, optX + 100, optY - 12);
+                drawTypeBox(g2, move.moveType, optX + 100, optY + 10);
 
                 g2.setFont(new Font("Arial", Font.BOLD, 16));
             }
