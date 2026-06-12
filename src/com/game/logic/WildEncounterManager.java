@@ -6,7 +6,7 @@ import java.util.Random;
 public class WildEncounterManager {
 
     private Random random;
-    private static final double ENCOUNTER_RATE = 0.10; // 20% CHANCE PER STEP ON GRASS
+    private static final double ENCOUNTER_RATE = 0.10; // 10% CHANCE PER STEP ON GRASS
 
     public WildEncounterManager() {
         this.random = new Random();
