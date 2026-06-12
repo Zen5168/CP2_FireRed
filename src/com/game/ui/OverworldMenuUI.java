@@ -541,7 +541,7 @@ public class OverworldMenuUI {
         g2.drawRoundRect(x, y, width, height, 10, 10);
         
         // POKEMON SPRITE
-        BufferedImage sprite = gp.battleScreen.getPokemonSprite(pokemon.getName(), true);
+        BufferedImage sprite = gp.battleScreen.getPokemonSprite(pokemon.getName(), false);
         if (sprite != null) {
             int spriteSize = 50;
             g2.drawImage(sprite, x + 10, y + 5, spriteSize, spriteSize, null);
@@ -614,7 +614,7 @@ public class OverworldMenuUI {
         g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 15, 15);
         
         // POKEMON SPRITE
-        BufferedImage sprite = gp.battleScreen.getPokemonSprite(pokemon.getName(), true);
+        BufferedImage sprite = gp.battleScreen.getPokemonSprite(pokemon.getName(), false);
         if (sprite != null) {
             int spriteSize = 150;
             g2.drawImage(sprite, boxX + 30, boxY + 30, spriteSize, spriteSize, null);
