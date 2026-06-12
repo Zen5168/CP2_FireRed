@@ -10,7 +10,6 @@ public class AudioManager {
 
     public void playForDuration(String fileName, long startMicroseconds, long durationMillis) {
         playWithLoop(fileName, startMicroseconds);
-
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             stopCurrent();
         }, durationMillis, TimeUnit.MILLISECONDS);
@@ -19,8 +18,16 @@ public class AudioManager {
     public void playWithLoop(String fileName, long startMicroseconds) {
         stopCurrent(); // STOP MUSIC
         try {
-            File soundFile = new File("src/res/audio/" + fileName);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            InputStream audioSrc = getClass().getResourceAsStream("/res/audio/" + fileName);
+            if (audioSrc == null) {
+                System.out.println("Error: Audio resource not found: /res/audio/" + fileName);
+                return;
+            }
+
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+                    new BufferedInputStream(audioSrc)
+            );
+
             currentClip = AudioSystem.getClip();
             currentClip.open(audioStream);
             currentClip.setMicrosecondPosition(startMicroseconds);
