@@ -20,7 +20,7 @@ public class MoveDatabase {
             String[] possiblePaths = {
                 "src/db/moveDB/movedatabase",
                 "movedatabase",
-                "src\\db\\moveDB\\movedatabase",
+                "src\\db\\movedatabase",
                 "./src/db/moveDB/movedatabase",
                 ".\\src\\db\\moveDB\\movedatabase"
             };
