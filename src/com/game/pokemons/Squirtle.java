@@ -14,7 +14,7 @@ public class Squirtle extends Pokemon {
 
         // MOVE TABLE (LEVEL, "MOVE NAME")
         moveLevelUpTable.put(1, "Tackle");
-        moveLevelUpTable.put(3, "Water Whip");
+        moveLevelUpTable.put(3, "Water Gun");
         moveLevelUpTable.put(12, "Bite");
         moveLevelUpTable.put(15, "Bubble Beam");
 
