@@ -79,88 +79,88 @@ public class BattleScreen {
             Rectangle[][] spriteMap = { // NOTE TO SELF: RE-MAP THESPRITE FOR A CLEANER LOOK
                 
                 // BULBASAUR [0]
-                {new Rectangle(12, 46, 63, 63), new Rectangle(17, 117, 49, 49)}, // DONE
+                {new Rectangle(11, 46, 64, 64), new Rectangle(17, 117, 49, 49)}, // DONE
                 
                 // CHARMANDER [1]
-                {new Rectangle(402, 46, 63, 63), new Rectangle(402, 111, 63, 63)}, // DONE
+                {new Rectangle(401, 46, 64, 64), new Rectangle(402, 111, 63, 63)}, // DONE
                 
                 // SQUIRTLE [2]
-                {new Rectangle(792, 46, 63, 63), new Rectangle(797, 117, 50, 50)}, // DONE
+                {new Rectangle(791, 46, 64, 64), new Rectangle(797, 117, 50, 50)}, // DONE
                 
                 // PIDGEY [3]
-                {new Rectangle(12, 212, 63, 63), new Rectangle(14, 283, 60, 57)}, // DONE
+                {new Rectangle(11, 211, 64, 64), new Rectangle(14, 283, 60, 57)}, // DONE
                 
                 // RATTATA [4]
-                {new Rectangle(401, 212, 63, 63), new Rectangle(406, 276, 59, 59)}, // DONE
+                {new Rectangle(401, 211, 64, 64), new Rectangle(406, 276, 59, 59)}, // DONE
                 
                 // CUBONE [5]
-                {new Rectangle(1702, 1036, 63, 63), new Rectangle(1702, 1101, 63, 63)}, // DONE
+                {new Rectangle(1701, 1036, 64, 64), new Rectangle(1702, 1101, 63, 63)}, // DONE
                 
                 // ELECTABUZZ [6]
-                {new Rectangle(531, 1367, 63, 63), new Rectangle(531, 1433, 63, 63)}, // DONE
+                {new Rectangle(531, 1366, 64, 64), new Rectangle(531, 1433, 63, 63)}, // DONE
                 
                 // FARFETCH'D [7]
-                {new Rectangle(922, 871, 63, 63), new Rectangle(922, 936, 63, 63)}, // DONE
+                {new Rectangle(921, 871, 64, 64), new Rectangle(922, 936, 63, 63)}, // DONE
                 
                 // GROWLITHE [8]
-                {new Rectangle(1571, 541, 63, 63), new Rectangle(1571, 608, 63, 63)}, // DONE
+                {new Rectangle(1571, 541, 64, 64), new Rectangle(1571, 608, 63, 63)}, // DONE
                 
                 // JYNX [9]
-                {new Rectangle(401, 1367, 63, 63), new Rectangle(402, 1432, 63, 58)}, // DONE
+                {new Rectangle(401, 1366, 64, 64), new Rectangle(402, 1432, 63, 58)}, // DONE
                 
                 // KANGASKHAN [10]
-                {new Rectangle(1181, 1200, 63, 63), new Rectangle(1186, 1272, 55, 62)},//DONE
+                {new Rectangle(1181, 1201, 64, 64), new Rectangle(1186, 1272, 55, 62)},//DONE
                 
                 // MACHOP [11]
-                {new Rectangle(662, 706, 63, 63), new Rectangle(662, 773, 63, 58)}, // DONE
+                {new Rectangle(661, 706, 64, 64), new Rectangle(662, 773, 63, 58)}, // DONE
                 
                 // MAGMAR [12]
-                {new Rectangle(662, 1367, 63, 63), new Rectangle(662, 1434, 63, 63)}, // DONE
+                {new Rectangle(661, 1366, 64, 64), new Rectangle(662, 1434, 63, 63)}, // DONE
                 
                 // PSYDUCK [13]
-                {new Rectangle(1051, 541, 63, 63), new Rectangle(1051, 609, 63, 63)}, // DONE
+                {new Rectangle(1051, 541, 64, 64), new Rectangle(1051, 609, 63, 63)}, // DONE
                 
                 // SCYTHER [14]
-                {new Rectangle(271, 1367, 63, 63), new Rectangle(272, 1435, 63, 65)}, // DONE
+                {new Rectangle(271, 1366, 64, 64), new Rectangle(272, 1435, 63, 65)}, // DONE
                 
                 // IVYSAUR [15]
-                {new Rectangle(142, 47, 63, 63), new Rectangle(142, 111, 63, 63)}, // Done
+                {new Rectangle(141, 46, 64, 64), new Rectangle(142, 111, 63, 63)}, // Done
                 
                 // CHARMELEON [16]
-                {new Rectangle(532, 47, 63, 63), new Rectangle(532, 114, 63, 63)}, // DONE
+                {new Rectangle(531, 46, 64, 64), new Rectangle(532, 114, 63, 63)}, // DONE
                 
                 // WARTORTLE [17]
-                {new Rectangle(922, 47, 63, 63), new Rectangle(922, 111, 63, 63)}, // DONE
+                {new Rectangle(921, 46, 64, 64), new Rectangle(922, 111, 63, 63)}, // DONE
                 
                 // VENUSAUR [18]
-                {new Rectangle(272, 47, 63, 63), new Rectangle(272, 111, 63, 63)}, // DONE
+                {new Rectangle(271, 46, 64, 64), new Rectangle(272, 111, 63, 63)}, // DONE
                 
                 // CHARIZARD [19]
-               {new Rectangle(661, 47, 63, 63), new Rectangle(661, 114, 64, 66)}, // DONE
+               {new Rectangle(661, 46, 64, 64), new Rectangle(661, 114, 64, 66)}, // DONE
                 
                 // BLASTOISE [20]
-                {new Rectangle(1052, 47, 63, 63), new Rectangle(1051, 111, 64, 63)}, // DONE
+                {new Rectangle(1051, 46, 64, 64), new Rectangle(1051, 111, 64, 63)}, // DONE
                  
                 // Golduck [21]
-                {new Rectangle(1186, 547, 63, 63), new Rectangle(1186 , 609, 59, 65)}, // DONE
+                {new Rectangle(1181, 541, 64, 64), new Rectangle(1186 , 609, 59, 65)}, // DONE
                 
                 // Machoke [22]
-                {new Rectangle(796, 714, 63, 63), new Rectangle(796, 774, 59, 60)}, // DONE
+                {new Rectangle(856, 706, 64, 64), new Rectangle(796, 774, 59, 60)}, // DONE
                 
                 // Marowak [23]
-                {new Rectangle(1832, 1043, 63, 63), new Rectangle(1839, 1105, 56, 60)}, // DONE
+                {new Rectangle(1831, 1036, 64, 64), new Rectangle(1839, 1105, 56, 60)}, // DONE
                 
                 // Pidgeot [24]
-                {new Rectangle(271, 213, 63, 63), new Rectangle(271, 284, 61, 58)}, // DONE
+                {new Rectangle(271, 211, 64, 64), new Rectangle(271, 284, 61, 58)}, // DONE
                 
                 // Pidgeotto [25]
-                {new Rectangle(151, 216, 63, 63), new Rectangle(146, 278, 59, 58)}, // DONE
+                {new Rectangle(141, 211, 64, 64), new Rectangle(146, 278, 59, 58)}, // DONE
                 
                 // Pikachu [26]
-                {new Rectangle(1194, 217, 63, 63), new Rectangle(1186, 283, 59, 58)}, // DONE
+                {new Rectangle(1181, 211, 64, 64), new Rectangle(1186, 283, 59, 58)}, // DONE
                 
                 // Raticate [27]
-                {new Rectangle(536, 230, 63, 63), new Rectangle(536, 277, 59, 58)}, // DONE
+                {new Rectangle(531, 211, 63, 63), new Rectangle(536, 277, 59, 58)}, // DONE
 
             // ADD MORE POKEMON HERE AS NEEDED
             // {new Rectangle(x, y, width, height), new Rectangle(x, y, width, height)},
