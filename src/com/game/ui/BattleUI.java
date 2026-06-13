@@ -29,7 +29,7 @@ public class BattleUI {
         BATTLE_ACTION, // EXECUTING MOVES
         DIALOGUE, // BATTLE MESSAGES
         VICTORY, // WON THE BATTLE
-        DEFEAT           // LOST THE BATTLE
+        DEFEAT // LOST THE BATTLE
     }
 
     // BATTLE ACTION QUEUE

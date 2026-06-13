@@ -22,10 +22,22 @@ public class Building {
     //=============================
     // GETTERS
     //=============================
-    public String getName() { return name; }
-    public int getWorldX() { return worldX; }
-    public int getWorldY() { return worldY; }
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
-    public BufferedImage getSprite() { return sprite; }
+    public String getName() { 
+        return name; 
+    }
+    public int getWorldX() { 
+        return worldX; 
+    }
+    public int getWorldY() { 
+        return worldY; 
+    }
+    public int getWidth() { 
+        return width; 
+    }
+    public int getHeight() { 
+        return height; 
+    }
+    public BufferedImage getSprite() { 
+        return sprite; 
+    }
 }
