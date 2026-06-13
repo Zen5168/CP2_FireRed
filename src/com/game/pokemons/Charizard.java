@@ -15,7 +15,7 @@ public class Charizard extends Pokemon {
         moveLevelUpTable.put(17, "Fire Fang");
         moveLevelUpTable.put(20, "Fire Spin");
         moveLevelUpTable.put(24, "Slash");
-        moveLevelUpTable.put(30, "FlameThrower");
+        moveLevelUpTable.put(30, "Flame  Thrower");
         moveLevelUpTable.put(42, "Dragon Rush");
         moveLevelUpTable.put(54, "Flare Blitz");
 

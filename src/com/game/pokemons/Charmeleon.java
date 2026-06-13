@@ -19,7 +19,7 @@ public class Charmeleon extends Pokemon {
         moveLevelUpTable.put(17, "Fire Fang");
         moveLevelUpTable.put(20, "Fire Spin");
         moveLevelUpTable.put(24, "Slash");
-        moveLevelUpTable.put(30, "FlameThrower");
+        moveLevelUpTable.put(30, "Flame Thrower");
 
         // INITIALIZE MOVES (GET 4 MOST RECENT MOVES BASED ON LEVEL)
         initializeMoves();
